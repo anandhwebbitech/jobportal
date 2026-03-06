@@ -13,10 +13,13 @@ use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Frontend\FrontendController;
 use App\Models\SubCategory;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\AuthController;
 
-    
+
+
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 
@@ -33,13 +36,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('skills', SkillController::class);
         Route::resource('sizes', SizeController::class);
         Route::resource('subcategories', SubCategoryController::class);
-    
+
         Route::resource('products', ProductController::class);
         Route::get('get-subcategories/{category}', [ProductController::class, 'getSubcategories'])
             ->name('products.getSubcategories');
         Route::delete('products/image/{id}', [ProductController::class, 'deleteImage'])
             ->name('products.image.delete');
-    
+
         Route::resource('sliders', SliderController::class);
         Route::post('sliders/{id}/toggle-status', [SliderController::class, 'toggleStatus'])
             ->name('sliders.toggleStatus');
@@ -58,4 +61,41 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
     });
+});
+
+Route::controller(FrontendController::class)->group(function () {
+
+    Route::get('/', 'home')->name('home');
+    Route::get('/about', 'about')->name('about');
+
+    Route::get('/jobs', 'jobs')->name('jobs.index');
+
+    Route::get('/jobs/{slug}', 'jobDetails')->name('jobs.show');
+
+    Route::get('/pricing', 'pricing')->name('pricing');
+
+    Route::get('/contact', 'contact')->name('contact');
+
+    Route::get('/post-job', 'postJob')->name('post-job');
+
+});
+
+Route::controller(AuthController::class)->group(function () {
+
+    // Job Seeker
+    Route::get('/jobseeker/login', 'jobseekerLogin')->name('jobseeker.login');
+    Route::post('/jobseeker/login', 'jobseekerLoginSubmit')->name('jobseeker.login.submit');
+
+    Route::get('/jobseeker/register', 'jobseekerRegister')->name('jobseeker.register');
+    Route::post('/jobseeker/register', 'jobseekerRegisterSubmit')->name('jobseeker.register.submit');
+
+    // Employer
+    Route::get('/employer/login', 'employerLogin')->name('employer.login');
+    Route::post('/employer/login', 'employerLoginSubmit')->name('employer.login.submit');
+
+    Route::get('/employer/register', 'employerRegister')->name('employer.register');
+    Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
+
+    Route::post('/logout', 'logout')->name('logout');
+
 });
