@@ -10,6 +10,8 @@
      PAGE CSS (home-specific)
 ═══════════════════════════════ --}}
 @push('styles')
+{{-- Font Awesome 6 Free CDN --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
 
 /* ── HERO ──────────────────────────────────────────────────── */
@@ -324,6 +326,10 @@
 @media (max-width: 640px) { .lj-ad-grid { grid-template-columns: 1fr; } }
 @media (max-width: 420px) { .lj-ad-card { flex-direction: column; align-items: flex-start; } .lj-ad-thumb { width: 52px; height: 52px; } }
 
+/* ── AD THUMB ICON OVERRIDES (Font Awesome replacing emoji) ── */
+.lj-ad-thumb .fa-graduation-cap { font-size: 1.8rem; }
+.lj-ad-thumb .fa-file-signature  { font-size: 1.8rem; }
+
 </style>
 @endpush
 
@@ -346,7 +352,9 @@
   {{-- Search Bar --}}
   <div class="lj-anim lj-anim-d2">
     <div class="lj-search-box" id="ljSearchBox">
-      <div class="lj-search-ico"><i class="fas fa-search"></i></div>
+      <div class="lj-search-ico">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
       <input
         class="lj-search-input"
         id="ljSearchInput"
@@ -387,7 +395,7 @@
       </select>
       <div class="lj-search-cta">
         <button class="lj-search-btn" id="ljSearchBtn">
-          <i class="fas fa-search"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
           <span>Find jobs</span>
         </button>
       </div>
@@ -397,13 +405,27 @@
   {{-- Trending tags --}}
   <div class="lj-anim lj-anim-d3">
     <div class="lj-trend-row">
-      <span class="lj-trend-label">Trending:</span>
-      <a href="find-jobs.html?q=Software+Engineer" class="lj-trend-tag">Software Engineer</a>
-      <a href="find-jobs.html?q=Machine+Operator"  class="lj-trend-tag">Machine Operator</a>
-      <a href="find-jobs.html?q=Sales+Executive"   class="lj-trend-tag">Sales Executive</a>
-      <a href="find-jobs.html?q=Data+Entry"        class="lj-trend-tag">Data Entry</a>
-      <a href="find-jobs.html?q=Electrician"       class="lj-trend-tag">Electrician</a>
-      <a href="find-jobs.html?q=Fresher"           class="lj-trend-tag">Fresher Jobs</a>
+      <span class="lj-trend-label">
+        <i class="fa-solid fa-fire-flame-curved" style="color:#f97316; margin-right:4px;"></i>Trending:
+      </span>
+      <a href="find-jobs.html?q=Software+Engineer" class="lj-trend-tag">
+        <i class="fa-solid fa-laptop-code" style="margin-right:5px; font-size:.7rem;"></i>Software Engineer
+      </a>
+      <a href="find-jobs.html?q=Machine+Operator" class="lj-trend-tag">
+        <i class="fa-solid fa-gears" style="margin-right:5px; font-size:.7rem;"></i>Machine Operator
+      </a>
+      <a href="find-jobs.html?q=Sales+Executive" class="lj-trend-tag">
+        <i class="fa-solid fa-handshake" style="margin-right:5px; font-size:.7rem;"></i>Sales Executive
+      </a>
+      <a href="find-jobs.html?q=Data+Entry" class="lj-trend-tag">
+        <i class="fa-solid fa-keyboard" style="margin-right:5px; font-size:.7rem;"></i>Data Entry
+      </a>
+      <a href="find-jobs.html?q=Electrician" class="lj-trend-tag">
+        <i class="fa-solid fa-bolt" style="margin-right:5px; font-size:.7rem;"></i>Electrician
+      </a>
+      <a href="find-jobs.html?q=Fresher" class="lj-trend-tag">
+        <i class="fa-solid fa-graduation-cap" style="margin-right:5px; font-size:.7rem;"></i>Fresher Jobs
+      </a>
     </div>
   </div>
 
@@ -417,28 +439,40 @@
     <div class="lj-aud-grid">
 
       <div class="lj-aud-card" data-reveal>
-        <div class="lj-aud-ico lj-aud-ico-blue"><i class="fas fa-user-tie"></i></div>
+        <div class="lj-aud-ico lj-aud-ico-blue">
+          <i class="fa-solid fa-user-tie"></i>
+        </div>
         <div class="lj-aud-title">Looking for a Job?</div>
         <div class="lj-aud-desc">
           Find thousands of opportunities from trusted employers across Tamil Nadu.
           Create your profile and get matched with the right role based on your skills.
         </div>
         <div class="lj-aud-btns">
-          <a href="login.html"    class="lj-btn lj-btn-blue">Login as Job Seeker</a>
-          <a href="register.html" class="lj-btn lj-btn-ghost">Register as Job Seeker</a>
+          <a href="login.html"    class="lj-btn lj-btn-blue">
+            <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Login as Job Seeker
+          </a>
+          <a href="register.html" class="lj-btn lj-btn-ghost">
+            <i class="fa-solid fa-user-plus" style="margin-right:6px;"></i>Register as Job Seeker
+          </a>
         </div>
       </div>
 
       <div class="lj-aud-card" data-reveal>
-        <div class="lj-aud-ico lj-aud-ico-green"><i class="fas fa-building"></i></div>
+        <div class="lj-aud-ico lj-aud-ico-green">
+          <i class="fa-solid fa-building"></i>
+        </div>
         <div class="lj-aud-title">Looking to Hire Talent?</div>
         <div class="lj-aud-desc">
           Post job openings and connect with skilled professionals quickly.
           Affordable plans built for Tamil Nadu MSMEs — starting at just ₹600.
         </div>
         <div class="lj-aud-btns">
-          <a href="employer-login.html"    class="lj-btn lj-btn-green">Employer Login</a>
-          <a href="employer-register.html" class="lj-btn lj-btn-ghost-green">Register Company</a>
+          <a href="employer-login.html"    class="lj-btn lj-btn-green">
+            <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Employer Login
+          </a>
+          <a href="employer-register.html" class="lj-btn lj-btn-ghost-green">
+            <i class="fa-solid fa-building-circle-check" style="margin-right:6px;"></i>Register Company
+          </a>
         </div>
       </div>
 
@@ -457,26 +491,39 @@
       <div class="lj-heading">Built for Tamil Nadu</div>
     </div>
     <div class="lj-feat-grid">
+
       <div class="lj-feat-card lj-fc-b" data-reveal>
-        <div class="lj-feat-ico lj-fi-b"><i class="fas fa-shield-halved"></i></div>
+        <div class="lj-feat-ico lj-fi-b">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
         <div class="lj-feat-name">Trusted by MSMEs</div>
         <div class="lj-feat-text">Hundreds of verified small and medium businesses rely on LinearJobs to find reliable talent efficiently.</div>
       </div>
+
       <div class="lj-feat-card lj-fc-g" data-reveal>
-        <div class="lj-feat-ico lj-fi-g"><i class="fas fa-circle-check"></i></div>
+        <div class="lj-feat-ico lj-fi-g">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
         <div class="lj-feat-name">Verified Employers</div>
         <div class="lj-feat-text">Every employer is verified with GST and PAN documents, ensuring a safe and authentic job search experience.</div>
       </div>
+
       <div class="lj-feat-card lj-fc-a" data-reveal>
-        <div class="lj-feat-ico lj-fi-a"><i class="fas fa-tag"></i></div>
+        <div class="lj-feat-ico lj-fi-a">
+          <i class="fa-solid fa-tag"></i>
+        </div>
         <div class="lj-feat-name">Affordable Hiring</div>
         <div class="lj-feat-text">Post jobs starting at just ₹600. Budget-friendly plans designed for growing businesses across Tamil Nadu.</div>
       </div>
+
       <div class="lj-feat-card lj-fc-r" data-reveal>
-        <div class="lj-feat-ico lj-fi-r"><i class="fas fa-map-location-dot"></i></div>
+        <div class="lj-feat-ico lj-fi-r">
+          <i class="fa-solid fa-map-location-dot"></i>
+        </div>
         <div class="lj-feat-name">Tamil Nadu Focused</div>
         <div class="lj-feat-text">Covering all 32 districts with region-specific listings and dedicated support for local job seekers.</div>
       </div>
+
     </div>
   </div>
 </section>
@@ -487,20 +534,30 @@
 {{-- ── LOYALTY ──────────────────────────────────────── --}}
 <section class="lj-loyalty">
   <div class="lj-loy-body">
-    <div class="lj-loy-shield">🛡️</div>
+    <div class="lj-loy-shield">
+      <i class="fa-solid fa-shield-heart" style="color:#fff; font-size:1.5rem;"></i>
+    </div>
     <div class="lj-loy-title">100% Loyalty to Job Seekers</div>
     <div class="lj-loy-text">
       We provide 100% loyalty to job seekers and connect them only with verified and trusted employers.
       No fake listings. No spam. Just real opportunities from real companies across every district in Tamil Nadu.
     </div>
     <div class="lj-loy-tags">
-      <span class="lj-loy-tag"><i class="fas fa-check"></i> Zero Fake Listings</span>
-      <span class="lj-loy-tag"><i class="fas fa-check"></i> Verified Employers Only</span>
-      <span class="lj-loy-tag"><i class="fas fa-check"></i> Free to Apply</span>
-      <span class="lj-loy-tag"><i class="fas fa-check"></i> Safe &amp; Private</span>
+      <span class="lj-loy-tag">
+        <i class="fa-solid fa-circle-check"></i> Zero Fake Listings
+      </span>
+      <span class="lj-loy-tag">
+        <i class="fa-solid fa-user-shield"></i> Verified Employers Only
+      </span>
+      <span class="lj-loy-tag">
+        <i class="fa-solid fa-hand-holding-heart"></i> Free to Apply
+      </span>
+      <span class="lj-loy-tag">
+        <i class="fa-solid fa-lock"></i> Safe &amp; Private
+      </span>
     </div>
     <a href="register.html" class="lj-btn lj-btn-white lj-btn-lg">
-      Create Free Account <i class="fas fa-arrow-right" style="font-size:.78rem;"></i>
+      Create Free Account <i class="fa-solid fa-arrow-right" style="font-size:.78rem; margin-left:4px;"></i>
     </a>
   </div>
 </section>
@@ -509,26 +566,39 @@
 {{-- ── ADS ──────────────────────────────────────────── --}}
 <section class="lj-ads">
   <div class="lj-wrap">
-    <div class="lj-ads-lbl">Sponsored</div>
+    <div class="lj-ads-lbl">
+      <i class="fa-solid fa-rectangle-ad" style="margin-right:4px;"></i> Sponsored
+    </div>
     <div class="lj-ad-grid">
+
       <a href="#" class="lj-ad-card">
-        <div class="lj-ad-thumb" style="background:var(--blue-lt);">🎓</div>
+        <div class="lj-ad-thumb" style="background:var(--blue-lt); color:var(--blue);">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
         <div>
           <div class="lj-ad-micro">Advertisement</div>
           <div class="lj-ad-name">SkillBridge Academy</div>
           <div class="lj-ad-desc">Upgrade your skills with India's top online courses. 50% off this month on all certifications.</div>
-          <span class="lj-ad-cta">Visit SkillBridge.in <i class="fas fa-arrow-right" style="font-size:.68rem;"></i></span>
+          <span class="lj-ad-cta">
+            Visit SkillBridge.in <i class="fa-solid fa-arrow-right" style="font-size:.68rem; margin-left:2px;"></i>
+          </span>
         </div>
       </a>
+
       <a href="#" class="lj-ad-card">
-        <div class="lj-ad-thumb" style="background:var(--green-lt);">📋</div>
+        <div class="lj-ad-thumb" style="background:var(--green-lt); color:var(--green);">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
         <div>
           <div class="lj-ad-micro">Advertisement</div>
           <div class="lj-ad-name">MSMEPro Services</div>
           <div class="lj-ad-desc">Get MSME / Udyam certification fast and easy. Starting at just ₹999. Trusted by 10,000+ businesses.</div>
-          <span class="lj-ad-cta">Visit MSMEPro.in <i class="fas fa-arrow-right" style="font-size:.68rem;"></i></span>
+          <span class="lj-ad-cta">
+            Visit MSMEPro.in <i class="fa-solid fa-arrow-right" style="font-size:.68rem; margin-left:2px;"></i>
+          </span>
         </div>
       </a>
+
     </div>
   </div>
 </section>

@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use App\Models\User;
-use Hash;
 
 class AuthController extends Controller
 {
@@ -22,22 +23,23 @@ class AuthController extends Controller
 
     public function jobseekerLoginSubmit(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if(Auth::attempt([
+        if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
             'role' => 'jobseeker'
-        ])){
+        ])) {
 
-            return redirect()->route('home');
+            $request->session()->regenerate();
+
+            return redirect()->route('home')->with('success','Login successful');
         }
 
-        return back()->with('error','Invalid email or password');
+        return back()->with('error', 'Invalid email or password');
     }
 
 
@@ -54,8 +56,8 @@ class AuthController extends Controller
     {
 
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6'
         ]);
 
@@ -68,9 +70,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success','Account created successfully');
     }
-
 
 
     /* =================================
@@ -90,18 +91,19 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if(Auth::attempt([
+        if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
             'role' => 'employer'
-        ])){
+        ])) {
 
-            return redirect()->route('home');
+            $request->session()->regenerate();
+
+            return redirect()->route('home')->with('success','Login successful');
         }
 
-        return back()->with('error','Invalid email or password');
+        return back()->with('error', 'Invalid email or password');
     }
-
 
 
     /* =================================
@@ -117,8 +119,8 @@ class AuthController extends Controller
     {
 
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6'
         ]);
 
@@ -131,19 +133,95 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success','Account created successfully');
     }
 
+
+    /* =================================
+       FORGOT PASSWORD
+    ================================= */
+
+    public function forgotPassword()
+    {
+        return view('frontend.auth.forgot-password');
+    }
+
+    public function forgotPasswordSubmit(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+                ? back()->with('success', __($status))
+                : back()->with('error', __($status));
+    }
+
+
+    /* =================================
+       RESET PASSWORD PAGE
+    ================================= */
+
+    public function resetPassword($token)
+    {
+        return view('frontend.auth.reset-password', [
+            'token' => $token
+        ]);
+    }
+
+
+    /* =================================
+       RESET PASSWORD SUBMIT
+    ================================= */
+
+    public function resetPasswordSubmit(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $status = Password::reset(
+            $request->only(
+                'email',
+                'password',
+                'password_confirmation',
+                'token'
+            ),
+            function ($user) use ($request) {
+
+                $user->forceFill([
+                    'password' => Hash::make($request->password)
+                ])->save();
+
+                Auth::login($user);
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('home')->with('success','Password reset successfully')
+            : back()->with('error','Unable to reset password');
+    }
 
 
     /* =================================
        LOGOUT
     ================================= */
 
-    public function logout()
+    public function logout(Request $request)
     {
 
         Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('home');
     }

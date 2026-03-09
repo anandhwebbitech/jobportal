@@ -17,9 +17,8 @@ use App\Http\Controllers\Frontend\FrontendController;
 use App\Models\SubCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\AuthController;
-
-
-
+use App\Http\Controllers\Api\JobApiController;
+use App\Http\Controllers\Frontend\JobController as FrontendJobController;
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 
@@ -63,21 +62,45 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+
 Route::controller(FrontendController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
     Route::get('/about', 'about')->name('about');
 
-    Route::get('/jobs', 'jobs')->name('jobs.index');
-
-    Route::get('/jobs/{slug}', 'jobDetails')->name('jobs.show');
-
     Route::get('/pricing', 'pricing')->name('pricing');
-
     Route::get('/contact', 'contact')->name('contact');
 
     Route::get('/post-job', 'postJob')->name('post-job');
+    Route::post('/contact-submit', 'contactSubmit')->name('contact.submit');
+});
 
+Route::controller(FrontendJobController::class)->group(function () {
+
+    // JOB LIST
+    Route::get('/jobs/index', 'index')->name('jobs.index');
+
+    // CREATE JOB PAGE
+    Route::get('/jobs/create', 'create')->name('jobs.create');
+
+    // STORE JOB
+    Route::post('/jobs/store', 'store')->name('jobs.store');
+
+    // APPLY JOB
+    Route::get('/jobs/{id}/apply', 'apply')->name('jobs.apply');
+
+    // JOB DETAILS (KEEP LAST)
+    Route::get('/jobs/{slug}', action: 'show')->name('jobs.show');
+
+});
+
+
+Route::middleware(['frontend'])->group(function () {
+    Route::get('/jobs', [JobApiController::class, 'index']);          // List jobs
+    Route::get('/jobs/{id}', [JobApiController::class, 'show']);      // Job preview/details
+    Route::post('/jobs/{id}/apply', [JobApiController::class, 'apply']); // Apply to job
+    Route::post('/jobs/{slug}/apply', [FrontendController::class, 'jobApplySubmit'])
+    ->name('jobs.apply.submit');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -95,6 +118,14 @@ Route::controller(AuthController::class)->group(function () {
 
     Route::get('/employer/register', 'employerRegister')->name('employer.register');
     Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
+
+    // Forgot Password
+    Route::get('/forgot-password', 'forgotPassword')->name('forgot.password');
+    Route::post('/forgot-password', 'forgotPasswordSubmit')->name('forgot.password.submit');
+
+    // Reset Password
+    Route::get('/reset-password/{token}', 'resetPassword')->name('reset.password');
+    Route::post('/reset-password', 'resetPasswordSubmit')->name('reset.password.submit');
 
     Route::post('/logout', 'logout')->name('logout');
 
