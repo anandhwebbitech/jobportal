@@ -14,11 +14,22 @@ use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Frontend\FrontendController;
+use App\Http\Controllers\JobSeeker\DashboardController;
 use App\Models\SubCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Api\JobApiController;
 use App\Http\Controllers\Frontend\JobController as FrontendJobController;
+use App\Http\Controllers\JobSeeker\DashboardController as JobSeekerDashboardController;
+use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
+use App\Http\Controllers\Employer\ProfileController;
+use App\Http\Controllers\JobSeeker\AlertController;
+use App\Http\Controllers\JobSeeker\ApplicationController;
+use App\Http\Controllers\JobSeeker\NotificationController;
+use App\Http\Controllers\JobSeeker\ProfileController as JobSeekerProfileController;
+use App\Http\Controllers\JobSeeker\ResumeController;
+use App\Http\Controllers\JobSeeker\SavedJobController;
+use App\Http\Controllers\JobSeeker\SettingsController;
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 
@@ -100,10 +111,11 @@ Route::middleware(['frontend'])->group(function () {
     Route::get('/jobs/{id}', [JobApiController::class, 'show']);      // Job preview/details
     Route::post('/jobs/{id}/apply', [JobApiController::class, 'apply']); // Apply to job
     Route::post('/jobs/{slug}/apply', [FrontendController::class, 'jobApplySubmit'])
-    ->name('jobs.apply.submit');
+        ->name('jobs.apply.submit');
+        
 });
 
-Route::controller(AuthController::class)->group(function () {
+Route::controller(AuthController::class)->group(callback: function () {
 
     // Job Seeker
     Route::get('/jobseeker/login', 'jobseekerLogin')->name('jobseeker.login');
@@ -130,3 +142,137 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->name('logout');
 
 });
+
+
+// ═══════════════════════════════════════════════
+// EMPLOYER DASHBOARD ROUTES
+// ═══════════════════════════════════════════════
+Route::prefix('employer')->name('employer.')->middleware('employer')->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [EmployerDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/logout', [EmployerDashboardController::class, 'logout'])->name('logout');
+
+    // Company Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Billing & Plans
+    Route::get('/billing', [EmployerDashboardController::class, 'billing'])->name('billing');
+    Route::post('/billing/purchase', [EmployerDashboardController::class, 'billingPurchase'])->name('billing.purchase');
+    Route::get('/billing/invoice/{id}', [EmployerDashboardController::class, 'billingInvoice'])->name('billing.invoice');
+
+    // Jobs
+    Route::get('/jobs', [EmployerDashboardController::class, 'jobs'])->name('jobs.index');
+    Route::get('/jobs/create', [EmployerDashboardController::class, 'jobsCreate'])->name('jobs.create');
+    Route::post('/jobs', [EmployerDashboardController::class, 'jobsStore'])->name('jobs.store');
+    Route::get('/jobs/{id}', [EmployerDashboardController::class, 'jobsShow'])->name('jobs.show');
+    Route::get('/jobs/{id}/edit', [EmployerDashboardController::class, 'jobsEdit'])->name('jobs.edit');
+    Route::put('/jobs/{id}', [EmployerDashboardController::class, 'jobsUpdate'])->name('jobs.update');
+    Route::delete('/jobs/{id}', [EmployerDashboardController::class, 'jobsDestroy'])->name('jobs.destroy');
+    Route::patch('/jobs/{id}/toggle', [EmployerDashboardController::class, 'jobsToggle'])->name('jobs.toggle');
+
+    // Candidates
+    Route::get('/candidates', [EmployerDashboardController::class, 'candidates'])->name('candidates');
+    Route::get('/candidates/{id}', [EmployerDashboardController::class, 'candidatesShow'])->name('candidates.show');
+    Route::patch('/candidates/{id}/status', [EmployerDashboardController::class, 'candidatesStatus'])->name('candidates.status');
+    Route::get('/candidates/{id}/resume', [EmployerDashboardController::class, 'candidatesResume'])->name('candidates.resume');
+
+    // Resume Database
+    Route::get('/resume', [EmployerDashboardController::class, 'resume'])->name('resume');
+    Route::get('/resume/{id}/view', [EmployerDashboardController::class, 'resumeView'])->name('resume.view');
+    Route::get('/resume/{id}/download', [EmployerDashboardController::class, 'resumeDownload'])->name('resume.download');
+
+    // Advertisements
+    Route::get('/ads', [EmployerDashboardController::class, 'advertisements'])->name('ads');
+    Route::post('/ads', [EmployerDashboardController::class, 'adsStore'])->name('ads.store');
+    Route::delete('/ads/{id}', [EmployerDashboardController::class, 'adsDestroy'])->name('ads.destroy');
+
+    // Notifications
+    Route::get('/notifications', [EmployerDashboardController::class, 'notifications'])->name('notifications');
+    Route::patch('/notifications/{id}/read', [EmployerDashboardController::class, 'notificationsRead'])->name('notifications.read');
+    Route::patch('/notifications/read-all', [EmployerDashboardController::class, 'notificationsReadAll'])->name('notifications.readAll');
+    Route::delete('/notifications/{id}', [EmployerDashboardController::class, 'notificationsDestroy'])->name('notifications.destroy');
+
+    // Settings
+    Route::get('/settings', [EmployerDashboardController::class, 'settings'])->name('settings');
+    Route::patch('/settings/password', [EmployerDashboardController::class, 'settingsPassword'])->name('settings.password');
+    Route::patch('/settings/notifications', [EmployerDashboardController::class, 'settingsNotifications'])->name('settings.notifications');
+    Route::delete('/settings/delete', [EmployerDashboardController::class, 'settingsDelete'])->name('settings.delete');
+
+});
+
+// ═════════════════════════════════════
+// JOB SEEKER DASHBOARD ROUTES
+// ═════════════════════════════════════
+
+Route::prefix('jobseeker')->name('jobseeker.')->group(function () {
+
+    // ── DASHBOARD HOME ─────────────────
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // ── PROFILE ────────────────────────
+    Route::prefix('dashboard/profile')->name('dashboard.profile')->group(function () {
+        Route::get('/', [JobSeekerProfileController::class, 'index'])->name('');
+        Route::put('/', [JobSeekerProfileController::class, 'update'])->name('.update');
+        Route::put('/education', [JobSeekerProfileController::class, 'education'])->name('.education');
+        Route::put('/experience', [JobSeekerProfileController::class, 'experience'])->name('.experience');
+        Route::put('/skills', [JobSeekerProfileController::class, 'skills'])->name('.skills');
+    });
+
+    // ── RESUME ─────────────────────────
+    Route::prefix('dashboard/resume')->name('dashboard.resume')->group(function () {
+        Route::get('/', [ResumeController::class, 'index'])->name('');
+        Route::post('/upload', [ResumeController::class, 'upload'])->name('.upload');
+        Route::delete('/delete', [ResumeController::class, 'delete'])->name('.delete');
+        Route::put('/visibility', [ResumeController::class, 'visibility'])->name('.visibility');
+    });
+
+    // ── APPLIED JOBS ───────────────────
+    Route::prefix('dashboard/applied')->name('dashboard.applied')->group(function () {
+        Route::get('/', [ApplicationController::class, 'index'])->name('');
+        Route::get('/{id}', [ApplicationController::class, 'show'])->name('.show');
+        Route::get('/application/{id}', [ApplicationController::class, 'detail'])->name('dashboard.application');
+    });
+
+    // ── SAVED JOBS ─────────────────────
+    Route::prefix('dashboard/saved')->name('dashboard.saved')->group(function () {
+        Route::get('/', [SavedJobController::class, 'index'])->name('');
+        Route::post('/{jobId}', [SavedJobController::class, 'save'])->name('.save');
+        Route::delete('/{id}', [SavedJobController::class, 'remove'])->name('.remove');
+    });
+
+    // ── JOB ALERTS ─────────────────────
+    Route::prefix('dashboard/alerts')->name('dashboard.alerts')->group(function () {
+        Route::get('/', [AlertController::class, 'index'])->name('');
+        Route::post('/', [AlertController::class, 'store'])->name('.store');
+        Route::get('/{id}/edit', [AlertController::class, 'edit'])->name('.edit');
+        Route::put('/{id}', [AlertController::class, 'update'])->name('.update');
+        Route::put('/{id}/toggle', [AlertController::class, 'toggle'])->name('.toggle');
+        Route::delete('/{id}', [AlertController::class, 'destroy'])->name('.delete');
+    });
+
+    // ── NOTIFICATIONS ──────────────────
+    Route::prefix('dashboard/notifications')->name('dashboard.notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('');
+        Route::put('/{id}/read', [NotificationController::class, 'markRead'])->name('.read');
+        Route::put('/read-all', [NotificationController::class, 'readAll'])->name('.readAll');
+        Route::delete('/clear', [NotificationController::class, 'clearAll'])->name('.clearAll');
+    });
+
+    // ── SETTINGS ───────────────────────
+    Route::prefix('dashboard/settings')->name('dashboard.settings')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('');
+        Route::put('/password', [SettingsController::class, 'updatePassword'])->name('.password');
+        Route::put('/notifications', [SettingsController::class, 'updateNotifs'])->name('.notifications');
+        Route::put('/privacy', [SettingsController::class, 'updatePrivacy'])->name('.privacy');
+        Route::delete('/account', [SettingsController::class, 'deleteAccount'])->name('.delete');
+    });
+
+});
+
+
+// ── SAVE / UNSAVE JOB ─────────────────
+Route::post('/jobs/{jobId}/save', [SavedJobController::class, 'save'])->name('jobs.save');
+Route::delete('/jobs/{jobId}/save', [SavedJobController::class, 'remove'])->name('jobs.unsave');

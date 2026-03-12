@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class FrontendMiddleware
+class EmployerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,8 +15,6 @@ class FrontendMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        // 3️⃣ Pass request forward
         return $next($request);
     }
 }

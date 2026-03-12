@@ -301,34 +301,267 @@
 }
 .lj-loy-tag i { font-size: .68rem; color: #6ee7b7; }
 
-/* ── ADS ────────────────────────────────────────────────────── */
-.lj-ads { background: var(--n50); padding: 40px 0; }
+/* ═══════════════════════════════════════════════════════
+   ── PREMIUM ADVERTISEMENT SECTION ─────────────────────
+═══════════════════════════════════════════════════════ */
+
+.lj-ads {
+  background: #f1f4f9;
+  padding: 52px 0 58px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft ambient blobs */
+.lj-ads::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,86,219,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.lj-ads::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; right: -60px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Sponsored label pill ── */
 .lj-ads-lbl {
-  font-size: .68rem; font-weight: 700; color: var(--n400);
-  letter-spacing: .1em; text-transform: uppercase;
-  text-align: center; margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
 }
-.lj-ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.lj-ads-lbl-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1.5px solid #e0e5ef;
+  border-radius: 100px;
+  padding: 5px 16px 5px 10px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #7c8499;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.lj-ads-lbl-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,.2);
+  flex-shrink: 0;
+  animation: lj-pulse-dot 2.2s ease-in-out infinite;
+}
+@keyframes lj-pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(245,158,11,.2); }
+  50%       { box-shadow: 0 0 0 5px rgba(245,158,11,.1); }
+}
+
+/* ── Ad grid ── */
+.lj-ad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Ad card shell ── */
 .lj-ad-card {
-  background: #fff; border: 1.5px solid var(--n200);
-  border-radius: var(--r-lg); padding: 20px 22px;
-  display: flex; align-items: center; gap: 16px;
-  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1.5px solid #e2e8f2;
+  text-decoration: none;
+  position: relative;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
 }
-.lj-ad-card:hover { border-color: var(--blue); box-shadow: var(--sh-lg); transform: translateY(-2px); }
-.lj-ad-thumb { width: 66px; height: 66px; flex-shrink: 0; border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
-.lj-ad-micro { font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--n400); margin-bottom: 3px; }
-.lj-ad-name  { font-size: .9375rem; font-weight: 700; color: var(--n900); margin-bottom: 4px; }
-.lj-ad-desc  { font-size: .8125rem; color: var(--n500); line-height: 1.55; margin-bottom: 7px; }
-.lj-ad-cta   { font-size: .8125rem; font-weight: 600; color: var(--blue); }
-.lj-ad-cta:hover { text-decoration: underline; }
+.lj-ad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0,0,0,.11);
+  border-color: transparent;
+}
 
-@media (max-width: 640px) { .lj-ad-grid { grid-template-columns: 1fr; } }
-@media (max-width: 420px) { .lj-ad-card { flex-direction: column; align-items: flex-start; } .lj-ad-thumb { width: 52px; height: 52px; } }
+/* ── Image / visual banner area ── */
+.lj-ad-banner {
+  width: 100%;
+  height: 148px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
 
-/* ── AD THUMB ICON OVERRIDES (Font Awesome replacing emoji) ── */
-.lj-ad-thumb .fa-graduation-cap { font-size: 1.8rem; }
-.lj-ad-thumb .fa-file-signature  { font-size: 1.8rem; }
+/* Card 1 – SkillBridge: blue gradient */
+.lj-ad-banner-blue {
+  background: linear-gradient(135deg, #1a56db 0%, #3b82f6 55%, #60a5fa 100%);
+}
+/* Card 2 – MSMEPro: green gradient */
+.lj-ad-banner-green {
+  background: linear-gradient(135deg, #059669 0%, #10b981 55%, #34d399 100%);
+}
+
+/* Decorative circles in banner */
+.lj-ad-banner-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.18);
+  pointer-events: none;
+}
+.lj-ad-banner-ring-1 { width: 140px; height: 140px; top: -30px; right: -30px; }
+.lj-ad-banner-ring-2 { width: 90px;  height: 90px;  bottom: -20px; left: 20px; border-color: rgba(255,255,255,.1); }
+.lj-ad-banner-ring-3 { width: 55px;  height: 55px;  top: 16px; left: 50px; border-color: rgba(255,255,255,.12); }
+
+/* Central icon circle in banner */
+.lj-ad-banner-ico-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.lj-ad-banner-ico {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  border: 2px solid rgba(255,255,255,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.75rem;
+  color: #fff;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 18px rgba(0,0,0,.15);
+}
+.lj-ad-banner-tagline {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 100px;
+  padding: 3px 12px;
+}
+
+/* Badge pinned top-left */
+.lj-ad-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 3;
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 100px;
+  padding: 3px 9px;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Ad body (below banner) ── */
+.lj-ad-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.lj-ad-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 5px;
+  letter-spacing: -.2px;
+}
+.lj-ad-desc {
+  font-size: .8125rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+/* Offer badge row */
+.lj-ad-offer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.lj-ad-offer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+.lj-ad-offer-badge-blue  { background: #eff6ff; color: #1d4ed8; }
+.lj-ad-offer-badge-green { background: #f0fdf4; color: #15803d; }
+.lj-ad-offer-badge i     { font-size: .62rem; }
+
+/* CTA row */
+.lj-ad-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 13px;
+  margin-top: auto;
+}
+.lj-ad-cta-link {
+  font-size: .8125rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  padding: 7px 14px;
+  transition: background .18s, color .18s;
+  text-decoration: none;
+}
+.lj-ad-cta-link-blue  { background: #eff6ff; color: #1d4ed8; }
+.lj-ad-cta-link-green { background: #f0fdf4; color: #15803d; }
+.lj-ad-card:hover .lj-ad-cta-link-blue  { background: #1d4ed8; color: #fff; }
+.lj-ad-card:hover .lj-ad-cta-link-green { background: #15803d; color: #fff; }
+.lj-ad-cta-link i { font-size: .7rem; transition: transform .18s; }
+.lj-ad-card:hover .lj-ad-cta-link i { transform: translateX(3px); }
+
+.lj-ad-trust {
+  font-size: .7rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lj-ad-trust i { font-size: .65rem; color: #f59e0b; }
+
+/* ── Responsive ── */
+@media (max-width: 660px) {
+  .lj-ad-grid { grid-template-columns: 1fr; }
+  .lj-ad-banner { height: 130px; }
+}
+@media (max-width: 400px) {
+  .lj-ad-body { padding: 14px 16px 16px; }
+}
 
 </style>
 @endpush
@@ -448,10 +681,10 @@
           Create your profile and get matched with the right role based on your skills.
         </div>
         <div class="lj-aud-btns">
-          <a href="login.html"    class="lj-btn lj-btn-blue">
+          <a href="login.html" class="lj-btn lj-btn-blue">
             <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Login as Job Seeker
           </a>
-          <a href="register.html" class="lj-btn lj-btn-ghost">
+          <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-ghost">
             <i class="fa-solid fa-user-plus" style="margin-right:6px;"></i>Register as Job Seeker
           </a>
         </div>
@@ -467,7 +700,7 @@
           Affordable plans built for Tamil Nadu MSMEs — starting at just ₹600.
         </div>
         <div class="lj-aud-btns">
-          <a href="employer-login.html"    class="lj-btn lj-btn-green">
+          <a href="employer-login.html" class="lj-btn lj-btn-green">
             <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Employer Login
           </a>
           <a href="employer-register.html" class="lj-btn lj-btn-ghost-green">
@@ -556,51 +789,135 @@
         <i class="fa-solid fa-lock"></i> Safe &amp; Private
       </span>
     </div>
-    <a href="register.html" class="lj-btn lj-btn-white lj-btn-lg">
+    <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-white lj-btn-lg">
       Create Free Account <i class="fa-solid fa-arrow-right" style="font-size:.78rem; margin-left:4px;"></i>
     </a>
   </div>
 </section>
 
 
-{{-- ── ADS ──────────────────────────────────────────── --}}
+{{-- ══════════════════════════════════════════════════════
+     ── PREMIUM ADVERTISEMENT SECTION ────────────────────
+══════════════════════════════════════════════════════ --}}
 <section class="lj-ads">
   <div class="lj-wrap">
+
+    {{-- Sponsored label --}}
     <div class="lj-ads-lbl">
-      <i class="fa-solid fa-rectangle-ad" style="margin-right:4px;"></i> Sponsored
+      <div class="lj-ads-lbl-inner">
+        <span class="lj-ads-lbl-dot"></span>
+        <i class="fa-solid fa-rectangle-ad"></i> Sponsored
+      </div>
     </div>
+
     <div class="lj-ad-grid">
 
+      {{-- ── AD CARD 1 : SkillBridge Academy ── --}}
       <a href="#" class="lj-ad-card">
-        <div class="lj-ad-thumb" style="background:var(--blue-lt); color:var(--blue);">
-          <i class="fa-solid fa-graduation-cap"></i>
+
+        {{-- Visual banner --}}
+        <div class="lj-ad-banner lj-ad-banner-blue">
+          {{-- Decorative rings --}}
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-1"></div>
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-2"></div>
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-3"></div>
+          {{-- Sponsored badge --}}
+          <span class="lj-ad-badge">
+            <i class="fa-solid fa-circle-info" style="font-size:.55rem; margin-right:2px;"></i> Ad
+          </span>
+          {{-- Center icon + tagline --}}
+          <div class="lj-ad-banner-ico-wrap">
+            <div class="lj-ad-banner-ico">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="lj-ad-banner-tagline">Online Learning</span>
+          </div>
         </div>
-        <div>
-          <div class="lj-ad-micro">Advertisement</div>
+
+        {{-- Body --}}
+        <div class="lj-ad-body">
           <div class="lj-ad-name">SkillBridge Academy</div>
-          <div class="lj-ad-desc">Upgrade your skills with India's top online courses. 50% off this month on all certifications.</div>
-          <span class="lj-ad-cta">
-            Visit SkillBridge.in <i class="fa-solid fa-arrow-right" style="font-size:.68rem; margin-left:2px;"></i>
-          </span>
-        </div>
-      </a>
+          <div class="lj-ad-desc">
+            Upgrade your skills with India's top online courses. Get certified and land your dream job faster with industry-recognized programs.
+          </div>
 
+          {{-- Offer badge --}}
+          <div class="lj-ad-offer-row">
+            <span class="lj-ad-offer-badge lj-ad-offer-badge-blue">
+              <i class="fa-solid fa-bolt"></i> 50% OFF This Month
+            </span>
+            <span class="lj-ad-offer-badge lj-ad-offer-badge-blue">
+              <i class="fa-solid fa-certificate"></i> Certified Courses
+            </span>
+          </div>
+
+          {{-- CTA row --}}
+          <div class="lj-ad-cta-row">
+            <span class="lj-ad-cta-link lj-ad-cta-link-blue">
+              Visit SkillBridge.in <i class="fa-solid fa-arrow-right"></i>
+            </span>
+            <span class="lj-ad-trust">
+              <i class="fa-solid fa-star"></i> 4.8 · 12k+ learners
+            </span>
+          </div>
+        </div>
+
+      </a>{{-- end card 1 --}}
+
+      {{-- ── AD CARD 2 : MSMEPro Services ── --}}
       <a href="#" class="lj-ad-card">
-        <div class="lj-ad-thumb" style="background:var(--green-lt); color:var(--green);">
-          <i class="fa-solid fa-file-signature"></i>
-        </div>
-        <div>
-          <div class="lj-ad-micro">Advertisement</div>
-          <div class="lj-ad-name">MSMEPro Services</div>
-          <div class="lj-ad-desc">Get MSME / Udyam certification fast and easy. Starting at just ₹999. Trusted by 10,000+ businesses.</div>
-          <span class="lj-ad-cta">
-            Visit MSMEPro.in <i class="fa-solid fa-arrow-right" style="font-size:.68rem; margin-left:2px;"></i>
-          </span>
-        </div>
-      </a>
 
-    </div>
-  </div>
+        {{-- Visual banner --}}
+        <div class="lj-ad-banner lj-ad-banner-green">
+          {{-- Decorative rings --}}
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-1"></div>
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-2"></div>
+          <div class="lj-ad-banner-ring lj-ad-banner-ring-3"></div>
+          {{-- Sponsored badge --}}
+          <span class="lj-ad-badge">
+            <i class="fa-solid fa-circle-info" style="font-size:.55rem; margin-right:2px;"></i> Ad
+          </span>
+          {{-- Center icon + tagline --}}
+          <div class="lj-ad-banner-ico-wrap">
+            <div class="lj-ad-banner-ico">
+              <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <span class="lj-ad-banner-tagline">MSME Registration</span>
+          </div>
+        </div>
+
+        {{-- Body --}}
+        <div class="lj-ad-body">
+          <div class="lj-ad-name">MSMEPro Services</div>
+          <div class="lj-ad-desc">
+            Get your MSME / Udyam certification done fast and easy. Trusted by 10,000+ businesses across India. Quick, simple, and affordable.
+          </div>
+
+          {{-- Offer badge --}}
+          <div class="lj-ad-offer-row">
+            <span class="lj-ad-offer-badge lj-ad-offer-badge-green">
+              <i class="fa-solid fa-indian-rupee-sign"></i> Starting ₹999
+            </span>
+            <span class="lj-ad-offer-badge lj-ad-offer-badge-green">
+              <i class="fa-solid fa-clock"></i> Fast Processing
+            </span>
+          </div>
+
+          {{-- CTA row --}}
+          <div class="lj-ad-cta-row">
+            <span class="lj-ad-cta-link lj-ad-cta-link-green">
+              Visit MSMEPro.in <i class="fa-solid fa-arrow-right"></i>
+            </span>
+            <span class="lj-ad-trust">
+              <i class="fa-solid fa-star"></i> 4.9 · 10k+ businesses
+            </span>
+          </div>
+        </div>
+
+      </a>{{-- end card 2 --}}
+
+    </div>{{-- end .lj-ad-grid --}}
+  </div>{{-- end .lj-wrap --}}
 </section>
 
 @endsection

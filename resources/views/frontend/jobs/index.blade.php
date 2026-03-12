@@ -1078,7 +1078,7 @@
                                     <span class="lj-job-badge urgent">Urgently Hiring</span>
                                 @elseif($job->created_at->diffInDays() <= 1)
                                     <span class="lj-job-badge new">New</span>
-                                @elseif($job->openings > 1)
+                                @elseif(($job->openings ?? 0) > 1)
                                     <span class="lj-job-badge hiring">Multiple Openings</span>
                                 @endif
                                 <div class="lj-job-card-title">{{ $job->title }}</div>
