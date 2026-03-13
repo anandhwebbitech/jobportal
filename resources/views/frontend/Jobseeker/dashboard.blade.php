@@ -1,31 +1,17 @@
-{{-- ═══════════════════════════════════════════════════════
-     resources/views/frontend/jobseeker/dashboard.blade.php
-     Job Seeker Dashboard Home – LinearJobs
-═══════════════════════════════════════════════════════ --}}
+{{-- dashboard.blade.php --}}
 @extends('frontend.jobseeker.layout')
 @section('title', 'Dashboard')
 
 @section('content')
-@php
-@php
-$userName = auth()->user()->name ?? 'Guest';
-$firstName = explode(' ', $userName)[0];
-@endphp
 
-
-{{-- Page Header --}}
 <div class="lj-page-header">
   <div>
     <div class="lj-page-title">
       Good {{ date('H') < 12 ? 'morning' : (date('H') < 18 ? 'afternoon' : 'evening') }},
       {{ auth()->user() ? explode(' ', auth()->user()->name)[0] : 'Guest' }} 👋
     </div>
-
-    <div class="lj-page-subtitle">
-      Here's what's happening with your job search today.
-    </div>
+    <div class="lj-page-subtitle">Here's what's happening with your job search today.</div>
   </div>
-
   <a href="{{ route('jobs.index') }}" class="lj-btn lj-btn-primary">
     <i class="fa-solid fa-magnifying-glass"></i> Find Jobs
   </a>
@@ -92,16 +78,13 @@ $firstName = explode(' ', $userName)[0];
     <div class="lj-stat-icon purple"><i class="fa-solid fa-bell"></i></div>
     <div class="lj-stat-val">{{ $alertsCount ?? 0 }}</div>
     <div class="lj-stat-label">Job Alerts</div>
-    <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i>
-      {{ ($newAlertMatches ?? 0) }} new matches
-    </div>
+    <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i> {{ ($newAlertMatches ?? 0) }} new matches</div>
   </div>
 </div>
 
-{{-- 2-column grid: Recommended + Recent Applications --}}
+{{-- 2-column: Recommended + Recent Applications --}}
 <div class="lj-grid-2">
 
-  {{-- Recommended Jobs --}}
   <div class="lj-card">
     <div class="lj-card-head">
       <div class="lj-card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Recommended for You</div>
@@ -111,29 +94,22 @@ $firstName = explode(' ', $userName)[0];
       <div class="lj-rec-job" onclick="window.location='{{ route('jobs.show', $job->id) }}'">
         <div class="lj-rec-job-title">{{ $job->title }}</div>
         <div class="lj-rec-job-co">
-          <i class="fa-solid fa-building" style="font-size:.65rem;"></i>
+          <i class="fa-solid fa-building" style="font-size:.62rem;"></i>
           {{ $job->company->name ?? $job->company_name }} · {{ $job->district }}
         </div>
         <div class="lj-rec-job-tags">
-          @if($job->salary_range)
-            <span class="lj-rec-tag salary">{{ $job->salary_range }}</span>
-          @endif
-          @if($job->job_type)
-            <span class="lj-rec-tag type">{{ $job->job_type }}</span>
-          @endif
-          @if($job->experience_required)
-            <span class="lj-rec-tag">{{ $job->experience_required }}</span>
-          @endif
+          @if($job->salary_range) <span class="lj-rec-tag salary">{{ $job->salary_range }}</span> @endif
+          @if($job->job_type)     <span class="lj-rec-tag type">{{ $job->job_type }}</span>   @endif
+          @if($job->experience_required) <span class="lj-rec-tag">{{ $job->experience_required }}</span> @endif
         </div>
         @if(isset($job->match_percent))
           <div class="lj-rec-job-match"><i class="fa-solid fa-circle-check"></i> {{ $job->match_percent }}% Match</div>
         @endif
       </div>
     @empty
-      {{-- Fallback sample data when no real data is available --}}
       <div class="lj-rec-job" onclick="window.location='{{ route('jobs.index') }}'">
         <div class="lj-rec-job-title">PHP Laravel Developer</div>
-        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.65rem;"></i> TechSoft Solutions · Coimbatore</div>
+        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.62rem;"></i> TechSoft Solutions · Coimbatore</div>
         <div class="lj-rec-job-tags">
           <span class="lj-rec-tag salary">₹30k–45k/mo</span>
           <span class="lj-rec-tag type">Full-time</span>
@@ -143,7 +119,7 @@ $firstName = explode(' ', $userName)[0];
       </div>
       <div class="lj-rec-job" onclick="window.location='{{ route('jobs.index') }}'">
         <div class="lj-rec-job-title">Full Stack Developer</div>
-        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.65rem;"></i> InfoBridge Systems · Coimbatore</div>
+        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.62rem;"></i> InfoBridge Systems · Coimbatore</div>
         <div class="lj-rec-job-tags">
           <span class="lj-rec-tag salary">₹35k–55k/mo</span>
           <span class="lj-rec-tag type">Remote</span>
@@ -153,7 +129,7 @@ $firstName = explode(' ', $userName)[0];
       </div>
       <div class="lj-rec-job" onclick="window.location='{{ route('jobs.index') }}'">
         <div class="lj-rec-job-title">React.js Developer</div>
-        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.65rem;"></i> Nexus Digital · Chennai</div>
+        <div class="lj-rec-job-co"><i class="fa-solid fa-building" style="font-size:.62rem;"></i> Nexus Digital · Chennai</div>
         <div class="lj-rec-job-tags">
           <span class="lj-rec-tag salary">₹40k–60k/mo</span>
           <span class="lj-rec-tag type">Hybrid</span>
@@ -161,7 +137,7 @@ $firstName = explode(' ', $userName)[0];
         </div>
         <div class="lj-rec-job-match"><i class="fa-solid fa-circle-check"></i> 82% Match</div>
       </div>
-      <div style="padding:14px 16px;text-align:center;">
+      <div style="padding:12px 16px;">
         <a href="{{ route('jobs.index') }}" class="lj-btn lj-btn-outline lj-btn-sm" style="width:100%;justify-content:center;">
           <i class="fa-solid fa-magnifying-glass"></i> Explore All Jobs
         </a>
@@ -169,13 +145,12 @@ $firstName = explode(' ', $userName)[0];
     @endforelse
   </div>
 
-  {{-- Recent Applications --}}
   <div class="lj-card">
     <div class="lj-card-head">
       <div class="lj-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Applications</div>
-      <a href="{{ route('jobseeker.applied') }}" class="lj-btn lj-btn-ghost lj-btn-sm">View all</a>
+      <a href="{{ route('jobseeker.applied.index') }}" class="lj-btn lj-btn-ghost lj-btn-sm">View all</a>
     </div>
-    <div style="padding:0 22px;">
+    <div style="padding:0 20px;">
       @forelse($recentApplications ?? [] as $application)
         <div class="lj-app-row">
           <div class="lj-app-logo">
@@ -187,10 +162,7 @@ $firstName = explode(' ', $userName)[0];
           </div>
           <div class="lj-app-info">
             <div class="lj-app-title">{{ $application->job->title ?? '—' }}</div>
-            <div class="lj-app-company">
-              {{ $application->job->company->name ?? $application->job->company_name ?? '—' }}
-              · {{ $application->job->district ?? '' }}
-            </div>
+            <div class="lj-app-company">{{ $application->job->company->name ?? $application->job->company_name ?? '—' }} · {{ $application->job->district ?? '' }}</div>
             <div class="lj-app-date">Applied {{ $application->created_at->diffForHumans() }}</div>
           </div>
           <span class="lj-status-badge {{ $application->status ?? 'applied' }}">
@@ -198,7 +170,6 @@ $firstName = explode(' ', $userName)[0];
           </span>
         </div>
       @empty
-        {{-- Fallback --}}
         <div class="lj-app-row">
           <div class="lj-app-logo"><i class="fa-solid fa-building"></i></div>
           <div class="lj-app-info">
@@ -235,8 +206,8 @@ $firstName = explode(' ', $userName)[0];
           </div>
           <span class="lj-status-badge rejected">Rejected</span>
         </div>
-        <div style="padding:14px 0 0;text-align:center;">
-          <a href="{{ route('jobseeker.applied') }}" class="lj-btn lj-btn-outline lj-btn-sm" style="width:100%;justify-content:center;">
+        <div style="padding:12px 0 4px;">
+          <a href="{{ route('jobseeker.applied.index') }}" class="lj-btn lj-btn-outline lj-btn-sm" style="width:100%;justify-content:center;">
             <i class="fa-solid fa-list"></i> View All Applications
           </a>
         </div>
@@ -250,7 +221,6 @@ $firstName = explode(' ', $userName)[0];
 
 @push('scripts')
 <script>
-// Animate progress bar on load
 document.addEventListener('DOMContentLoaded', function() {
   const pct = {{ $completion }};
   setTimeout(() => {

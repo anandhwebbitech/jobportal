@@ -18,7 +18,7 @@ class AuthController extends Controller
 
     public function jobseekerLogin()
     {
-        return view('frontend.auth.jobseeker-login');
+        return view('frontend.auth.login');
     }
 
     public function jobseekerLoginSubmit(Request $request)
@@ -49,7 +49,7 @@ class AuthController extends Controller
 
     public function jobseekerRegister()
     {
-        return view('frontend.auth.jobseeker-register');
+        return view('frontend.auth.register');
     }
 
     public function jobseekerRegisterSubmit(Request $request)
@@ -80,7 +80,7 @@ class AuthController extends Controller
 
     public function employerLogin()
     {
-        return view('frontend.auth.employer-login');
+        return view('frontend.auth.login');
     }
 
     public function employerLoginSubmit(Request $request)
@@ -112,7 +112,7 @@ class AuthController extends Controller
 
     public function employerRegister()
     {
-        return view('frontend.auth.employer-register');
+        return view('frontend.auth.register');
     }
 
     public function employerRegisterSubmit(Request $request)
