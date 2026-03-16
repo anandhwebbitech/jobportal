@@ -1,1658 +1,3134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Register – LinearJobs</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
-<style>
-/* ═══════════════════════════════════════
-   CSS VARIABLES
-═══════════════════════════════════════ */
-:root {
-  --blue: #1a56db;
-  --blue-d: #1e3a8a;
-  --blue-lt: rgba(26,86,219,.07);
-  --green: #16a34a;
-  --amber: #d97706;
-  --n50: #f8f9fb;
-  --n100: #f1f2f5;
-  --n200: #e4e6ed;
-  --n300: #c8ccd8;
-  --n400: #9297aa;
-  --n500: #6b7280;
-  --n600: #4b5160;
-  --n700: #374151;
-  --n800: #1f2937;
-  --n900: #111827;
-  --r: 10px;
-  --r-lg: 16px;
-  --sh: 0 2px 8px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
-  --sh-md: 0 4px 20px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
-  --sh-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 16px rgba(0,0,0,.06);
-  --t: .18s ease;
-  --f:  'Plus Jakarta Sans', sans-serif;
-  --fh: 'Outfit', sans-serif;
-}
+@extends('frontend.app')
+@section('title', 'Register Your Company – LinearJobs')
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ══════════════════════════════════════════════════════
+       ROOT
+    ══════════════════════════════════════════════════════ */
+        :root {
+            --blue: #1a56db;
+            --blue-d: #1e3a8a;
+            --blue-lt: rgba(26, 86, 219, .08);
+            --green: #059669;
+            --green-d: #064e3b;
+            --green-lt: rgba(5, 150, 105, .08);
 
-body {
-  font-family: var(--f);
-  background: var(--n50);
-  color: var(--n900);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+            --n0: #ffffff;
+            --n50: #f7f8fc;
+            --n100: #f0f1f7;
+            --n150: #e8eaf2;
+            --n200: #dde0ec;
+            --n300: #c2c7d9;
+            --n400: #8f96b0;
+            --n500: #636a82;
+            --n600: #464d63;
+            --n700: #343b52;
+            --n800: #1e2333;
+            --n900: #0f1320;
 
-/* ═══════════════════════════════════════
-   NAVBAR
-═══════════════════════════════════════ */
-.navbar {
-  background: #fff;
-  border-bottom: 1.5px solid var(--n200);
-  padding: 0 32px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-}
-.logo {
-  font-family: var(--fh);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--blue);
-  letter-spacing: -.5px;
-  text-decoration: none;
-}
-.logo span { color: var(--n900); }
-.nav-link {
-  font-size: .875rem;
-  font-weight: 500;
-  color: var(--n500);
-  text-decoration: none;
-  transition: color var(--t);
-}
-.nav-link:hover { color: var(--blue); }
+            --r: 12px;
+            --r-sm: 8px;
+            --r-lg: 18px;
+            --r-xl: 24px;
+            --t: .2s ease;
+            --fh: 'Outfit', sans-serif;
+            --fb: 'Geist', sans-serif;
+            --sh: 0 2px 10px rgba(0, 0, 0, .07);
+            --sh-md: 0 8px 32px rgba(0, 0, 0, .10);
+            --sh-lg: 0 20px 60px rgba(0, 0, 0, .14);
+            --sh-xl: 0 32px 80px rgba(0, 0, 0, .18);
+            --nav-h: 68px;
+        }
 
-/* ═══════════════════════════════════════
-   PAGES
-═══════════════════════════════════════ */
-.page { display: none; }
-.page.active { display: block; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-/* ═══════════════════════════════════════
-   SELECTION PAGE
-═══════════════════════════════════════ */
-.sel-page {
-  min-height: calc(100vh - 64px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px 60px;
-  background: var(--n50);
-  position: relative;
-  overflow: hidden;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-/* Decorative background blobs */
-.sel-page::before {
-  content: '';
-  position: absolute;
-  top: -120px; right: -120px;
-  width: 480px; height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(26,86,219,.07) 0%, transparent 70%);
-  pointer-events: none;
-}
-.sel-page::after {
-  content: '';
-  position: absolute;
-  bottom: -100px; left: -100px;
-  width: 400px; height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(22,163,74,.06) 0%, transparent 70%);
-  pointer-events: none;
-}
+        body {
+            font-family: var(--fb);
+            background: var(--n50);
+            color: var(--n900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-.sel-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(26,86,219,.08);
-  border: 1.5px solid rgba(26,86,219,.15);
-  border-radius: 100px;
-  padding: 6px 16px;
-  font-size: .78rem;
-  font-weight: 600;
-  color: var(--blue);
-  margin-bottom: 24px;
-  animation: fadeUp .5s ease both;
-}
+        /* ── PAGE BG ── */
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-.sel-title {
-  font-family: var(--fh);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  color: var(--n900);
-  text-align: center;
-  letter-spacing: -.04em;
-  line-height: 1.15;
-  margin-bottom: 14px;
-  animation: fadeUp .5s .08s ease both;
-}
-.sel-title .accent {
-  background: linear-gradient(135deg, #1a56db, #7c3aed);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .7;
+        }
 
-.sel-sub {
-  font-size: 1.05rem;
-  color: var(--n500);
-  text-align: center;
-  max-width: 480px;
-  line-height: 1.65;
-  margin-bottom: 52px;
-  animation: fadeUp .5s .14s ease both;
-}
+        .bg-orb-1 {
+            width: 700px;
+            height: 700px;
+            top: -250px;
+            right: -180px;
+            background: radial-gradient(circle, rgba(26, 86, 219, .06) 0%, transparent 70%);
+        }
 
-/* Cards grid */
-.sel-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  max-width: 760px;
-  width: 100%;
-  animation: fadeUp .5s .2s ease both;
-}
+        .bg-orb-2 {
+            width: 560px;
+            height: 560px;
+            bottom: -180px;
+            left: -140px;
+            background: radial-gradient(circle, rgba(5, 150, 105, .05) 0%, transparent 70%);
+        }
 
-.sel-card {
-  background: #fff;
-  border: 2px solid var(--n200);
-  border-radius: 20px;
-  padding: 40px 36px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all .28s cubic-bezier(.34,1.56,.64,1);
-  text-align: center;
-  box-shadow: var(--sh);
-}
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(180, 185, 210, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(180, 185, 210, .08) 1px, transparent 1px);
+            background-size: 44px 44px;
+        }
 
-.sel-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .28s ease;
-  border-radius: inherit;
-}
+        /* ══════════════════════════════════════════════════════
+       ANNOUNCE BAR
+    ══════════════════════════════════════════════════════ */
+        .announce-bar {
+            background: linear-gradient(90deg, var(--blue-d), var(--blue));
+            color: rgba(255, 255, 255, .95);
+            text-align: center;
+            font-size: .78rem;
+            font-weight: 500;
+            padding: 9px 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1001;
+        }
 
-.sel-card.jobseeker::before {
-  background: linear-gradient(135deg, rgba(26,86,219,.04), rgba(124,58,237,.04));
-}
-.sel-card.employer::before {
-  background: linear-gradient(135deg, rgba(22,163,74,.04), rgba(5,150,105,.04));
-}
+        .announce-bar a {
+            color: #fff;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
 
-.sel-card:hover {
-  border-color: transparent;
-  transform: translateY(-6px) scale(1.015);
-  box-shadow: 0 20px 60px rgba(0,0,0,.12), 0 6px 20px rgba(0,0,0,.06);
-}
-.sel-card.jobseeker:hover { border-color: rgba(26,86,219,.4); }
-.sel-card.employer:hover { border-color: rgba(22,163,74,.4); }
-.sel-card:hover::before { opacity: 1; }
+        .announce-bar i {
+            font-size: .7rem;
+        }
 
-.sel-card-glow {
-  position: absolute;
-  top: -30px; left: 50%;
-  transform: translateX(-50%);
-  width: 160px; height: 80px;
-  border-radius: 50%;
-  filter: blur(30px);
-  opacity: 0;
-  transition: opacity .28s ease;
-  pointer-events: none;
-}
-.sel-card.jobseeker .sel-card-glow { background: rgba(26,86,219,.25); }
-.sel-card.employer .sel-card-glow { background: rgba(22,163,74,.25); }
-.sel-card:hover .sel-card-glow { opacity: 1; }
+        .announce-close {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, .7);
+            cursor: pointer;
+            font-size: .8rem;
+            padding: 4px;
+            transition: color var(--t);
+        }
 
-.sel-card-ico {
-  width: 76px; height: 76px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  margin: 0 auto 24px;
-  position: relative;
-  transition: transform .28s cubic-bezier(.34,1.56,.64,1);
-}
-.sel-card.jobseeker .sel-card-ico {
-  background: linear-gradient(135deg, #dbeafe, #ede9fe);
-  color: #1a56db;
-  box-shadow: 0 4px 16px rgba(26,86,219,.18);
-}
-.sel-card.employer .sel-card-ico {
-  background: linear-gradient(135deg, #dcfce7, #d1fae5);
-  color: #16a34a;
-  box-shadow: 0 4px 16px rgba(22,163,74,.18);
-}
-.sel-card:hover .sel-card-ico { transform: scale(1.1) rotate(-3deg); }
+        .announce-close:hover {
+            color: #fff;
+        }
 
-.sel-card-title {
-  font-family: var(--fh);
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--n900);
-  letter-spacing: -.03em;
-  margin-bottom: 10px;
-}
+        /* ══════════════════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════════════════ */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: var(--nav-h);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            background: rgba(255, 255, 255, .82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(221, 224, 236, .6);
+            transition: background .3s ease, box-shadow .3s ease;
+        }
 
-.sel-card-desc {
-  font-size: .875rem;
-  color: var(--n500);
-  line-height: 1.65;
-  margin-bottom: 28px;
-}
+        .header.scrolled {
+            background: rgba(255, 255, 255, .96);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, .08);
+        }
 
-.sel-card-features {
-  list-style: none;
-  text-align: left;
-  margin-bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.sel-card-features li {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: .82rem;
-  color: var(--n600);
-  font-weight: 500;
-}
-.sel-card-features li i {
-  font-size: .7rem;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.sel-card.jobseeker .sel-card-features li i { background: #dbeafe; color: #1a56db; }
-.sel-card.employer .sel-card-features li i { background: #dcfce7; color: #16a34a; }
+        .nav-logo {
+            font-family: var(--fh);
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -.7px;
+            color: var(--blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
 
-.sel-card-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  border: none;
-  border-radius: 12px;
-  padding: 13px 24px;
-  font-family: var(--fh);
-  font-size: .9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .2s ease;
-  letter-spacing: -.01em;
-}
-.sel-card.jobseeker .sel-card-btn {
-  background: linear-gradient(135deg, #1a56db, #2563eb);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(26,86,219,.3);
-}
-.sel-card.employer .sel-card-btn {
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(22,163,74,.3);
-}
-.sel-card-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .nav-logo-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(26, 86, 219, .3);
+        }
 
-.sel-card-tag {
-  position: absolute;
-  top: 16px; right: 16px;
-  font-size: .68rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 100px;
-  letter-spacing: .03em;
-  text-transform: uppercase;
-}
-.sel-card.jobseeker .sel-card-tag { background: #dbeafe; color: #1d4ed8; }
-.sel-card.employer .sel-card-tag { background: #dcfce7; color: #15803d; }
+        .nav-logo-text {
+            color: var(--n900);
+        }
 
-.sel-divider {
-  text-align: center;
-  margin-top: 36px;
-  font-size: .875rem;
-  color: var(--n400);
-  animation: fadeUp .5s .28s ease both;
-}
-.sel-divider a { color: var(--blue); font-weight: 600; text-decoration: none; }
-.sel-divider a:hover { text-decoration: underline; }
+        .nav-logo-text span {
+            color: var(--blue);
+        }
 
-/* Trust strip */
-.trust-strip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 52px;
-  flex-wrap: wrap;
-  animation: fadeUp .5s .32s ease both;
-}
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: .78rem;
-  color: var(--n400);
-  font-weight: 500;
-}
-.trust-item i { color: var(--green); font-size: .8rem; }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin: 0 auto;
+        }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+        .nav-link {
+            font-family: var(--fb);
+            font-size: .875rem;
+            font-weight: 500;
+            color: var(--n500);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: var(--r-sm);
+            transition: color var(--t), background var(--t);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-/* ═══════════════════════════════════════
-   REGISTRATION PAGE (shared styles)
-═══════════════════════════════════════ */
-.reg-page {
-  background: var(--n50);
-  min-height: calc(100vh - 64px);
-  padding: 36px 20px 60px;
-}
-.reg-wrap { max-width: 860px; margin: 0 auto; }
+        .nav-link:hover {
+            color: var(--n800);
+            background: var(--n100);
+        }
 
-/* Back button */
-.reg-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: .875rem;
-  font-weight: 600;
-  color: var(--n500);
-  background: #fff;
-  border: 1.5px solid var(--n200);
-  border-radius: var(--r);
-  padding: 8px 16px;
-  cursor: pointer;
-  margin-bottom: 28px;
-  transition: all var(--t);
-  text-decoration: none;
-}
-.reg-back:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-lt); }
+        .nav-link.active {
+            color: var(--blue);
+            background: var(--blue-lt);
+        }
 
-/* Header */
-.reg-head { text-align: center; margin-bottom: 32px; }
-.reg-head-ico {
-  width: 64px; height: 64px;
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  margin: 0 auto 16px;
-}
-.reg-head-ico.blue {
-  background: linear-gradient(135deg, #dbeafe, #ede9fe);
-  color: var(--blue);
-  box-shadow: 0 6px 20px rgba(26,86,219,.2);
-}
-.reg-head-ico.green {
-  background: linear-gradient(135deg, #dcfce7, #d1fae5);
-  color: var(--green);
-  box-shadow: 0 6px 20px rgba(22,163,74,.2);
-}
-.reg-head-title {
-  font-family: var(--fh);
-  font-size: 1.85rem;
-  font-weight: 800;
-  color: var(--n900);
-  letter-spacing: -.04em;
-  margin-bottom: 8px;
-}
-.reg-head-sub { font-size: .9rem; color: var(--n500); line-height: 1.6; }
+        .nav-link i {
+            font-size: .72rem;
+            opacity: .7;
+        }
 
-/* Steps */
-.lj-steps {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  max-width: 560px;
-  margin: 0 auto 36px;
-}
-.lj-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  position: relative;
-  cursor: default;
-}
-.lj-step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 14px; left: 50%;
-  width: 100%; height: 2px;
-  background: var(--n200);
-  z-index: 0;
-  transition: background .4s;
-}
-.lj-step.done:not(:last-child)::after { background: var(--green); }
-.lj-step.active:not(:last-child)::after { background: var(--blue); }
-.lj-step-num {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--n100);
-  color: var(--n400);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .75rem;
-  font-weight: 700;
-  position: relative;
-  z-index: 1;
-  transition: all .3s;
-}
-.lj-step.active .lj-step-num { background: var(--blue); color: #fff; box-shadow: 0 0 0 4px rgba(26,86,219,.14); }
-.lj-step.done .lj-step-num { background: var(--green); color: #fff; }
-.lj-step-lbl {
-  font-size: .62rem;
-  color: var(--n400);
-  margin-top: 5px;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-}
-.lj-step.active .lj-step-lbl { color: var(--blue); }
-.lj-step.done .lj-step-lbl { color: var(--green); }
-.lj-step.done { cursor: pointer; }
+        .nav-drop {
+            position: relative;
+        }
 
-/* Steps — employer green theme */
-.employer-form .lj-step.active .lj-step-num { background: var(--green); box-shadow: 0 0 0 4px rgba(22,163,74,.14); }
-.employer-form .lj-step.active:not(:last-child)::after { background: var(--green); }
-.employer-form .lj-step.active .lj-step-lbl { color: var(--green); }
+        .nav-drop-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-6px);
+            background: #fff;
+            border: 1px solid var(--n200);
+            border-radius: var(--r-lg);
+            box-shadow: var(--sh-lg);
+            min-width: 220px;
+            padding: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .18s ease, transform .18s ease;
+            z-index: 100;
+        }
 
-/* Card */
-.lj-reg-card {
-  background: #fff;
-  border: 1.5px solid var(--n200);
-  border-radius: var(--r-lg);
-  box-shadow: var(--sh-md);
-  overflow: hidden;
-  animation: fadeUp .3s ease;
-}
-.lj-reg-card-head {
-  padding: 18px 28px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.js-head { background: linear-gradient(90deg, #1a56db 0%, #7c3aed 100%); }
-.emp-head { background: linear-gradient(90deg, #16a34a 0%, #0891b2 100%); }
-.lj-reg-card-head i { color: rgba(255,255,255,.9); font-size: 1rem; }
-.lj-reg-card-head-title { font-family: var(--fh); font-size: .9375rem; font-weight: 700; color: #fff; }
-.lj-reg-card-head-sub { font-size: .78rem; color: rgba(255,255,255,.7); margin-top: 1px; }
-.lj-reg-body { padding: 28px; }
+        .nav-drop:hover .nav-drop-menu {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
 
-/* Panels */
-.lj-tab-panel { display: none; }
-.lj-tab-panel.active { display: block; animation: fadeUp .3s ease; }
+        .ndm-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--r-sm);
+            text-decoration: none;
+            color: var(--n700);
+            font-size: .84rem;
+            font-weight: 500;
+            transition: background var(--t), color var(--t);
+        }
 
-/* Form elements */
-.lj-fgroup { margin-bottom: 16px; }
-.lj-frow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.lj-frow3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.lj-label { display: block; font-size: .8125rem; font-weight: 600; color: var(--n700); margin-bottom: 6px; }
-.lj-label .req { color: #e53e3e; margin-left: 2px; }
-.lj-opt-badge { font-size: .68rem; font-weight: 500; color: var(--n400); margin-left: 6px; background: var(--n100); padding: 1px 7px; border-radius: 100px; }
-.lj-iw { position: relative; }
-.lj-iw-ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--n400); font-size: .82rem; pointer-events: none; z-index: 1; }
-.lj-iw-ico-r { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--n400); font-size: .82rem; cursor: pointer; z-index: 1; background: none; border: none; padding: 0; transition: color var(--t); }
-.lj-iw-ico-r:hover { color: var(--n700); }
-.lj-input {
-  width: 100%;
-  border: 1.5px solid var(--n200);
-  border-radius: var(--r);
-  padding: 10px 14px 10px 38px;
-  font-family: var(--f);
-  font-size: .875rem;
-  color: var(--n900);
-  background: #fff;
-  outline: none;
-  transition: border-color var(--t), box-shadow var(--t);
-}
-.lj-input.no-ico { padding-left: 14px; }
-.lj-input.pr { padding-right: 40px; }
-.lj-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,86,219,.1); }
-.employer-form .lj-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.1); }
-.lj-input::placeholder { color: var(--n400); }
-.lj-input.field-error { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
-select.lj-input {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 34px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-}
-textarea.lj-input { padding-top: 10px; resize: vertical; min-height: 90px; }
-.lj-hint { font-size: .73rem; color: var(--n400); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
-.lj-hint i { font-size: .68rem; }
+        .ndm-item:hover {
+            background: var(--n50);
+            color: var(--blue);
+        }
 
-/* Field error */
-.lj-field-err { font-size: .75rem; color: #dc2626; margin-top: 4px; display: none; align-items: center; gap: 4px; }
-.lj-field-err.show { display: flex; }
-.lj-field-err i { font-size: .7rem; flex-shrink: 0; }
+        .ndm-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--n400);
+            font-size: .78rem;
+        }
 
-/* Section divider */
-.lj-fsec { display: flex; align-items: center; gap: 10px; margin: 22px 0 16px; }
-.lj-fsec-line { flex: 1; height: 1px; background: var(--n100); }
-.lj-fsec-lbl { font-size: .7rem; font-weight: 800; color: var(--n400); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
-.lj-fsec-lbl i { font-size: .75rem; color: var(--blue); }
+        .ndm-item:hover i {
+            color: var(--blue);
+        }
 
-/* Step alert */
-.lj-step-alert { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--r); padding: 11px 14px; margin-bottom: 16px; display: none; align-items: flex-start; gap: 9px; font-size: .83rem; color: #b91c1c; animation: shakeX .35s ease; }
-.lj-step-alert.show { display: flex; }
-@keyframes shakeX { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+        .ndm-divider {
+            height: 1px;
+            background: var(--n100);
+            margin: 4px 0;
+        }
 
-/* Info box */
-.lj-info-box { background: var(--blue-lt); border: 1.5px solid rgba(26,86,219,.12); border-radius: var(--r); padding: 13px 16px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; font-size: .82rem; color: var(--n700); }
-.lj-info-box i { color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
 
-/* File upload */
-.lj-file-zone { border: 1.5px dashed var(--n200); border-radius: var(--r); padding: 20px 16px; text-align: center; cursor: pointer; transition: border-color var(--t),background var(--t); background: var(--n50); position: relative; }
-.lj-file-zone:hover { border-color: var(--blue); background: rgba(26,86,219,.03); }
-.lj-file-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.lj-fz-ico { width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1.5px solid var(--n200); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--n400); margin: 0 auto 10px; }
-.lj-fz-title { font-size: .875rem; font-weight: 600; color: var(--n700); margin-bottom: 3px; }
-.lj-fz-sub { font-size: .75rem; color: var(--n400); }
+        .nav-btn {
+            font-family: var(--fb);
+            font-size: .855rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: var(--r);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--t);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
 
-/* Password strength */
-.lj-pwd-strength { height: 4px; border-radius: 2px; background: var(--n100); margin-top: 6px; overflow: hidden; }
-.lj-pwd-bar { height: 100%; width: 0%; border-radius: 2px; transition: width .3s, background .3s; }
+        .nav-btn-ghost {
+            background: transparent;
+            color: var(--n600);
+            border: 1.5px solid var(--n200);
+        }
 
-/* Footer */
-.lj-reg-footer { padding: 20px 28px; border-top: 1px solid var(--n100); background: var(--n50); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.lj-btn-nav { border: none; border-radius: var(--r); font-family: var(--f); font-size: .9rem; font-weight: 700; padding: 11px 24px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all var(--t); }
-.lj-btn-prev { background: #fff; border: 1.5px solid var(--n200); color: var(--n700); }
-.lj-btn-prev:hover { border-color: var(--n400); background: var(--n50); }
-.lj-btn-next { background: var(--blue); color: #fff; }
-.lj-btn-next:hover { background: #1e40af; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,86,219,.28); }
-.lj-btn-next.green-btn { background: var(--green); }
-.lj-btn-next.green-btn:hover { background: #15803d; box-shadow: 0 4px 14px rgba(22,163,74,.28); }
-.lj-submit { border: none; border-radius: var(--r); font-family: var(--fh); font-size: .9375rem; font-weight: 700; padding: 12px 28px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all var(--t); color: #fff; }
-.lj-submit.blue-submit { background: linear-gradient(135deg,#1a56db,#7c3aed); }
-.lj-submit.green-submit { background: linear-gradient(135deg,#16a34a,#0891b2); }
-.lj-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,.25); }
-.lj-submit:disabled { opacity: .7; cursor: not-allowed; transform: none; }
-.lj-reg-switch { font-size: .875rem; color: var(--n500); }
-.lj-reg-switch a { color: var(--blue); font-weight: 600; text-decoration: none; }
-.lj-reg-switch a:hover { text-decoration: underline; }
+        .nav-btn-ghost:hover {
+            background: var(--n100);
+            color: var(--n800);
+            border-color: var(--n300);
+        }
 
-/* Summary card */
-.lj-summary-card { background: var(--n50); border: 1.5px solid var(--n100); border-radius: var(--r); padding: 18px; margin-top: 20px; }
-.lj-summary-title { font-size: .8rem; font-weight: 700; color: var(--n700); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.lj-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: .8rem; color: var(--n600); }
-.lj-summary-grid div span:first-child { color: var(--n400); }
+        .nav-btn-solid {
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(26, 86, 219, .25);
+        }
 
-/* Exp toggle */
-.lj-exp-row { display: flex; gap: 10px; }
-.lj-exp-opt { flex: 1; }
-.lj-exp-opt input[type="radio"] { display: none; }
-.lj-exp-opt label { display: flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--n200); border-radius: var(--r); padding: 10px 14px; font-size: .875rem; font-weight: 600; color: var(--n600); cursor: pointer; transition: all var(--t); }
-.lj-exp-opt input:checked + label { background: var(--blue-lt); border-color: var(--blue); color: var(--blue); }
-#expFields { display: none; }
-#expFields.show { display: block; }
+        .nav-btn-solid:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 18px rgba(26, 86, 219, .35);
+        }
 
-/* Skills chips */
-.lj-skill-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-.lj-skill-chip input[type="checkbox"] { display: none; }
-.lj-skill-chip label { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--n200); border-radius: 100px; padding: 5px 14px; font-size: .8rem; font-weight: 500; color: var(--n600); cursor: pointer; transition: all var(--t); }
-.lj-skill-chip label:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-lt); }
-.lj-skill-chip input:checked + label { background: var(--blue-lt); border-color: var(--blue); color: var(--blue); }
+        .nav-ham {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--r-sm);
+            background: none;
+            border: none;
+            transition: background var(--t);
+        }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media(max-width:680px) {
-  .sel-grid { grid-template-columns: 1fr; max-width: 420px; }
-  .sel-card { padding: 28px 24px; }
-  .lj-frow, .lj-frow3 { grid-template-columns: 1fr; }
-  .lj-reg-body { padding: 20px 16px; }
-  .lj-reg-footer { padding: 16px; flex-direction: column; align-items: stretch; }
-  .lj-btn-nav, .lj-submit { width: 100%; justify-content: center; }
-  .lj-step-lbl { font-size: .58rem; }
-  .navbar { padding: 0 16px; }
-}
-</style>
-</head>
-<body>
+        .nav-ham:hover {
+            background: var(--n100);
+        }
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <a class="logo" href="#" onclick="showPage('selection'); return false;">Linear<span>Jobs</span></a>
-  <a class="nav-link" href="#">Sign In</a>
-</nav>
+        .nav-ham span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--n700);
+            border-radius: 4px;
+            transition: all .25s ease;
+        }
 
-<!-- ════════════════════════════════════
-     PAGE: SELECTION
-════════════════════════════════════ -->
-<div class="page active" id="page-selection">
-  <div class="sel-page">
-    <div class="sel-eyebrow"><i class="fa-solid fa-bolt"></i> Get started for free</div>
-    <h1 class="sel-title">Join <span class="accent">LinearJobs</span><br>as…</h1>
-    <p class="sel-sub">Connecting the right talent with the right companies across Tamil Nadu.</p>
+        .nav-ham.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
 
-    <div class="sel-grid">
-      <!-- Job Seeker Card -->
-      <div class="sel-card jobseeker" onclick="showRegPage('jobseeker')">
-        <div class="sel-card-glow"></div>
-        <div class="sel-card-tag">100% Free</div>
-        <div class="sel-card-ico"><i class="fa-solid fa-user-tie"></i></div>
-        <div class="sel-card-title">Job Seeker</div>
-        <p class="sel-card-desc">Find your dream job and take the next step in your career journey.</p>
-        <ul class="sel-card-features">
-          <li><i class="fa-solid fa-check"></i> Browse hundreds of local jobs</li>
-          <li><i class="fa-solid fa-check"></i> Upload resume & get discovered</li>
-          <li><i class="fa-solid fa-check"></i> Apply with one click</li>
-          <li><i class="fa-solid fa-check"></i> Get job alerts via WhatsApp</li>
-        </ul>
-        <button class="sel-card-btn">Register as Job Seeker <i class="fa-solid fa-arrow-right"></i></button>
-      </div>
+        .nav-ham.open span:nth-child(2) {
+            opacity: 0;
+        }
 
-      <!-- Employer Card -->
-      <div class="sel-card employer" onclick="showRegPage('employer')">
-        <div class="sel-card-glow"></div>
-        <div class="sel-card-tag">Hire Fast</div>
-        <div class="sel-card-ico"><i class="fa-solid fa-building-flag"></i></div>
-        <div class="sel-card-title">Employer</div>
-        <p class="sel-card-desc">Post jobs, find skilled candidates, and grow your business team.</p>
-        <ul class="sel-card-features">
-          <li><i class="fa-solid fa-check"></i> Post unlimited job listings</li>
-          <li><i class="fa-solid fa-check"></i> Access verified candidate pool</li>
-          <li><i class="fa-solid fa-check"></i> Smart applicant screening</li>
-          <li><i class="fa-solid fa-check"></i> Dashboard &amp; analytics</li>
-        </ul>
-        <button class="sel-card-btn">Register Your Company <i class="fa-solid fa-arrow-right"></i></button>
-      </div>
+        .nav-ham.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: var(--nav-h);
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .98);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--n200);
+            padding: 16px 20px 24px;
+            z-index: 999;
+            flex-direction: column;
+            gap: 4px;
+            animation: slideDown .22s ease;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mm-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border-radius: var(--r);
+            text-decoration: none;
+            color: var(--n700);
+            font-size: .9rem;
+            font-weight: 500;
+            transition: background var(--t), color var(--t);
+        }
+
+        .mm-link:hover {
+            background: var(--n100);
+            color: var(--blue);
+        }
+
+        .mm-link i {
+            width: 18px;
+            text-align: center;
+            color: var(--n400);
+            font-size: .82rem;
+        }
+
+        .mm-divider {
+            height: 1px;
+            background: var(--n150);
+            margin: 8px 0;
+        }
+
+        .mm-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        /* ══════════════════════════════════════════════════════
+       MAIN — REGISTER SPLIT LAYOUT
+    ══════════════════════════════════════════════════════ */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 64px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reg-split {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            max-width: 1000px;
+            width: 100%;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        /* ── LEFT SIDEBAR ── */
+        .reg-left {
+            position: sticky;
+            top: calc(var(--nav-h) + 24px);
+            border-radius: var(--r-xl);
+            overflow: hidden;
+            box-shadow: var(--sh-lg);
+            transition: background .45s ease;
+            animation: sideIn .45s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        @keyframes sideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .reg-left.mode-blue {
+            background: linear-gradient(152deg, #1a56db 0%, #1e3a8a 100%);
+        }
+
+        .reg-left.mode-green {
+            background: linear-gradient(152deg, #059669 0%, #064e3b 100%);
+        }
+
+        .rl-inner {
+            padding: 40px 32px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rl-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .rl-orb-1 {
+            width: 280px;
+            height: 280px;
+            top: -80px;
+            right: -70px;
+        }
+
+        .rl-orb-2 {
+            width: 180px;
+            height: 180px;
+            bottom: -50px;
+            left: -40px;
+        }
+
+        .rl-dots {
+            position: absolute;
+            top: 32px;
+            left: 32px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px;
+            opacity: .1;
+            pointer-events: none;
+        }
+
+        .rl-dots span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #fff;
+            display: block;
+        }
+
+        .rl-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, .14);
+            border: 1px solid rgba(255, 255, 255, .22);
+            border-radius: 100px;
+            padding: 5px 14px;
+            font-size: .7rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .92);
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            width: fit-content;
+        }
+
+        .rl-title {
+            font-family: var(--fh);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.22;
+            letter-spacing: -.04em;
+            margin-bottom: 9px;
+        }
+
+        .rl-sub {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .68);
+            line-height: 1.72;
+            margin-bottom: 26px;
+        }
+
+        .rl-perks {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rl-perk {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+        }
+
+        .rl-perk-ico {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .76rem;
+            color: #fff;
+        }
+
+        .rl-perk-body {
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .72);
+            line-height: 1.55;
+        }
+
+        .rl-perk-body strong {
+            color: #fff;
+            display: block;
+            font-size: .82rem;
+            margin-bottom: 1px;
+        }
+
+        .rl-stats {
+            padding: 18px 32px;
+            border-top: 1px solid rgba(255, 255, 255, .13);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rl-stat-val {
+            font-family: var(--fh);
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .rl-stat-lbl {
+            font-size: .65rem;
+            color: rgba(255, 255, 255, .48);
+            margin-top: 2px;
+        }
+
+        /* Step tracker in sidebar */
+        .rl-steps {
+            padding: 16px 32px 24px;
+            border-top: 1px solid rgba(255, 255, 255, .1);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .rl-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .rl-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 36px;
+            width: 2px;
+            height: calc(100% - 16px);
+            background: rgba(255, 255, 255, .14);
+            border-radius: 2px;
+        }
+
+        .rl-step.s-done::after {
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .rl-step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .68rem;
+            font-weight: 700;
+            z-index: 1;
+            background: rgba(255, 255, 255, .1);
+            color: rgba(255, 255, 255, .45);
+            transition: all .25s ease;
+        }
+
+        .rl-step.s-active .rl-step-num {
+            background: #fff;
+            color: var(--blue);
+        }
+
+        .reg-left.mode-green .rl-step.s-active .rl-step-num {
+            color: var(--green);
+        }
+
+        .rl-step.s-done .rl-step-num {
+            background: rgba(255, 255, 255, .22);
+            color: #fff;
+        }
+
+        .rl-step-name {
+            font-size: .79rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .45);
+            transition: color .25s ease;
+        }
+
+        .rl-step.s-active .rl-step-name {
+            color: #fff;
+        }
+
+        .rl-step.s-done .rl-step-name {
+            color: rgba(255, 255, 255, .65);
+        }
+
+        /* ── RIGHT FORM AREA ── */
+        .reg-right {
+            animation: formIn .45s .1s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        @keyframes formIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── TYPE SELECTOR ── */
+        .type-bar {
+            background: #fff;
+            border: 1px solid var(--n200);
+            border-radius: var(--r-xl);
+            padding: 18px 22px;
+            margin-bottom: 18px;
+            box-shadow: var(--sh);
+        }
+
+        .type-bar-label {
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--n400);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .type-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ts-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 13px;
+            border: 2px solid var(--n200);
+            border-radius: var(--r);
+            background: #fff;
+            cursor: pointer;
+            transition: all .24s cubic-bezier(.34, 1.3, .64, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .ts-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity .22s ease;
+            border-radius: calc(var(--r) - 2px);
+        }
+
+        .ts-btn.ts-js::before {
+            background: linear-gradient(135deg, rgba(26, 86, 219, .05), rgba(30, 58, 138, .06));
+        }
+
+        .ts-btn.ts-emp::before {
+            background: linear-gradient(135deg, rgba(5, 150, 105, .05), rgba(6, 78, 59, .06));
+        }
+
+        .ts-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sh);
+        }
+
+        .ts-btn.ts-js:hover {
+            border-color: rgba(26, 86, 219, .3);
+        }
+
+        .ts-btn.ts-emp:hover {
+            border-color: rgba(5, 150, 105, .3);
+        }
+
+        .ts-btn:hover::before {
+            opacity: 1;
+        }
+
+        .ts-btn.sel-blue {
+            border-color: var(--blue);
+            background: var(--blue-lt);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, .1);
+            transform: translateY(-2px);
+        }
+
+        .ts-btn.sel-green {
+            border-color: var(--green);
+            background: var(--green-lt);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, .1);
+            transform: translateY(-2px);
+        }
+
+        .ts-btn.sel-blue::before,
+        .ts-btn.sel-green::before {
+            opacity: 1;
+        }
+
+        .ts-ico {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .84rem;
+            transition: all .24s cubic-bezier(.34, 1.4, .64, 1);
+        }
+
+        .ts-js .ts-ico {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .ts-emp .ts-ico {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .ts-btn.sel-blue .ts-ico {
+            background: var(--blue);
+            color: #fff;
+            transform: scale(1.1) rotate(-4deg);
+        }
+
+        .ts-btn.sel-green .ts-ico {
+            background: var(--green);
+            color: #fff;
+            transform: scale(1.1) rotate(-4deg);
+        }
+
+        .ts-name {
+            font-family: var(--fh);
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--n800);
+            line-height: 1.2;
+            transition: color .22s ease;
+        }
+
+        .ts-desc {
+            font-size: .71rem;
+            color: var(--n500);
+            margin-top: 1px;
+        }
+
+        .ts-btn.sel-blue .ts-name {
+            color: var(--blue);
+        }
+
+        .ts-btn.sel-green .ts-name {
+            color: var(--green);
+        }
+
+        .ts-check {
+            margin-left: auto;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .58rem;
+            color: #fff;
+            opacity: 0;
+            transform: scale(0);
+            transition: all .24s cubic-bezier(.34, 1.6, .64, 1);
+        }
+
+        .ts-btn.sel-blue .ts-check {
+            background: var(--blue);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .ts-btn.sel-green .ts-check {
+            background: var(--green);
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ── FORM CARD ── */
+        .lj-card {
+            background: #fff;
+            border: 1px solid var(--n200);
+            border-radius: var(--r-xl);
+            box-shadow: var(--sh-md);
+            overflow: hidden;
+        }
+
+        .card-head {
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .card-head.blue-hd {
+            background: linear-gradient(90deg, #1a56db, #2563eb);
+        }
+
+        .card-head.green-hd {
+            background: linear-gradient(90deg, #059669, #10b981);
+        }
+
+        .card-head>i {
+            color: rgba(255, 255, 255, .92);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .card-head-title {
+            font-family: var(--fh);
+            font-size: .95rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-head-sub {
+            font-size: .75rem;
+            color: rgba(255, 255, 255, .7);
+            margin-top: 1px;
+        }
+
+        .card-body {
+            padding: 26px 28px;
+        }
+
+        .card-foot {
+            padding: 17px 28px;
+            border-top: 1px solid var(--n100);
+            background: var(--n50);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* Panels */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+            animation: fadeUp .28s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── FORM ELEMENTS ── */
+        .fgrp {
+            margin-bottom: 15px;
+        }
+
+        .frow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .frow3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 13px;
+        }
+
+        .flbl {
+            display: block;
+            font-size: .79rem;
+            font-weight: 600;
+            color: var(--n700);
+            margin-bottom: 5px;
+        }
+
+        .flbl .req {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .flbl .opt {
+            font-size: .67rem;
+            font-weight: 500;
+            color: var(--n400);
+            margin-left: 6px;
+            background: var(--n100);
+            padding: 1px 7px;
+            border-radius: 100px;
+        }
+
+        .fiw {
+            position: relative;
+        }
+
+        .fiw-l {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--n400);
+            font-size: .77rem;
+            pointer-events: none;
+        }
+
+        .fiw-l.t {
+            top: 13px;
+            transform: none;
+        }
+
+        .fiw-r {
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--n400);
+            font-size: .77rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 3px;
+            transition: color var(--t);
+        }
+
+        .fiw-r:hover {
+            color: var(--n700);
+        }
+
+        .finput {
+            width: 100%;
+            border: 1.5px solid var(--n200);
+            border-radius: var(--r);
+            padding: 10px 13px 10px 36px;
+            font-family: var(--fb);
+            font-size: .875rem;
+            color: var(--n900);
+            background: #fff;
+            outline: none;
+            transition: border-color var(--t), box-shadow var(--t);
+        }
+
+        .finput.no-ico {
+            padding-left: 13px;
+        }
+
+        .finput.pr {
+            padding-right: 37px;
+        }
+
+        .finput::placeholder {
+            color: var(--n400);
+        }
+
+        .finput.fc-b:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, .1);
+        }
+
+        .finput.fc-g:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, .1);
+        }
+
+        .finput.err {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .1);
+        }
+
+        select.finput {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 11px center;
+            padding-right: 32px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        textarea.finput {
+            padding-top: 10px;
+            resize: vertical;
+            min-height: 86px;
+        }
+
+        .fhint {
+            font-size: .72rem;
+            color: var(--n400);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .fhint i {
+            font-size: .67rem;
+        }
+
+        .ferr-msg {
+            font-size: .74rem;
+            color: #dc2626;
+            margin-top: 4px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ferr-msg.show {
+            display: flex;
+        }
+
+        .ferr-msg i {
+            font-size: .7rem;
+            flex-shrink: 0;
+        }
+
+        .fsec {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 15px;
+        }
+
+        .fsec-line {
+            flex: 1;
+            height: 1px;
+            background: var(--n100);
+        }
+
+        .fsec-lbl {
+            font-size: .67rem;
+            font-weight: 800;
+            color: var(--n400);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fsec-lbl i {
+            font-size: .7rem;
+        }
+
+        .fsec-lbl.bi {
+            color: var(--blue);
+        }
+
+        .fsec-lbl.gi {
+            color: var(--green);
+        }
+
+        .step-alert {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            border-radius: var(--r);
+            padding: 10px 14px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: flex-start;
+            gap: 9px;
+            font-size: .82rem;
+            color: #b91c1c;
+            animation: shakeX .35s ease;
+        }
+
+        .step-alert.show {
+            display: flex;
+        }
+
+        @keyframes shakeX {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            20% {
+                transform: translateX(-6px)
+            }
+
+            40% {
+                transform: translateX(6px)
+            }
+
+            60% {
+                transform: translateX(-4px)
+            }
+
+            80% {
+                transform: translateX(4px)
+            }
+        }
+
+        .info-box {
+            border-radius: var(--r);
+            padding: 12px 15px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: .82rem;
+            color: var(--n700);
+        }
+
+        .info-box.blue {
+            background: var(--blue-lt);
+            border: 1.5px solid rgba(26, 86, 219, .12);
+        }
+
+        .info-box.green {
+            background: var(--green-lt);
+            border: 1.5px solid rgba(5, 150, 105, .12);
+        }
+
+        .info-box i {
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .info-box.blue i {
+            color: var(--blue);
+        }
+
+        .info-box.green i {
+            color: var(--green);
+        }
+
+        /* Experience radio */
+        .exp-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .exp-opt {
+            flex: 1;
+        }
+
+        .exp-opt input[type="radio"] {
+            display: none;
+        }
+
+        .exp-opt label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1.5px solid var(--n200);
+            border-radius: var(--r);
+            padding: 9px 14px;
+            font-size: .875rem;
+            font-weight: 600;
+            color: var(--n600);
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .exp-opt input:checked+label {
+            background: var(--blue-lt);
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* Skills chips */
+        .skill-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .skill-chip input[type="checkbox"] {
+            display: none;
+        }
+
+        .skill-chip label {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1.5px solid var(--n200);
+            border-radius: 100px;
+            padding: 5px 13px;
+            font-size: .79rem;
+            font-weight: 500;
+            color: var(--n600);
+            cursor: pointer;
+            transition: all var(--t);
+        }
+
+        .skill-chip label:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-lt);
+        }
+
+        .skill-chip input:checked+label {
+            background: var(--blue-lt);
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* File zone */
+        .file-zone {
+            border: 1.5px dashed var(--n200);
+            border-radius: var(--r);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color var(--t), background var(--t);
+            background: var(--n50);
+            position: relative;
+        }
+
+        .file-zone:hover {
+            border-color: var(--blue);
+            background: rgba(26, 86, 219, .03);
+        }
+
+        .file-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .fz-ico {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid var(--n200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .95rem;
+            color: var(--n400);
+            margin: 0 auto 9px;
+        }
+
+        .fz-title {
+            font-size: .86rem;
+            font-weight: 600;
+            color: var(--n700);
+            margin-bottom: 3px;
+        }
+
+        .fz-sub {
+            font-size: .73rem;
+            color: var(--n400);
+        }
+
+        /* Password strength */
+        .pwd-wrap {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--n100);
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .pwd-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: width .3s, background .3s;
+        }
+
+        /* Summary */
+        .summary-box {
+            background: var(--n50);
+            border: 1.5px solid var(--n150);
+            border-radius: var(--r-lg);
+            padding: 17px;
+            margin-top: 18px;
+        }
+
+        .summary-title {
+            font-size: .79rem;
+            font-weight: 700;
+            color: var(--n700);
+            margin-bottom: 11px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px 22px;
+            font-size: .79rem;
+            color: var(--n600);
+        }
+
+        .summary-grid div span:first-child {
+            color: var(--n400);
+        }
+
+        /* Card foot buttons */
+        .foot-info {
+            font-size: .86rem;
+            color: var(--n500);
+        }
+
+        .foot-info a {
+            color: var(--blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .foot-info a:hover {
+            text-decoration: underline;
+        }
+
+        .foot-btns {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        .btn-prev {
+            border: 1.5px solid var(--n200);
+            border-radius: var(--r);
+            background: #fff;
+            color: var(--n700);
+            font-family: var(--fb);
+            font-size: .87rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all var(--t);
+        }
+
+        .btn-prev:hover {
+            border-color: var(--n400);
+            background: var(--n50);
+        }
+
+        .btn-next {
+            border: none;
+            border-radius: var(--r);
+            color: #fff;
+            font-family: var(--fb);
+            font-size: .87rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all var(--t);
+        }
+
+        .btn-next.blue-next {
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            box-shadow: 0 3px 12px rgba(26, 86, 219, .25);
+        }
+
+        .btn-next.green-next {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 3px 12px rgba(5, 150, 105, .25);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-next.blue-next:hover {
+            box-shadow: 0 5px 18px rgba(26, 86, 219, .35);
+        }
+
+        .btn-next.green-next:hover {
+            box-shadow: 0 5px 18px rgba(5, 150, 105, .35);
+        }
+
+        .btn-submit {
+            border: none;
+            border-radius: var(--r);
+            color: #fff;
+            font-family: var(--fh);
+            font-size: .93rem;
+            font-weight: 700;
+            padding: 11px 26px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: all var(--t);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, .1);
+            opacity: 0;
+            transition: opacity .15s ease;
+        }
+
+        .btn-submit:hover::after {
+            opacity: 1;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: .65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit.blue-sub {
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            box-shadow: 0 4px 14px rgba(26, 86, 219, .28);
+        }
+
+        .btn-submit.green-sub {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 4px 14px rgba(5, 150, 105, .28);
+        }
+
+        /* ══════════════════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════════════════ */
+        footer {
+            position: relative;
+            z-index: 1;
+            background: var(--n900);
+            color: rgba(255, 255, 255, .65);
+            overflow: hidden;
+        }
+
+        .footer-strip {
+            height: 3px;
+            background: linear-gradient(90deg, #1a56db, #059669, #1a56db);
+            background-size: 200% 100%;
+            animation: stripFlow 4s linear infinite;
+        }
+
+        @keyframes stripFlow {
+            from {
+                background-position: 0 0;
+            }
+
+            to {
+                background-position: 200% 0;
+            }
+        }
+
+        .footer-inner {
+            padding: 52px 60px 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 44px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .ft-logo {
+            font-family: var(--fh);
+            font-size: 1.45rem;
+            font-weight: 900;
+            letter-spacing: -.6px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 14px;
+            text-decoration: none;
+        }
+
+        .ft-logo-ico {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(26, 86, 219, .4);
+        }
+
+        .ft-logo span {
+            color: rgba(255, 255, 255, .4);
+        }
+
+        .ft-desc {
+            font-size: .84rem;
+            line-height: 1.72;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 22px;
+            max-width: 270px;
+        }
+
+        .ft-socials {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ft-social {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--r-sm);
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .55);
+            text-decoration: none;
+            transition: all var(--t);
+        }
+
+        .ft-social:hover {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .ft-col-title {
+            font-family: var(--fh);
+            font-size: .76rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .45);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .ft-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ft-links li a {
+            font-size: .84rem;
+            color: rgba(255, 255, 255, .52);
+            text-decoration: none;
+            transition: color var(--t);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ft-links li a:hover {
+            color: #fff;
+        }
+
+        .ft-links li a i {
+            font-size: .65rem;
+            opacity: 0;
+            transition: all var(--t);
+        }
+
+        .ft-links li a:hover i {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 22px 60px;
+        }
+
+        .fb-copy {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .3);
+        }
+
+        .fb-copy a {
+            color: rgba(255, 255, 255, .5);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .fb-copy a:hover {
+            color: #fff;
+        }
+
+        .fb-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .fb-links a {
+            font-size: .76rem;
+            color: rgba(255, 255, 255, .35);
+            text-decoration: none;
+            transition: color var(--t);
+        }
+
+        .fb-links a:hover {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .fb-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .73rem;
+            color: rgba(255, 255, 255, .3);
+        }
+
+        .fb-badge i {
+            color: var(--green);
+            font-size: .65rem;
+        }
+
+        .to-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 500;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a56db, #2563eb);
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            font-size: .82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(26, 86, 219, .35);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .3s ease, transform .3s ease;
+            pointer-events: none;
+        }
+
+        .to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .to-top:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:940px) {
+
+            .nav-links,
+            .nav-drop {
+                display: none;
+            }
+
+            .nav-ham {
+                display: flex;
+            }
+        }
+
+        @media(max-width:820px) {
+            .reg-split {
+                grid-template-columns: 1fr;
+            }
+
+            .reg-left {
+                display: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-inner {
+                padding: 40px 28px 0;
+            }
+
+            .footer-bottom {
+                padding: 18px 28px;
+            }
+        }
+
+        @media(max-width:580px) {
+
+            .frow,
+            .frow3 {
+                grid-template-columns: 1fr;
+            }
+
+            .card-body {
+                padding: 20px 16px;
+            }
+
+            .card-foot {
+                padding: 15px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .foot-btns {
+                justify-content: stretch;
+            }
+
+            .btn-prev,
+            .btn-next,
+            .btn-submit {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                padding: 32px 20px 0;
+            }
+
+            .footer-bottom {
+                padding: 16px 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header {
+                padding: 0 18px;
+            }
+
+            main {
+                padding: 28px 14px 56px;
+            }
+        }
+
+        @media(max-width:400px) {
+            .type-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+@endpush
+
+@section('content')
+    <div class="page-bg" aria-hidden="true">
+        <div class="bg-grid"></div>
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
     </div>
 
-    <div class="sel-divider">
-      Already have an account? <a href="#">Sign in here</a>
+
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a class="mm-link" href="#"><i class="fa-solid fa-house"></i> Home</a>
+        <a class="mm-link" href="#"><i class="fa-solid fa-briefcase"></i> Browse Jobs</a>
+        <a class="mm-link" href="#"><i class="fa-solid fa-building"></i> Companies</a>
+        <a class="mm-link" href="#"><i class="fa-solid fa-circle-plus"></i> Post a Job</a>
+        <a class="mm-link" href="#"><i class="fa-solid fa-tag"></i> Pricing</a>
+        <div class="mm-divider"></div>
+        <div class="mm-btns">
+            <a class="nav-btn nav-btn-ghost" href="#" style="justify-content:center;">Sign In</a>
+            <a class="nav-btn nav-btn-solid" href="#" style="justify-content:center;">Register Free</a>
+        </div>
     </div>
 
-    <div class="trust-strip">
-      <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> 100% Secure & Private</div>
-      <div class="trust-item"><i class="fa-solid fa-check-circle"></i> Verified Companies Only</div>
-      <div class="trust-item"><i class="fa-solid fa-users"></i> 10,000+ Active Candidates</div>
-    </div>
-  </div>
-</div>
+    <!-- ════════════════════════════════════
+         MAIN CONTENT
+    ════════════════════════════════════ -->
+    <main>
+        <div class="reg-split">
 
-<!-- ════════════════════════════════════
-     PAGE: JOB SEEKER REGISTRATION
-════════════════════════════════════ -->
-<div class="page" id="page-jobseeker">
-  <div class="reg-page">
-    <div class="reg-wrap">
-      <button class="reg-back" onclick="showPage('selection')"><i class="fa-solid fa-arrow-left"></i> Back to selection</button>
+            <!-- LEFT SIDEBAR -->
+            <div class="reg-left mode-blue" id="regLeft">
+                <div class="rl-inner">
+                    <div class="rl-orb rl-orb-1"></div>
+                    <div class="rl-orb rl-orb-2"></div>
+                    <div class="rl-dots" id="rlDots"></div>
 
-      <div class="reg-head">
-        <div class="reg-head-ico blue"><i class="fa-solid fa-user-plus"></i></div>
-        <div class="reg-head-title">Create Your Job Seeker Account</div>
-        <div class="reg-head-sub">Join thousands of professionals finding great jobs across Tamil Nadu. It's 100% free.</div>
-      </div>
-
-      <!-- Steps -->
-      <div class="lj-steps" id="js-stepIndicator">
-        <div class="lj-step active" data-step="1" data-form="js" onclick="jsGoToStep(1)">
-          <div class="lj-step-num"><i class="fa-solid fa-user" style="font-size:.6rem;"></i></div>
-          <div class="lj-step-lbl">Personal</div>
-        </div>
-        <div class="lj-step" data-step="2" data-form="js" onclick="jsGoToStep(2)">
-          <div class="lj-step-num">2</div>
-          <div class="lj-step-lbl">Location</div>
-        </div>
-        <div class="lj-step" data-step="3" data-form="js" onclick="jsGoToStep(3)">
-          <div class="lj-step-num">3</div>
-          <div class="lj-step-lbl">Education</div>
-        </div>
-        <div class="lj-step" data-step="4" data-form="js" onclick="jsGoToStep(4)">
-          <div class="lj-step-num">4</div>
-          <div class="lj-step-lbl">Skills</div>
-        </div>
-        <div class="lj-step" data-step="5" data-form="js" onclick="jsGoToStep(5)">
-          <div class="lj-step-num">5</div>
-          <div class="lj-step-lbl">Documents</div>
-        </div>
-      </div>
-
-      <form method="POST" action="/jobseeker/register" enctype="multipart/form-data" id="jsForm" novalidate>
-
-        <!-- TAB 1: Personal -->
-        <div class="lj-tab-panel active" id="js-tab-1">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head js-head">
-              <i class="fa-solid fa-user"></i>
-              <div>
-                <div class="lj-reg-card-head-title">Personal Information</div>
-                <div class="lj-reg-card-head-sub">Your basic details</div>
-              </div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="js-alert-1"><i class="fa-solid fa-triangle-exclamation"></i><span id="js-alert-1-msg">Please fill in all required fields.</span></div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_full_name">Full Name <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-user lj-iw-ico"></i>
-                    <input type="text" id="js_full_name" name="full_name" class="lj-input" placeholder="Your full name" />
-                  </div>
-                  <div class="lj-field-err" id="err-js_full_name"><i class="fa-solid fa-circle-exclamation"></i><span>Full name is required (min. 2 characters).</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_mobile">Mobile Number <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-mobile-screen lj-iw-ico"></i>
-                    <input type="tel" id="js_mobile" name="mobile" class="lj-input" placeholder="+91 XXXXX XXXXX" maxlength="15" />
-                  </div>
-                  <div class="lj-field-err" id="err-js_mobile"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit mobile number.</span></div>
-                </div>
-              </div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="js_email">Email Address <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-envelope lj-iw-ico"></i>
-                  <input type="email" id="js_email" name="email" class="lj-input" placeholder="you@example.com" autocomplete="email" />
-                </div>
-                <div class="lj-field-err" id="err-js_email"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email address.</span></div>
-              </div>
-              <div class="lj-fsec"><div class="lj-fsec-line"></div><div class="lj-fsec-lbl"><i class="fa-solid fa-lock"></i> Account Security</div><div class="lj-fsec-line"></div></div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_password">Password <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-lock lj-iw-ico"></i>
-                    <input type="password" id="js_password" name="password" class="lj-input pr" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this.value,'jsPwdBar')" />
-                    <button type="button" class="lj-iw-ico-r" onclick="togglePwd('js_password',this)" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                  </div>
-                  <div class="lj-pwd-strength"><div class="lj-pwd-bar" id="jsPwdBar"></div></div>
-                  <div class="lj-field-err" id="err-js_password"><i class="fa-solid fa-circle-exclamation"></i><span>Password must be at least 8 characters.</span></div>
-                  <div class="lj-hint"><i class="fa-solid fa-circle-info"></i> Min 8 chars with letters and numbers</div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_password_conf">Confirm Password <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-lock lj-iw-ico"></i>
-                    <input type="password" id="js_password_conf" name="password_confirmation" class="lj-input pr" placeholder="Re-enter password" autocomplete="new-password" />
-                    <button type="button" class="lj-iw-ico-r" onclick="togglePwd('js_password_conf',this)" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                  </div>
-                  <div class="lj-field-err" id="err-js_password_conf"><i class="fa-solid fa-circle-exclamation"></i><span>Passwords do not match.</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <div class="lj-reg-switch">Already have an account? <a href="#">Login here</a></div>
-              <button type="button" class="lj-btn-nav lj-btn-next" onclick="jsNextStep(1)">Next: Location <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 2: Location -->
-        <div class="lj-tab-panel" id="js-tab-2">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head js-head"><i class="fa-solid fa-map-location-dot"></i>
-              <div><div class="lj-reg-card-head-title">Location Information</div><div class="lj-reg-card-head-sub">Where are you based?</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="js-alert-2"><i class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all location fields.</span></div>
-              <div class="lj-frow3">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_state">State <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-map lj-iw-ico"></i>
-                    <select id="js_state" name="state" class="lj-input">
-                      <option value="" disabled selected>Select State</option>
-                      <option value="Tamil Nadu">Tamil Nadu</option>
-                      <option value="Kerala">Kerala</option>
-                      <option value="Karnataka">Karnataka</option>
-                      <option value="Andhra Pradesh">Andhra Pradesh</option>
-                      <option value="Telangana">Telangana</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div class="lj-field-err" id="err-js_state"><i class="fa-solid fa-circle-exclamation"></i><span>Please select a state.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_district">District <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-location-dot lj-iw-ico"></i>
-                    <select id="js_district" name="district" class="lj-input">
-                      <option value="" disabled selected>Select District</option>
-                      <option>Chennai</option><option>Coimbatore</option><option>Madurai</option>
-                      <option>Tiruchirappalli</option><option>Salem</option><option>Tirunelveli</option>
-                      <option>Erode</option><option>Vellore</option><option>Thanjavur</option>
-                      <option>Dindigul</option><option>Kanchipuram</option><option>Tiruppur</option>
-                      <option>Nagercoil</option><option>Cuddalore</option><option>Sivakasi</option>
-                      <option>Pollachi</option><option>Hosur</option><option>Ooty</option>
-                      <option>Karur</option><option>Namakkal</option>
-                    </select>
-                  </div>
-                  <div class="lj-field-err" id="err-js_district"><i class="fa-solid fa-circle-exclamation"></i><span>Please select a district.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_city">City / Town <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-city lj-iw-ico"></i>
-                    <input type="text" id="js_city" name="city" class="lj-input" placeholder="Your city" />
-                  </div>
-                  <div class="lj-field-err" id="err-js_city"><i class="fa-solid fa-circle-exclamation"></i><span>Please enter your city.</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="jsPrevStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next" onclick="jsNextStep(2)">Next: Education <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: Education -->
-        <div class="lj-tab-panel" id="js-tab-3">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head js-head"><i class="fa-solid fa-graduation-cap"></i>
-              <div><div class="lj-reg-card-head-title">Education & Experience</div><div class="lj-reg-card-head-sub">Your qualifications and work history</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="js-alert-3"><i class="fa-solid fa-triangle-exclamation"></i><span>Please select your qualification.</span></div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="js_qual">Highest Education Qualification <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-book lj-iw-ico"></i>
-                  <select id="js_qual" name="qualification" class="lj-input">
-                    <option value="" disabled selected>Select Qualification</option>
-                    <option value="none">None</option>
-                    <option value="10th">10th Pass (SSLC)</option>
-                    <option value="12th">12th Pass (HSC / +2)</option>
-                    <option value="diploma">Diploma</option>
-                    <option value="bachelor">Bachelor's Degree (UG)</option>
-                    <option value="master">Master's Degree (PG)</option>
-                    <option value="doctorate">Doctorate / PhD</option>
-                  </select>
-                </div>
-                <div class="lj-field-err" id="err-js_qual"><i class="fa-solid fa-circle-exclamation"></i><span>Please select your qualification.</span></div>
-              </div>
-              <div class="lj-fsec"><div class="lj-fsec-line"></div><div class="lj-fsec-lbl"><i class="fa-solid fa-briefcase"></i> Experience Level</div><div class="lj-fsec-line"></div></div>
-              <div class="lj-fgroup">
-                <div class="lj-exp-row">
-                  <div class="lj-exp-opt">
-                    <input type="radio" id="exp_fresher" name="experience_level" value="fresher" checked onchange="toggleExpFields(false)">
-                    <label for="exp_fresher"><i class="fa-solid fa-seedling"></i> Fresher</label>
-                  </div>
-                  <div class="lj-exp-opt">
-                    <input type="radio" id="exp_experienced" name="experience_level" value="experienced" onchange="toggleExpFields(true)">
-                    <label for="exp_experienced"><i class="fa-solid fa-briefcase"></i> Experienced</label>
-                  </div>
-                </div>
-              </div>
-              <div id="expFields">
-                <div class="lj-frow">
-                  <div class="lj-fgroup">
-                    <label class="lj-label" for="js_years">Years of Experience</label>
-                    <div class="lj-iw"><i class="fa-solid fa-clock lj-iw-ico"></i>
-                      <select id="js_years" name="years_of_experience" class="lj-input">
-                        <option value="">Select Years</option>
-                        <option value="less_1">Less than 1 year</option>
-                        <option value="1">1 year</option><option value="2">2 years</option>
-                        <option value="3">3 years</option><option value="4">4 years</option>
-                        <option value="5">5 years</option><option value="6">6 years</option>
-                        <option value="7">7 years</option><option value="8">8 years</option>
-                        <option value="9">9 years</option><option value="10">10 years</option>
-                        <option value="15+">15+ years</option>
-                      </select>
+                    <!-- Job Seeker content -->
+                    <div id="rlJs">
+                        <div class="rl-badge"><i class="fa-solid fa-user-tie"></i> Job Seeker</div>
+                        <div class="rl-title">Create Your Free Account</div>
+                        <div class="rl-sub">Join thousands of professionals finding great jobs across Tamil Nadu.</div>
+                        <div class="rl-perks">
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-briefcase"></i></div>
+                                <div class="rl-perk-body"><strong>10,000+ Listings</strong>Browse across all industries &
+                                    districts.</div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div class="rl-perk-body"><strong>Verified Employers</strong>GST & PAN verified companies
+                                    only.</div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                                <div class="rl-perk-body"><strong>100% Free Forever</strong>No fees, no subscriptions, ever.
+                                </div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-bell"></i></div>
+                                <div class="rl-perk-body"><strong>Instant Job Alerts</strong>Get notified of matching jobs
+                                    instantly.</div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="lj-fgroup">
-                    <label class="lj-label" for="js_prev_co">Previous Company Name</label>
-                    <div class="lj-iw"><i class="fa-solid fa-building lj-iw-ico"></i>
-                      <input type="text" id="js_prev_co" name="previous_company" class="lj-input" placeholder="e.g. ABC Pvt Ltd" />
+
+                    <!-- Employer content -->
+                    <div id="rlEmp" style="display:none">
+                        <div class="rl-badge"><i class="fa-solid fa-building"></i> Employer</div>
+                        <div class="rl-title">Register Your Company</div>
+                        <div class="rl-sub">Connect with thousands of skilled professionals across Tamil Nadu.</div>
+                        <div class="rl-perks">
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-users"></i></div>
+                                <div class="rl-perk-body"><strong>50,000+ Candidates</strong>Access a large verified talent
+                                    pool.</div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-tag"></i></div>
+                                <div class="rl-perk-body"><strong>From ₹600</strong>Affordable plans for MSMEs.</div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-map-location-dot"></i></div>
+                                <div class="rl-perk-body"><strong>All 32 Districts</strong>Reach candidates across Tamil
+                                    Nadu.</div>
+                            </div>
+                            <div class="rl-perk">
+                                <div class="rl-perk-ico"><i class="fa-solid fa-chart-line"></i></div>
+                                <div class="rl-perk-body"><strong>Easy Dashboard</strong>Manage everything in one place.
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="js_prev_role">Previous Job Designation</label>
-                  <div class="lj-iw"><i class="fa-solid fa-id-badge lj-iw-ico"></i>
-                    <input type="text" id="js_prev_role" name="previous_designation" class="lj-input" placeholder="e.g. Sales Executive" />
-                  </div>
-                </div>
-              </div>
+
+                <div class="rl-stats" id="rlStats"></div>
+                <div class="rl-steps" id="rlSteps"></div>
             </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="jsPrevStep(3)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next" onclick="jsNextStep(3)">Next: Skills <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
 
-        <!-- TAB 4: Skills -->
-        <div class="lj-tab-panel" id="js-tab-4">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head js-head"><i class="fa-solid fa-screwdriver-wrench"></i>
-              <div><div class="lj-reg-card-head-title">Skills Selection</div><div class="lj-reg-card-head-sub">Select all skills that apply to you</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="js-alert-4"><i class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one skill.</span></div>
-              <div id="skillsContainer"></div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="jsPrevStep(4)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next" onclick="jsNextStep(4)">Next: Documents <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
+            <!-- RIGHT FORM -->
+            <div class="reg-right">
 
-        <!-- TAB 5: Documents -->
-        <div class="lj-tab-panel" id="js-tab-5">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head js-head"><i class="fa-solid fa-file-arrow-up"></i>
-              <div><div class="lj-reg-card-head-title">Resume & Profile Photo</div><div class="lj-reg-card-head-sub">Upload your documents (optional but recommended)</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label">Upload Resume</label>
-                  <div class="lj-file-zone" id="js-resumeZone">
-                    <input type="file" name="resume" id="js_resumeInput" accept=".pdf,.doc,.docx" onchange="showFile('js-resumeZone','js-resumeLabel',this,5)">
-                    <div class="lj-fz-ico"><i class="fa-solid fa-file-pdf" style="color:var(--blue);"></i></div>
-                    <div class="lj-fz-title" id="js-resumeLabel">Click to upload resume</div>
-                    <div class="lj-fz-sub">PDF, DOC, DOCX — Max 5 MB</div>
-                  </div>
+                <!-- Type selector -->
+                <div class="type-bar">
+                    <div class="type-bar-label">I am registering as</div>
+                    <div class="type-row">
+                        <button class="ts-btn ts-js sel-blue" id="tsBtnJs" onclick="switchType('jobseeker')">
+                            <div class="ts-ico"><i class="fa-solid fa-user-tie"></i></div>
+                            <div>
+                                <div class="ts-name">Job Seeker</div>
+                                <div class="ts-desc">Personal account</div>
+                            </div>
+                            <div class="ts-check"><i class="fa-solid fa-check"></i></div>
+                        </button>
+                        <button class="ts-btn ts-emp" id="tsBtnEmp" onclick="switchType('employer')">
+                            <div class="ts-ico"><i class="fa-solid fa-building-flag"></i></div>
+                            <div>
+                                <div class="ts-name">Employer</div>
+                                <div class="ts-desc">Company account</div>
+                            </div>
+                            <div class="ts-check"><i class="fa-solid fa-check"></i></div>
+                        </button>
+                    </div>
                 </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label">Profile Photo <span class="lj-opt-badge">Optional</span></label>
-                  <div class="lj-file-zone" id="js-photoZone">
-                    <input type="file" name="profile_photo" id="js_photoInput" accept="image/*" onchange="showFile('js-photoZone','js-photoLabel',this,2)">
-                    <div class="lj-fz-ico"><i class="fa-solid fa-image" style="color:var(--blue);"></i></div>
-                    <div class="lj-fz-title" id="js-photoLabel">Click to upload photo</div>
-                    <div class="lj-fz-sub">JPG, PNG — Max 2 MB</div>
-                  </div>
-                </div>
-              </div>
-              <div class="lj-summary-card">
-                <div class="lj-summary-title"><i class="fa-solid fa-list-check" style="color:var(--blue);"></i> Registration Summary</div>
-                <div class="lj-summary-grid" id="js-summaryGrid">
-                  <div><span>Name:</span> <strong id="js-sum-name">—</strong></div>
-                  <div><span>Mobile:</span> <strong id="js-sum-mobile">—</strong></div>
-                  <div><span>Email:</span> <strong id="js-sum-email">—</strong></div>
-                  <div><span>Location:</span> <strong id="js-sum-location">—</strong></div>
-                  <div><span>Qualification:</span> <strong id="js-sum-qual">—</strong></div>
-                  <div><span>Experience:</span> <strong id="js-sum-exp">—</strong></div>
-                  <div style="grid-column:1/-1;"><span>Skills:</span> <strong id="js-sum-skills">—</strong></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="jsPrevStep(5)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                <div style="font-size:.78rem;color:var(--n400);display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-shield-halved" style="color:var(--green);"></i> Your data is safe & private</div>
-                <button type="submit" class="lj-submit blue-submit" id="jsSubmitBtn"><i class="fa-solid fa-user-plus"></i> Create Account</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-      </form>
-    </div>
-  </div>
-</div>
+                <!-- ════ JOB SEEKER FORM ════ -->
+                <div id="jsForm">
+                    <div class="lj-card">
+                        <div class="card-head blue-hd" id="jsHead">
+                            <i class="fa-solid fa-user" id="jsHeadIco"></i>
+                            <div>
+                                <div class="card-head-title" id="jsHeadTitle">Personal Information</div>
+                                <div class="card-head-sub" id="jsHeadSub">Step 1 of 5 — Your basic details</div>
+                            </div>
+                        </div>
 
-<!-- ════════════════════════════════════
-     PAGE: EMPLOYER REGISTRATION
-════════════════════════════════════ -->
-<div class="page" id="page-employer">
-  <div class="reg-page">
-    <div class="reg-wrap">
-      <button class="reg-back" onclick="showPage('selection')"><i class="fa-solid fa-arrow-left"></i> Back to selection</button>
+                        <div class="card-body">
+                            <!-- Panel 1 -->
+                            <div class="panel active" id="js-p1">
+                                <div class="step-alert" id="js-al1"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span id="js-al1-msg">Please fill in
+                                        all required fields.</span></div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_name">Full Name <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                id="js_name" class="finput fc-b" placeholder="Your full name" /></div>
+                                        <div class="ferr-msg" id="e-js_name"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Full name required (min. 2
+                                                chars).</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_mob">Mobile Number <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                type="tel" id="js_mob" class="finput fc-b"
+                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                        <div class="ferr-msg" id="e-js_mob"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                mobile number.</span></div>
+                                    </div>
+                                </div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="js_email">Email Address <span
+                                            class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
+                                            id="js_email" class="finput fc-b" placeholder="you@example.com" /></div>
+                                    <div class="ferr-msg" id="e-js_email"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
+                                            address.</span></div>
+                                </div>
+                                <div class="fsec">
+                                    <div class="fsec-line"></div>
+                                    <div class="fsec-lbl bi"><i class="fa-solid fa-lock"></i> Account Security</div>
+                                    <div class="fsec-line"></div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_pwd">Password <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                            <input type="password" id="js_pwd" class="finput pr fc-b"
+                                                placeholder="Min. 8 characters" oninput="pwdStr(this.value,'js-pb')" />
+                                            <button type="button" class="fiw-r" onclick="togPwd('js_pwd',this)"
+                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                        <div class="pwd-wrap">
+                                            <div class="pwd-bar" id="js-pb"></div>
+                                        </div>
+                                        <div class="ferr-msg" id="e-js_pwd"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                8 characters.</span></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Use letters, numbers &
+                                            symbols</div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_cpwd">Confirm Password <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                            <input type="password" id="js_cpwd" class="finput pr fc-b"
+                                                placeholder="Re-enter password" />
+                                            <button type="button" class="fiw-r" onclick="togPwd('js_cpwd',this)"
+                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                        <div class="ferr-msg" id="e-js_cpwd"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
+                                                match.</span></div>
+                                    </div>
+                                </div>
+                            </div>
 
-      <div class="reg-head">
-        <div class="reg-head-ico green"><i class="fa-solid fa-building-flag"></i></div>
-        <div class="reg-head-title">Register Your Company</div>
-        <div class="reg-head-sub">Join LinearJobs and connect with skilled professionals across Tamil Nadu. Post jobs in minutes.</div>
-      </div>
+                            <!-- Panel 2 -->
+                            <div class="panel" id="js-p2">
+                                <div class="step-alert" id="js-al2"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all location
+                                        fields.</span></div>
+                                <div class="frow3">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_state">State <span class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
+                                            <select id="js_state" class="finput fc-b">
+                                                <option value="" disabled selected>Select State</option>
+                                                <option>Tamil Nadu</option>
+                                                <option>Kerala</option>
+                                                <option>Karnataka</option>
+                                                <option>Andhra Pradesh</option>
+                                                <option>Telangana</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="ferr-msg" id="e-js_state"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                state.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_dist">District <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
+                                            <select id="js_dist" class="finput fc-b">
+                                                <option value="" disabled selected>Select District</option>
+                                                <option>Chennai</option>
+                                                <option>Coimbatore</option>
+                                                <option>Madurai</option>
+                                                <option>Tiruchirappalli</option>
+                                                <option>Salem</option>
+                                                <option>Tirunelveli</option>
+                                                <option>Erode</option>
+                                                <option>Vellore</option>
+                                                <option>Thanjavur</option>
+                                                <option>Dindigul</option>
+                                                <option>Kanchipuram</option>
+                                                <option>Tiruppur</option>
+                                                <option>Nagercoil</option>
+                                                <option>Cuddalore</option>
+                                                <option>Sivakasi</option>
+                                                <option>Karur</option>
+                                                <option>Namakkal</option>
+                                            </select>
+                                        </div>
+                                        <div class="ferr-msg" id="e-js_dist"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                district.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_city">City / Town <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
+                                                id="js_city" class="finput fc-b" placeholder="Your city" /></div>
+                                        <div class="ferr-msg" id="e-js_city"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please enter your
+                                                city.</span></div>
+                                    </div>
+                                </div>
+                            </div>
 
-      <!-- Steps -->
-      <div class="lj-steps" id="emp-stepIndicator">
-        <div class="lj-step active" data-step="1" data-form="emp" onclick="empGoToStep(1)">
-          <div class="lj-step-num"><i class="fa-solid fa-building" style="font-size:.6rem;"></i></div>
-          <div class="lj-step-lbl">Company</div>
-        </div>
-        <div class="lj-step" data-step="2" data-form="emp" onclick="empGoToStep(2)">
-          <div class="lj-step-num">2</div>
-          <div class="lj-step-lbl">Contact</div>
-        </div>
-        <div class="lj-step" data-step="3" data-form="emp" onclick="empGoToStep(3)">
-          <div class="lj-step-num">3</div>
-          <div class="lj-step-lbl">Account</div>
-        </div>
-        <div class="lj-step" data-step="4" data-form="emp" onclick="empGoToStep(4)">
-          <div class="lj-step-num">4</div>
-          <div class="lj-step-lbl">Verification</div>
-        </div>
-        <div class="lj-step" data-step="5" data-form="emp" onclick="empGoToStep(5)">
-          <div class="lj-step-num">5</div>
-          <div class="lj-step-lbl">Documents</div>
-        </div>
-      </div>
+                            <!-- Panel 3 -->
+                            <div class="panel" id="js-p3">
+                                <div class="step-alert" id="js-al3"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please select your
+                                        qualification.</span></div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="js_qual">Highest Qualification <span
+                                            class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
+                                        <select id="js_qual" class="finput fc-b">
+                                            <option value="" disabled selected>Select Qualification</option>
+                                            <option value="10th">10th Pass (SSLC)</option>
+                                            <option value="12th">12th Pass (HSC)</option>
+                                            <option value="diploma">Diploma</option>
+                                            <option value="bachelor">Bachelor's Degree</option>
+                                            <option value="master">Master's Degree</option>
+                                            <option value="doctorate">Doctorate / PhD</option>
+                                        </select>
+                                    </div>
+                                    <div class="ferr-msg" id="e-js_qual"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Please select your
+                                            qualification.</span></div>
+                                </div>
+                                <div class="fsec">
+                                    <div class="fsec-line"></div>
+                                    <div class="fsec-lbl bi"><i class="fa-solid fa-briefcase"></i> Experience Level</div>
+                                    <div class="fsec-line"></div>
+                                </div>
+                                <div class="fgrp">
+                                    <div class="exp-row">
+                                        <div class="exp-opt"><input type="radio" id="exp_f" name="exp"
+                                                value="fresher" checked onchange="togExp(false)"><label for="exp_f"><i
+                                                    class="fa-solid fa-seedling"></i> Fresher</label></div>
+                                        <div class="exp-opt"><input type="radio" id="exp_e" name="exp"
+                                                value="experienced" onchange="togExp(true)"><label for="exp_e"><i
+                                                    class="fa-solid fa-briefcase"></i> Experienced</label></div>
+                                    </div>
+                                </div>
+                                <div id="expFields" style="display:none;">
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_yrs">Years of Experience</label>
+                                            <div class="fiw"><i class="fa-solid fa-clock fiw-l"></i>
+                                                <select id="js_yrs" class="finput fc-b">
+                                                    <option value="">Select Years</option>
+                                                    <option>Less than 1 year</option>
+                                                    <option>1 year</option>
+                                                    <option>2 years</option>
+                                                    <option>3 years</option>
+                                                    <option>4 years</option>
+                                                    <option>5 years</option>
+                                                    <option>6+ years</option>
+                                                    <option>10+ years</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_pco">Previous Company</label>
+                                            <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
+                                                    type="text" id="js_pco" class="finput fc-b"
+                                                    placeholder="e.g. ABC Pvt Ltd" /></div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_prole">Previous Designation</label>
+                                        <div class="fiw"><i class="fa-solid fa-id-badge fiw-l"></i><input
+                                                type="text" id="js_prole" class="finput fc-b"
+                                                placeholder="e.g. Sales Executive" /></div>
+                                    </div>
+                                </div>
+                            </div>
 
-      <form method="POST" action="/employer/register" enctype="multipart/form-data" id="empForm" novalidate class="employer-form">
+                            <!-- Panel 4 -->
+                            <div class="panel" id="js-p4">
+                                <div class="step-alert" id="js-al4"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one
+                                        skill.</span></div>
+                                <div id="skillsBox"></div>
+                            </div>
 
-        <!-- TAB 1: Company Info -->
-        <div class="lj-tab-panel active" id="emp-tab-1">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head emp-head"><i class="fa-solid fa-building"></i>
-              <div><div class="lj-reg-card-head-title">Company Information</div><div class="lj-reg-card-head-sub">Tell us about your business</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="emp-alert-1"><i class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all required fields.</span></div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="emp_company_name">Company Name <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-building lj-iw-ico"></i>
-                  <input type="text" id="emp_company_name" name="company_name" class="lj-input" placeholder="e.g. ABC Industries Pvt Ltd" />
-                </div>
-                <div class="lj-field-err" id="err-emp_company_name"><i class="fa-solid fa-circle-exclamation"></i><span>Company name is required.</span></div>
-              </div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="emp_address">Company Address <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-map-pin lj-iw-ico" style="top:18px;transform:none;"></i>
-                  <textarea id="emp_address" name="company_address" class="lj-input" placeholder="Full registered address of your company" rows="3"></textarea>
-                </div>
-                <div class="lj-field-err" id="err-emp_address"><i class="fa-solid fa-circle-exclamation"></i><span>Please enter your company address.</span></div>
-              </div>
-              <div class="lj-frow3">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_state">State <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-map lj-iw-ico"></i>
-                    <select id="emp_state" name="state" class="lj-input">
-                      <option value="" disabled selected>Select State</option>
-                      <option>Tamil Nadu</option><option>Kerala</option><option>Karnataka</option>
-                      <option>Andhra Pradesh</option><option>Telangana</option><option>Other</option>
-                    </select>
-                  </div>
-                  <div class="lj-field-err" id="err-emp_state"><i class="fa-solid fa-circle-exclamation"></i><span>Please select a state.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_district">District <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-location-dot lj-iw-ico"></i>
-                    <select id="emp_district" name="district" class="lj-input">
-                      <option value="" disabled selected>Select District</option>
-                      <option>Chennai</option><option>Coimbatore</option><option>Madurai</option>
-                      <option>Tiruchirappalli</option><option>Salem</option><option>Tirunelveli</option>
-                      <option>Erode</option><option>Vellore</option><option>Thanjavur</option>
-                      <option>Dindigul</option><option>Kanchipuram</option><option>Tiruppur</option>
-                      <option>Nagercoil</option><option>Cuddalore</option><option>Sivakasi</option>
-                      <option>Pollachi</option><option>Hosur</option><option>Ooty</option>
-                      <option>Karur</option><option>Namakkal</option>
-                    </select>
-                  </div>
-                  <div class="lj-field-err" id="err-emp_district"><i class="fa-solid fa-circle-exclamation"></i><span>Please select a district.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_city">City / Town <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-city lj-iw-ico"></i>
-                    <input type="text" id="emp_city" name="city" class="lj-input" placeholder="City" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_city"><i class="fa-solid fa-circle-exclamation"></i><span>Please enter the city.</span></div>
-                </div>
-              </div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="emp_pincode">Pincode <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-hashtag lj-iw-ico"></i>
-                  <input type="text" id="emp_pincode" name="pincode" class="lj-input" placeholder="6-digit pincode" maxlength="6" style="max-width:200px;" />
-                </div>
-                <div class="lj-field-err" id="err-emp_pincode"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit pincode.</span></div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <div class="lj-reg-switch">Already registered? <a href="#">Login here</a></div>
-              <button type="button" class="lj-btn-nav lj-btn-next green-btn" onclick="empNextStep(1)">Next: Contact Details <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
+                            <!-- Panel 5 -->
+                            <div class="panel" id="js-p5">
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl">Upload Resume</label>
+                                        <div class="file-zone"><input type="file" accept=".pdf,.doc,.docx"
+                                                onchange="setFileLabel(this,'js-rl')">
+                                            <div class="fz-ico"><i class="fa-solid fa-file-pdf"
+                                                    style="color:var(--blue);"></i></div>
+                                            <div class="fz-title" id="js-rl">Click to upload resume</div>
+                                            <div class="fz-sub">PDF, DOC, DOCX — Max 5 MB</div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl">Profile Photo <span class="opt">Optional</span></label>
+                                        <div class="file-zone"><input type="file" accept="image/*"
+                                                onchange="setFileLabel(this,'js-pl')">
+                                            <div class="fz-ico"><i class="fa-solid fa-image"
+                                                    style="color:var(--blue);"></i></div>
+                                            <div class="fz-title" id="js-pl">Click to upload photo</div>
+                                            <div class="fz-sub">JPG, PNG — Max 2 MB</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="summary-box">
+                                    <div class="summary-title"><i class="fa-solid fa-list-check"
+                                            style="color:var(--blue);"></i> Registration Summary</div>
+                                    <div class="summary-grid">
+                                        <div><span>Name: </span><strong id="ss-nm">—</strong></div>
+                                        <div><span>Mobile: </span><strong id="ss-mb">—</strong></div>
+                                        <div><span>Email: </span><strong id="ss-em">—</strong></div>
+                                        <div><span>Location: </span><strong id="ss-lc">—</strong></div>
+                                        <div><span>Qualification: </span><strong id="ss-ql">—</strong></div>
+                                        <div><span>Experience: </span><strong id="ss-xp">—</strong></div>
+                                        <div style="grid-column:1/-1;"><span>Skills: </span><strong
+                                                id="ss-sk">—</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- TAB 2: Contact -->
-        <div class="lj-tab-panel" id="emp-tab-2">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head emp-head"><i class="fa-solid fa-address-book"></i>
-              <div><div class="lj-reg-card-head-title">Contact Details</div><div class="lj-reg-card-head-sub">Owner and HR / Recruiter information</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="emp-alert-2"><i class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all required contact fields.</span></div>
-              <div class="lj-fsec" style="margin-top:0;"><div class="lj-fsec-lbl"><i class="fa-solid fa-user-tie"></i> Owner / Director</div><div class="lj-fsec-line"></div></div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_owner_name">Owner Name <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-user lj-iw-ico"></i>
-                    <input type="text" id="emp_owner_name" name="owner_name" class="lj-input" placeholder="Full name" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_owner_name"><i class="fa-solid fa-circle-exclamation"></i><span>Owner name is required.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_owner_mobile">Owner Mobile <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-mobile-screen lj-iw-ico"></i>
-                    <input type="tel" id="emp_owner_mobile" name="owner_mobile" class="lj-input" placeholder="+91 XXXXX XXXXX" maxlength="15" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_owner_mobile"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit mobile number.</span></div>
-                </div>
-              </div>
-              <div class="lj-fsec"><div class="lj-fsec-lbl"><i class="fa-solid fa-user-gear"></i> HR / Recruiter</div><div class="lj-fsec-line"></div></div>
-              <div class="lj-info-box"><i class="fa-solid fa-circle-info"></i><span>If you don't have a dedicated HR, you can enter the owner's details again below.</span></div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_hr_name">HR / Recruiter Name <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-user lj-iw-ico"></i>
-                    <input type="text" id="emp_hr_name" name="hr_name" class="lj-input" placeholder="Full name" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_hr_name"><i class="fa-solid fa-circle-exclamation"></i><span>HR name is required.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_hr_mobile">HR Mobile <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-mobile-screen lj-iw-ico"></i>
-                    <input type="tel" id="emp_hr_mobile" name="hr_mobile" class="lj-input" placeholder="+91 XXXXX XXXXX" maxlength="15" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_hr_mobile"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit mobile number.</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="empPrevStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next green-btn" onclick="empNextStep(2)">Next: Account Setup <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
+                        <div class="card-foot">
+                            <div class="foot-info" id="jsFootInfo">Already have an account? <a href="#">Sign In</a>
+                            </div>
+                            <div class="foot-btns">
+                                <button class="btn-prev" id="jsBtnPrev" onclick="jsNav(-1)" style="display:none;"><i
+                                        class="fa-solid fa-arrow-left"></i> Back</button>
+                                <button class="btn-next blue-next" id="jsBtnNext" onclick="jsNav(1)">Next <i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                                <button class="btn-submit blue-sub" id="jsBtnSub" style="display:none;"
+                                    onclick="jsSubmit()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /jsForm -->
 
-        <!-- TAB 3: Account -->
-        <div class="lj-tab-panel" id="emp-tab-3">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head emp-head"><i class="fa-solid fa-shield-halved"></i>
-              <div><div class="lj-reg-card-head-title">Account Details</div><div class="lj-reg-card-head-sub">Set up your login credentials</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="emp-alert-3"><i class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all account fields.</span></div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="emp_email">Official Email Address <span class="req">*</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-envelope lj-iw-ico"></i>
-                  <input type="email" id="emp_email" name="email" class="lj-input" placeholder="company@example.com" autocomplete="email" />
-                </div>
-                <div class="lj-field-err" id="err-emp_email"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email address.</span></div>
-                <div class="lj-hint"><i class="fa-solid fa-circle-info"></i> This will be your login email</div>
-              </div>
-              <div class="lj-fsec"><div class="lj-fsec-line"></div><div class="lj-fsec-lbl"><i class="fa-solid fa-lock"></i> Account Security</div><div class="lj-fsec-line"></div></div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_password">Password <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-lock lj-iw-ico"></i>
-                    <input type="password" id="emp_password" name="password" class="lj-input pr" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this.value,'empPwdBar')" />
-                    <button type="button" class="lj-iw-ico-r" onclick="togglePwd('emp_password',this)" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                  </div>
-                  <div class="lj-pwd-strength"><div class="lj-pwd-bar" id="empPwdBar"></div></div>
-                  <div class="lj-field-err" id="err-emp_password"><i class="fa-solid fa-circle-exclamation"></i><span>Password must be at least 8 characters.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_password_conf">Confirm Password <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-lock lj-iw-ico"></i>
-                    <input type="password" id="emp_password_conf" name="password_confirmation" class="lj-input pr" placeholder="Re-enter password" autocomplete="new-password" />
-                    <button type="button" class="lj-iw-ico-r" onclick="togglePwd('emp_password_conf',this)" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                  </div>
-                  <div class="lj-field-err" id="err-emp_password_conf"><i class="fa-solid fa-circle-exclamation"></i><span>Passwords do not match.</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="empPrevStep(3)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next green-btn" onclick="empNextStep(3)">Next: Business Verification <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
+                <!-- ════ EMPLOYER FORM ════ -->
+                <div id="empForm" style="display:none;">
+                    <div class="lj-card">
+                        <div class="card-head green-hd" id="empHead">
+                            <i class="fa-solid fa-building" id="empHeadIco"></i>
+                            <div>
+                                <div class="card-head-title" id="empHeadTitle">Company Information</div>
+                                <div class="card-head-sub" id="empHeadSub">Step 1 of 5 — Tell us about your business</div>
+                            </div>
+                        </div>
 
-        <!-- TAB 4: Verification -->
-        <div class="lj-tab-panel" id="emp-tab-4">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head emp-head"><i class="fa-solid fa-file-certificate"></i>
-              <div><div class="lj-reg-card-head-title">Business Verification</div><div class="lj-reg-card-head-sub">Provide your business registration numbers</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-step-alert" id="emp-alert-4"><i class="fa-solid fa-triangle-exclamation"></i><span>Please provide your GST and PAN numbers.</span></div>
-              <div class="lj-info-box" style="border-color:rgba(22,163,74,.15);background:rgba(22,163,74,.04);">
-                <i class="fa-solid fa-shield-check" style="color:var(--green);"></i>
-                <span>Your business details are encrypted and used only for verification. Only verified employers can post jobs on LinearJobs.</span>
-              </div>
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_gst">GST Number <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-receipt lj-iw-ico"></i>
-                    <input type="text" id="emp_gst" name="gst_number" class="lj-input" placeholder="e.g. 33AABCU9603R1ZX" maxlength="15" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_gst"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 15-character GST number.</span></div>
-                  <div class="lj-hint"><i class="fa-solid fa-circle-info"></i> 15-character alphanumeric GST registration number</div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label" for="emp_pan">PAN Number <span class="req">*</span></label>
-                  <div class="lj-iw"><i class="fa-solid fa-id-card lj-iw-ico"></i>
-                    <input type="text" id="emp_pan" name="pan_number" class="lj-input" placeholder="e.g. AABCU9603R" maxlength="10" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()" />
-                  </div>
-                  <div class="lj-field-err" id="err-emp_pan"><i class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-character PAN number.</span></div>
-                  <div class="lj-hint"><i class="fa-solid fa-circle-info"></i> Company / Individual PAN number</div>
-                </div>
-              </div>
-              <div class="lj-fgroup">
-                <label class="lj-label" for="emp_msme">MSME Number <span class="lj-opt-badge">Optional</span></label>
-                <div class="lj-iw"><i class="fa-solid fa-industry lj-iw-ico"></i>
-                  <input type="text" id="emp_msme" name="msme_number" class="lj-input" placeholder="MSME / Udyam Registration Number" style="max-width:380px;" />
-                </div>
-                <div class="lj-hint"><i class="fa-solid fa-circle-info"></i> Udyam number (e.g. UDYAM-TN-01-0000000) — optional but recommended</div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="empPrevStep(4)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <button type="button" class="lj-btn-nav lj-btn-next green-btn" onclick="empNextStep(4)">Next: Documents <i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-          </div>
-        </div>
+                        <div class="card-body">
+                            <!-- Emp Panel 1 -->
+                            <div class="panel active" id="emp-p1">
+                                <div class="step-alert" id="emp-al1"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all required
+                                        fields.</span></div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="ec_name">Company Name <span
+                                            class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input type="text"
+                                            id="ec_name" class="finput fc-g"
+                                            placeholder="e.g. ABC Industries Pvt Ltd" /></div>
+                                    <div class="ferr-msg" id="e-ec_name"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Company name is
+                                            required.</span></div>
+                                </div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="ec_addr">Company Address <span
+                                            class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-map-pin fiw-l t"></i>
+                                        <textarea id="ec_addr" class="finput fc-g" rows="3" placeholder="Full registered address"></textarea>
+                                    </div>
+                                    <div class="ferr-msg" id="e-ec_addr"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Please enter your company
+                                            address.</span></div>
+                                </div>
+                                <div class="frow3">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="ec_state">State <span class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
+                                            <select id="ec_state" class="finput fc-g">
+                                                <option value="" disabled selected>Select State</option>
+                                                <option>Tamil Nadu</option>
+                                                <option>Kerala</option>
+                                                <option>Karnataka</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="ferr-msg" id="e-ec_state"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                state.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="ec_dist">District <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
+                                            <select id="ec_dist" class="finput fc-g">
+                                                <option value="" disabled selected>Select District</option>
+                                                <option>Chennai</option>
+                                                <option>Coimbatore</option>
+                                                <option>Madurai</option>
+                                                <option>Tiruchirappalli</option>
+                                                <option>Salem</option>
+                                                <option>Erode</option>
+                                                <option>Vellore</option>
+                                                <option>Tiruppur</option>
+                                            </select>
+                                        </div>
+                                        <div class="ferr-msg" id="e-ec_dist"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                district.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="ec_city">City <span class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
+                                                id="ec_city" class="finput fc-g" placeholder="City" /></div>
+                                        <div class="ferr-msg" id="e-ec_city"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please enter the
+                                                city.</span></div>
+                                    </div>
+                                </div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="ec_pin">Pincode <span class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input type="text"
+                                            id="ec_pin" class="finput fc-g" placeholder="6-digit pincode"
+                                            maxlength="6" style="max-width:200px;" /></div>
+                                    <div class="ferr-msg" id="e-ec_pin"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit
+                                            pincode.</span></div>
+                                </div>
+                            </div>
 
-        <!-- TAB 5: Documents -->
-        <div class="lj-tab-panel" id="emp-tab-5">
-          <div class="lj-reg-card">
-            <div class="lj-reg-card-head emp-head"><i class="fa-solid fa-file-arrow-up"></i>
-              <div><div class="lj-reg-card-head-title">Document Upload</div><div class="lj-reg-card-head-sub">Upload your verification documents</div></div>
-            </div>
-            <div class="lj-reg-body">
-              <div class="lj-frow">
-                <div class="lj-fgroup">
-                  <label class="lj-label">GST Certificate <span class="req">*</span></label>
-                  <div class="lj-file-zone" id="emp-gstZone">
-                    <input type="file" name="gst_certificate" id="emp_gstInput" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile('emp-gstZone','emp-gstLabel',this,5)">
-                    <div class="lj-fz-ico"><i class="fa-solid fa-file-invoice" style="color:var(--green);"></i></div>
-                    <div class="lj-fz-title" id="emp-gstLabel">Click to upload GST certificate</div>
-                    <div class="lj-fz-sub">PDF, JPG, PNG — Max 5 MB</div>
-                  </div>
-                  <div class="lj-field-err" id="err-emp_gst_cert"><i class="fa-solid fa-circle-exclamation"></i><span>GST certificate is required.</span></div>
-                </div>
-                <div class="lj-fgroup">
-                  <label class="lj-label">PAN Document <span class="req">*</span></label>
-                  <div class="lj-file-zone" id="emp-panZone">
-                    <input type="file" name="pan_document" id="emp_panInput" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile('emp-panZone','emp-panLabel',this,5)">
-                    <div class="lj-fz-ico"><i class="fa-solid fa-id-card" style="color:var(--green);"></i></div>
-                    <div class="lj-fz-title" id="emp-panLabel">Click to upload PAN document</div>
-                    <div class="lj-fz-sub">PDF, JPG, PNG — Max 5 MB</div>
-                  </div>
-                  <div class="lj-field-err" id="err-emp_pan_doc"><i class="fa-solid fa-circle-exclamation"></i><span>PAN document is required.</span></div>
-                </div>
-              </div>
-              <div class="lj-fgroup">
-                <label class="lj-label">MSME Certificate <span class="lj-opt-badge">Optional</span></label>
-                <div class="lj-file-zone" id="emp-msmeZone" style="max-width:380px;">
-                  <input type="file" name="msme_certificate" id="emp_msmeInput" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile('emp-msmeZone','emp-msmeLabel',this,5)">
-                  <div class="lj-fz-ico"><i class="fa-solid fa-industry" style="color:var(--green);"></i></div>
-                  <div class="lj-fz-title" id="emp-msmeLabel">Click to upload MSME certificate</div>
-                  <div class="lj-fz-sub">PDF, JPG, PNG — Max 5 MB</div>
-                </div>
-              </div>
-              <div class="lj-summary-card">
-                <div class="lj-summary-title"><i class="fa-solid fa-list-check" style="color:var(--green);"></i> Registration Summary</div>
-                <div class="lj-summary-grid">
-                  <div><span>Company:</span> <strong id="emp-sum-company">—</strong></div>
-                  <div><span>Location:</span> <strong id="emp-sum-location">—</strong></div>
-                  <div><span>Owner:</span> <strong id="emp-sum-owner">—</strong></div>
-                  <div><span>HR Contact:</span> <strong id="emp-sum-hr">—</strong></div>
-                  <div><span>Email:</span> <strong id="emp-sum-email">—</strong></div>
-                  <div><span>GST:</span> <strong id="emp-sum-gst">—</strong></div>
-                  <div><span>PAN:</span> <strong id="emp-sum-pan">—</strong></div>
-                  <div><span>MSME:</span> <strong id="emp-sum-msme">Not provided</strong></div>
-                </div>
-              </div>
-            </div>
-            <div class="lj-reg-footer">
-              <button type="button" class="lj-btn-nav lj-btn-prev" onclick="empPrevStep(5)"><i class="fa-solid fa-arrow-left"></i> Back</button>
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                <div style="font-size:.78rem;color:var(--n400);display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-shield-halved" style="color:var(--green);"></i> Your data is safe & private</div>
-                <button type="submit" class="lj-submit green-submit" id="empSubmitBtn"><i class="fa-solid fa-building-flag"></i> Register Company</button>
-              </div>
-            </div>
-          </div>
-        </div>
+                            <!-- Emp Panel 2 -->
+                            <div class="panel" id="emp-p2">
+                                <div class="step-alert" id="emp-al2"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all contact
+                                        fields.</span></div>
+                                <div class="fsec" style="margin-top:0;">
+                                    <div class="fsec-lbl gi"><i class="fa-solid fa-user-tie"></i> Owner / Director</div>
+                                    <div class="fsec-line"></div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="eo_name">Owner Name <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                id="eo_name" class="finput fc-g" placeholder="Full name" /></div>
+                                        <div class="ferr-msg" id="e-eo_name"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Owner name is
+                                                required.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="eo_mob">Owner Mobile <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                type="tel" id="eo_mob" class="finput fc-g"
+                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                        <div class="ferr-msg" id="e-eo_mob"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                mobile number.</span></div>
+                                    </div>
+                                </div>
+                                <div class="fsec">
+                                    <div class="fsec-lbl gi"><i class="fa-solid fa-user-gear"></i> HR / Recruiter</div>
+                                    <div class="fsec-line"></div>
+                                </div>
+                                <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't have
+                                        a dedicated HR, enter the owner's details again below.</span></div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="eh_name">HR Name <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                id="eh_name" class="finput fc-g" placeholder="Full name" /></div>
+                                        <div class="ferr-msg" id="e-eh_name"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>HR name is
+                                                required.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="eh_mob">HR Mobile <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                type="tel" id="eh_mob" class="finput fc-g"
+                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                        <div class="ferr-msg" id="e-eh_mob"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                mobile number.</span></div>
+                                    </div>
+                                </div>
+                            </div>
 
-      </form>
-    </div>
-  </div>
-</div>
+                            <!-- Emp Panel 3 -->
+                            <div class="panel" id="emp-p3">
+                                <div class="step-alert" id="emp-al3"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all account
+                                        fields.</span></div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="e_email">Official Email Address <span
+                                            class="req">*</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
+                                            id="e_email" class="finput fc-g" placeholder="company@example.com" /></div>
+                                    <div class="ferr-msg" id="e-e_email"><i
+                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
+                                            address.</span></div>
+                                    <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your login
+                                        email</div>
+                                </div>
+                                <div class="fsec">
+                                    <div class="fsec-line"></div>
+                                    <div class="fsec-lbl gi"><i class="fa-solid fa-lock"></i> Account Security</div>
+                                    <div class="fsec-line"></div>
+                                </div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="e_pwd">Password <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                            <input type="password" id="e_pwd" class="finput pr fc-g"
+                                                placeholder="Min. 8 characters" oninput="pwdStr(this.value,'e-pb')" />
+                                            <button type="button" class="fiw-r" onclick="togPwd('e_pwd',this)"
+                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                        <div class="pwd-wrap">
+                                            <div class="pwd-bar" id="e-pb"></div>
+                                        </div>
+                                        <div class="ferr-msg" id="e-e_pwd"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                8 characters.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="e_cpwd">Confirm Password <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                            <input type="password" id="e_cpwd" class="finput pr fc-g"
+                                                placeholder="Re-enter password" />
+                                            <button type="button" class="fiw-r" onclick="togPwd('e_cpwd',this)"
+                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        </div>
+                                        <div class="ferr-msg" id="e-e_cpwd"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
+                                                match.</span></div>
+                                    </div>
+                                </div>
+                            </div>
 
-<!-- ════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════ -->
-<script>
-/* ─── PAGE SWITCHING ─────────────────── */
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+                            <!-- Emp Panel 4 -->
+                            <div class="panel" id="emp-p4">
+                                <div class="step-alert" id="emp-al4"><i
+                                        class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and PAN
+                                        numbers.</span></div>
+                                <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your business
+                                        details are encrypted and used only for verification. Only verified employers can
+                                        post jobs.</span></div>
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl" for="e_gst">GST Number <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
+                                                type="text" id="e_gst" class="finput fc-g"
+                                                placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
+                                                oninput="this.value=this.value.toUpperCase()" /></div>
+                                        <div class="ferr-msg" id="e-e_gst"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 15-character
+                                                GST number.</span></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> 15-character
+                                            alphanumeric GST number</div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="e_pan">PAN Number <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-id-card fiw-l"></i><input
+                                                type="text" id="e_pan" class="finput fc-g"
+                                                placeholder="e.g. AABCU9603R" maxlength="10"
+                                                oninput="this.value=this.value.toUpperCase()" /></div>
+                                        <div class="ferr-msg" id="e-e_pan"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-character
+                                                PAN number.</span></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company / Individual
+                                            PAN number</div>
+                                    </div>
+                                </div>
+                                <div class="fgrp">
+                                    <label class="flbl" for="e_msme">MSME Number <span
+                                            class="opt">Optional</span></label>
+                                    <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input type="text"
+                                            id="e_msme" class="finput fc-g" placeholder="UDYAM-TN-01-0000000"
+                                            style="max-width:380px;" /></div>
+                                    <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration number
+                                        — recommended for MSMEs</div>
+                                </div>
+                            </div>
 
-function showRegPage(type) {
-  showPage(type);
-  // Reset steps
-  if (type === 'jobseeker') {
-    jsCurrentStep = 1;
-    jsShowStep(1);
-    resetSteps('js-stepIndicator');
-  } else {
-    empCurrentStep = 1;
-    empShowStep(1);
-    resetSteps('emp-stepIndicator');
-  }
-}
+                            <!-- Emp Panel 5 -->
+                            <div class="panel" id="emp-p5">
+                                <div class="frow">
+                                    <div class="fgrp">
+                                        <label class="flbl">GST Certificate <span class="req">*</span></label>
+                                        <div class="file-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png"
+                                                onchange="setFileLabel(this,'eg-rl')">
+                                            <div class="fz-ico"><i class="fa-solid fa-file-invoice"
+                                                    style="color:var(--green);"></i></div>
+                                            <div class="fz-title" id="eg-rl">Click to upload GST certificate</div>
+                                            <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                        </div>
+                                        <div class="ferr-msg" id="e-eg_gstf"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>GST certificate is
+                                                required.</span></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl">PAN Document <span class="req">*</span></label>
+                                        <div class="file-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png"
+                                                onchange="setFileLabel(this,'ep-rl')">
+                                            <div class="fz-ico"><i class="fa-solid fa-id-card"
+                                                    style="color:var(--green);"></i></div>
+                                            <div class="fz-title" id="ep-rl">Click to upload PAN document</div>
+                                            <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                        </div>
+                                        <div class="ferr-msg" id="e-eg_panf"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>PAN document is
+                                                required.</span></div>
+                                    </div>
+                                </div>
+                                <div class="fgrp">
+                                    <label class="flbl">MSME Certificate <span class="opt">Optional</span></label>
+                                    <div class="file-zone" style="max-width:380px;"><input type="file"
+                                            accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
+                                        <div class="fz-ico"><i class="fa-solid fa-industry"
+                                                style="color:var(--green);"></i></div>
+                                        <div class="fz-title" id="em-rl">Click to upload MSME certificate</div>
+                                        <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                    </div>
+                                </div>
+                                <div class="summary-box">
+                                    <div class="summary-title"><i class="fa-solid fa-list-check"
+                                            style="color:var(--green);"></i> Registration Summary</div>
+                                    <div class="summary-grid">
+                                        <div><span>Company: </span><strong id="es-co">—</strong></div>
+                                        <div><span>Location: </span><strong id="es-lc">—</strong></div>
+                                        <div><span>Owner: </span><strong id="es-ow">—</strong></div>
+                                        <div><span>HR: </span><strong id="es-hr">—</strong></div>
+                                        <div><span>Email: </span><strong id="es-em">—</strong></div>
+                                        <div><span>GST: </span><strong id="es-gs">—</strong></div>
+                                        <div><span>PAN: </span><strong id="es-pn">—</strong></div>
+                                        <div><span>MSME: </span><strong id="es-ms">Not provided</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-function resetSteps(indicatorId) {
-  const steps = document.querySelectorAll('#' + indicatorId + ' .lj-step');
-  steps.forEach((s, i) => {
-    s.classList.remove('active','done');
-    const num = s.querySelector('.lj-step-num');
-    if (i === 0) {
-      s.classList.add('active');
-      num.innerHTML = s.querySelector('.lj-step-num').innerHTML;
-    } else {
-      num.textContent = i + 1;
-    }
-  });
-}
+                        <div class="card-foot">
+                            <div class="foot-info" id="empFootInfo">Already registered? <a href="#">Login here</a>
+                            </div>
+                            <div class="foot-btns">
+                                <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)" style="display:none;"><i
+                                        class="fa-solid fa-arrow-left"></i> Back</button>
+                                <button class="btn-next green-next" id="empBtnNext" onclick="empNav(1)">Next <i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                                <button class="btn-submit green-sub" id="empBtnSub" style="display:none;"
+                                    onclick="empSubmit()"><i class="fa-solid fa-building-flag"></i> Register
+                                    Company</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /empForm -->
 
-/* ─── JOB SEEKER STEPS ───────────────── */
-let jsCurrentStep = 1;
+            </div><!-- /reg-right -->
+        </div><!-- /reg-split -->
+    </main>
 
-function jsGoToStep(t) { if (t >= jsCurrentStep) return; jsShowStep(t); }
-function jsNextStep(from) { if (!jsValidate(from)) return; jsMarkDone(from); jsShowStep(from + 1); if (from + 1 === 5) jsBuildSummary(); }
-function jsPrevStep(from) { jsShowStep(from - 1); }
 
-function jsShowStep(step) {
-  document.querySelectorAll('#page-jobseeker .lj-tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('js-tab-' + step).classList.add('active');
-  document.querySelectorAll('#js-stepIndicator .lj-step').forEach(s => {
-    s.classList.remove('active');
-    s.style.cursor = parseInt(s.dataset.step) < step ? 'pointer' : 'default';
-  });
-  document.querySelector('#js-stepIndicator .lj-step[data-step="' + step + '"]').classList.add('active');
-  jsCurrentStep = step;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    <button class="to-top" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
+@endsection
+<!-- ════════ JAVASCRIPT ════════ -->
+@push('scripts')
+    <script>
+        /* ── ANNOUNCE ── */
+        function closeAnnounce() {
+            const b = document.getElementById('announceBar');
+            b.style.maxHeight = b.offsetHeight + 'px';
+            requestAnimationFrame(() => {
+                b.style.transition = 'max-height .3s,opacity .3s,padding .3s';
+                b.style.maxHeight = '0';
+                b.style.opacity = '0';
+                b.style.padding = '0';
+                b.style.overflow = 'hidden';
+            });
+        }
 
-function jsMarkDone(step) {
-  const el = document.querySelector('#js-stepIndicator .lj-step[data-step="' + step + '"]');
-  el.classList.remove('active');
-  el.classList.add('done');
-  el.querySelector('.lj-step-num').innerHTML = '<i class="fa-solid fa-check" style="font-size:.6rem;"></i>';
-}
+        /* ── STICKY HEADER ── */
+        const hdr = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            hdr.classList.toggle('scrolled', window.scrollY > 20);
+            document.getElementById('toTop').classList.toggle('visible', window.scrollY > 300);
+        }, {
+            passive: true
+        });
 
-function jsValidate(step) {
-  let valid = true;
-  const alertEl = document.getElementById('js-alert-' + step);
-  if (alertEl) alertEl.classList.remove('show');
+        /* ── MOBILE NAV ── */
+        function toggleMobile() {
+            document.getElementById('navHam').classList.toggle('open');
+            document.getElementById('mobileMenu').classList.toggle('open');
+        }
 
-  function err(id, msg) {
-    valid = false;
-    const f = document.getElementById(id);
-    const e = document.getElementById('err-' + id);
-    if (f) f.classList.add('field-error');
-    if (e) { e.classList.add('show'); const sp = e.querySelector('span'); if (sp && msg) sp.textContent = msg; }
-  }
-  function clr(id) {
-    const f = document.getElementById(id);
-    const e = document.getElementById('err-' + id);
-    if (f) f.classList.remove('field-error');
-    if (e) e.classList.remove('show');
-  }
+        /* ── CONFIG ── */
+        const jsMeta = [{
+                ico: 'fa-user',
+                title: 'Personal Information',
+                sub: 'Step 1 of 5 — Your basic details'
+            },
+            {
+                ico: 'fa-map-location-dot',
+                title: 'Location Information',
+                sub: 'Step 2 of 5 — Where are you based?'
+            },
+            {
+                ico: 'fa-graduation-cap',
+                title: 'Education & Experience',
+                sub: 'Step 3 of 5 — Your qualifications'
+            },
+            {
+                ico: 'fa-screwdriver-wrench',
+                title: 'Skills Selection',
+                sub: 'Step 4 of 5 — Select your skills'
+            },
+            {
+                ico: 'fa-file-arrow-up',
+                title: 'Documents',
+                sub: 'Step 5 of 5 — Upload & confirm'
+            },
+        ];
+        const empMeta = [{
+                ico: 'fa-building',
+                title: 'Company Information',
+                sub: 'Step 1 of 5 — Tell us about your business'
+            },
+            {
+                ico: 'fa-address-book',
+                title: 'Contact Details',
+                sub: 'Step 2 of 5 — Owner & HR information'
+            },
+            {
+                ico: 'fa-shield-halved',
+                title: 'Account Details',
+                sub: 'Step 3 of 5 — Login credentials'
+            },
+            {
+                ico: 'fa-file-certificate',
+                title: 'Business Verification',
+                sub: 'Step 4 of 5 — GST & PAN details'
+            },
+            {
+                ico: 'fa-file-arrow-up',
+                title: 'Documents',
+                sub: 'Step 5 of 5 — Upload & confirm'
+            },
+        ];
+        const jsSideLabels = ['Personal', 'Location', 'Education', 'Skills', 'Documents'];
+        const empSideLabels = ['Company', 'Contact', 'Account', 'Verification', 'Documents'];
 
-  if (step === 1) {
-    clr('js_full_name'); clr('js_mobile'); clr('js_email'); clr('js_password'); clr('js_password_conf');
-    const name = document.getElementById('js_full_name').value.trim();
-    if (name.length < 2) err('js_full_name', 'Full name is required (min. 2 characters).');
-    const mob = document.getElementById('js_mobile').value.replace(/\D/g,'');
-    if (mob.length < 10) err('js_mobile', 'Enter a valid 10-digit mobile number.');
-    const em = document.getElementById('js_email').value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) err('js_email', 'Enter a valid email address.');
-    const pw = document.getElementById('js_password').value;
-    if (pw.length < 8) err('js_password', 'Password must be at least 8 characters.');
-    const cpw = document.getElementById('js_password_conf').value;
-    if (cpw !== pw) err('js_password_conf', 'Passwords do not match.');
-  }
-  if (step === 2) {
-    clr('js_state'); clr('js_district'); clr('js_city');
-    if (!document.getElementById('js_state').value) err('js_state', 'Please select a state.');
-    if (!document.getElementById('js_district').value) err('js_district', 'Please select a district.');
-    if (document.getElementById('js_city').value.trim().length < 2) err('js_city', 'Please enter your city.');
-  }
-  if (step === 3) {
-    clr('js_qual');
-    if (!document.getElementById('js_qual').value) err('js_qual', 'Please select your qualification.');
-  }
-  if (step === 4) {
-    const checked = document.querySelectorAll('input[name="skills[]"]:checked');
-    if (checked.length === 0) { if (alertEl) alertEl.classList.add('show'); return false; }
-  }
-  if (!valid && alertEl && step !== 4) alertEl.classList.add('show');
-  return valid;
-}
+        let curType = 'jobseeker',
+            jsStep = 1,
+            empStep = 1;
 
-function jsBuildSummary() {
-  const qMap = {none:'None','10th':'10th Pass','12th':'12th / HSC',diploma:'Diploma',bachelor:"Bachelor's",master:"Master's",doctorate:'Doctorate'};
-  const skills = Array.from(document.querySelectorAll('input[name="skills[]"]:checked')).map(c => c.value);
-  const qual = document.getElementById('js_qual');
-  const city = document.getElementById('js_city').value;
-  const dist = document.getElementById('js_district').value;
-  const state = document.getElementById('js_state').value;
-  document.getElementById('js-sum-name').textContent = document.getElementById('js_full_name').value || '—';
-  document.getElementById('js-sum-mobile').textContent = document.getElementById('js_mobile').value || '—';
-  document.getElementById('js-sum-email').textContent = document.getElementById('js_email').value || '—';
-  document.getElementById('js-sum-location').textContent = [city,dist,state].filter(Boolean).join(', ') || '—';
-  document.getElementById('js-sum-qual').textContent = qMap[qual.value] || qual.value || '—';
-  document.getElementById('js-sum-exp').textContent = document.getElementById('exp_experienced').checked ? 'Experienced' : 'Fresher';
-  document.getElementById('js-sum-skills').textContent = skills.length ? skills.slice(0,8).join(', ') + (skills.length > 8 ? ' +' + (skills.length-8) + ' more' : '') : 'None selected';
-}
+        /* ── SWITCH TYPE ── */
+        function switchType(type) {
+            curType = type;
+            const isJs = type === 'jobseeker';
+            document.getElementById('tsBtnJs').className = 'ts-btn ts-js' + (isJs ? ' sel-blue' : '');
+            document.getElementById('tsBtnEmp').className = 'ts-btn ts-emp' + (!isJs ? ' sel-green' : '');
+            document.getElementById('regLeft').className = 'reg-left ' + (isJs ? 'mode-blue' : 'mode-green');
+            document.getElementById('rlJs').style.display = isJs ? '' : 'none';
+            document.getElementById('rlEmp').style.display = isJs ? 'none' : '';
+            document.getElementById('rlStats').innerHTML = isJs ?
+                `<div><div class="rl-stat-val">50K+</div><div class="rl-stat-lbl">Job Seekers</div></div><div><div class="rl-stat-val">1,200+</div><div class="rl-stat-lbl">Companies</div></div><div><div class="rl-stat-val">Free</div><div class="rl-stat-lbl">Always</div></div>` :
+                `<div><div class="rl-stat-val">1,200+</div><div class="rl-stat-lbl">Employers</div></div><div><div class="rl-stat-val">₹600</div><div class="rl-stat-lbl">Starting</div></div><div><div class="rl-stat-val">48hr</div><div class="rl-stat-lbl">Response</div></div>`;
+            document.getElementById('jsForm').style.display = isJs ? 'block' : 'none';
+            document.getElementById('empForm').style.display = isJs ? 'none' : 'block';
+            renderSideSteps(isJs ? jsStep : empStep, isJs ? jsSideLabels : empSideLabels, isJs);
+        }
 
-document.getElementById('jsForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const btn = document.getElementById('jsSubmitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
-});
+        function renderSideSteps(cur, labels, isJs) {
+            const c = document.getElementById('rlSteps');
+            c.innerHTML = '';
+            labels.forEach((lbl, i) => {
+                const n = i + 1;
+                const cls = n < cur ? 's-done' : n === cur ? 's-active' : '';
+                const icon = n < cur ? '<i class="fa-solid fa-check" style="font-size:.56rem;"></i>' : n + '';
+                c.innerHTML +=
+                    `<div class="rl-step ${cls}"><div class="rl-step-num">${icon}</div><div class="rl-step-name">${lbl}</div></div>`;
+            });
+        }
 
-/* ─── EMPLOYER STEPS ─────────────────── */
-let empCurrentStep = 1;
+        /* ── JS NAVIGATION ── */
+        function jsNav(dir) {
+            if (dir === 1 && !jsValidate(jsStep)) return;
+            jsStep = Math.max(1, Math.min(5, jsStep + dir));
+            jsShowStep(jsStep);
+            if (jsStep === 5) jsBuildSummary();
+        }
 
-function empGoToStep(t) { if (t >= empCurrentStep) return; empShowStep(t); }
-function empNextStep(from) { if (!empValidate(from)) return; empMarkDone(from); empShowStep(from + 1); if (from + 1 === 5) empBuildSummary(); }
-function empPrevStep(from) { empShowStep(from - 1); }
+        function jsShowStep(s) {
+            document.querySelectorAll('#jsForm .panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('js-p' + s).classList.add('active');
+            const m = jsMeta[s - 1];
+            document.getElementById('jsHeadIco').className = 'fa-solid ' + m.ico;
+            document.getElementById('jsHeadTitle').textContent = m.title;
+            document.getElementById('jsHeadSub').textContent = m.sub;
+            document.getElementById('jsBtnPrev').style.display = s > 1 ? '' : 'none';
+            document.getElementById('jsBtnNext').style.display = s < 5 ? '' : 'none';
+            document.getElementById('jsBtnSub').style.display = s === 5 ? '' : 'none';
+            renderSideSteps(s, jsSideLabels, true);
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
 
-function empShowStep(step) {
-  document.querySelectorAll('#page-employer .lj-tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('emp-tab-' + step).classList.add('active');
-  document.querySelectorAll('#emp-stepIndicator .lj-step').forEach(s => {
-    s.classList.remove('active');
-    s.style.cursor = parseInt(s.dataset.step) < step ? 'pointer' : 'default';
-  });
-  document.querySelector('#emp-stepIndicator .lj-step[data-step="' + step + '"]').classList.add('active');
-  empCurrentStep = step;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        /* ── EMP NAVIGATION ── */
+        function empNav(dir) {
+            if (dir === 1 && !empValidate(empStep)) return;
+            empStep = Math.max(1, Math.min(5, empStep + dir));
+            empShowStep(empStep);
+            if (empStep === 5) empBuildSummary();
+        }
 
-function empMarkDone(step) {
-  const el = document.querySelector('#emp-stepIndicator .lj-step[data-step="' + step + '"]');
-  el.classList.remove('active');
-  el.classList.add('done');
-  el.querySelector('.lj-step-num').innerHTML = '<i class="fa-solid fa-check" style="font-size:.6rem;"></i>';
-}
+        function empShowStep(s) {
+            document.querySelectorAll('#empForm .panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('emp-p' + s).classList.add('active');
+            const m = empMeta[s - 1];
+            document.getElementById('empHeadIco').className = 'fa-solid ' + m.ico;
+            document.getElementById('empHeadTitle').textContent = m.title;
+            document.getElementById('empHeadSub').textContent = m.sub;
+            document.getElementById('empBtnPrev').style.display = s > 1 ? '' : 'none';
+            document.getElementById('empBtnNext').style.display = s < 5 ? '' : 'none';
+            document.getElementById('empBtnSub').style.display = s === 5 ? '' : 'none';
+            renderSideSteps(s, empSideLabels, false);
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
 
-function empValidate(step) {
-  let valid = true;
-  const alertEl = document.getElementById('emp-alert-' + step);
-  if (alertEl) alertEl.classList.remove('show');
+        /* ── VALIDATION ── */
+        const g = id => (document.getElementById(id) || {}).value || '';
 
-  function err(id, msg) {
-    valid = false;
-    const f = document.getElementById(id);
-    const e = document.getElementById('err-' + id);
-    if (f) f.classList.add('field-error');
-    if (e) { e.classList.add('show'); const sp = e.querySelector('span'); if (sp && msg) sp.textContent = msg; }
-  }
-  function clr(id) {
-    const f = document.getElementById(id);
-    const e = document.getElementById('err-' + id);
-    if (f) f.classList.remove('field-error');
-    if (e) e.classList.remove('show');
-  }
+        function vErr(id, msg) {
+            const f = document.getElementById(id);
+            const e = document.getElementById('e-' + id);
+            if (f) f.classList.add('err');
+            if (e) {
+                e.classList.add('show');
+                if (msg) {
+                    const sp = e.querySelector('span');
+                    if (sp) sp.textContent = msg;
+                }
+            }
+        }
 
-  if (step === 1) {
-    clr('emp_company_name'); clr('emp_address'); clr('emp_state'); clr('emp_district'); clr('emp_city'); clr('emp_pincode');
-    if (document.getElementById('emp_company_name').value.trim().length < 2) err('emp_company_name','Company name is required.');
-    if (document.getElementById('emp_address').value.trim().length < 10) err('emp_address','Please enter your company address.');
-    if (!document.getElementById('emp_state').value) err('emp_state','Please select a state.');
-    if (!document.getElementById('emp_district').value) err('emp_district','Please select a district.');
-    if (document.getElementById('emp_city').value.trim().length < 2) err('emp_city','Please enter the city.');
-    if (!/^\d{6}$/.test(document.getElementById('emp_pincode').value.trim())) err('emp_pincode','Enter a valid 6-digit pincode.');
-  }
-  if (step === 2) {
-    clr('emp_owner_name'); clr('emp_owner_mobile'); clr('emp_hr_name'); clr('emp_hr_mobile');
-    if (document.getElementById('emp_owner_name').value.trim().length < 2) err('emp_owner_name','Owner name is required.');
-    if (document.getElementById('emp_owner_mobile').value.replace(/\D/g,'').length < 10) err('emp_owner_mobile','Enter a valid 10-digit mobile number.');
-    if (document.getElementById('emp_hr_name').value.trim().length < 2) err('emp_hr_name','HR name is required.');
-    if (document.getElementById('emp_hr_mobile').value.replace(/\D/g,'').length < 10) err('emp_hr_mobile','Enter a valid 10-digit mobile number.');
-  }
-  if (step === 3) {
-    clr('emp_email'); clr('emp_password'); clr('emp_password_conf');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('emp_email').value.trim())) err('emp_email','Enter a valid email address.');
-    const pw = document.getElementById('emp_password').value;
-    if (pw.length < 8) err('emp_password','Password must be at least 8 characters.');
-    if (document.getElementById('emp_password_conf').value !== pw) err('emp_password_conf','Passwords do not match.');
-  }
-  if (step === 4) {
-    clr('emp_gst'); clr('emp_pan');
-    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(document.getElementById('emp_gst').value.trim())) err('emp_gst','Enter a valid 15-character GST number.');
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(document.getElementById('emp_pan').value.trim())) err('emp_pan','Enter a valid 10-character PAN number.');
-  }
-  if (!valid && alertEl) alertEl.classList.add('show');
-  return valid;
-}
+        function vClr(...ids) {
+            ids.forEach(id => {
+                const f = document.getElementById(id);
+                const e = document.getElementById('e-' + id);
+                if (f) f.classList.remove('err');
+                if (e) e.classList.remove('show');
+            });
+        }
 
-function empBuildSummary() {
-  const v = id => (document.getElementById(id)||{}).value || '—';
-  const city = v('emp_city'), dist = v('emp_district'), state = v('emp_state');
-  document.getElementById('emp-sum-company').textContent = v('emp_company_name');
-  document.getElementById('emp-sum-location').textContent = [city,dist,state].filter(s=>s&&s!=='—').join(', ') || '—';
-  document.getElementById('emp-sum-owner').textContent = v('emp_owner_name') + (v('emp_owner_mobile')!=='—' ? ' · ' + v('emp_owner_mobile') : '');
-  document.getElementById('emp-sum-hr').textContent = v('emp_hr_name') + (v('emp_hr_mobile')!=='—' ? ' · ' + v('emp_hr_mobile') : '');
-  document.getElementById('emp-sum-email').textContent = v('emp_email');
-  document.getElementById('emp-sum-gst').textContent = v('emp_gst');
-  document.getElementById('emp-sum-pan').textContent = v('emp_pan');
-  const msme = v('emp_msme');
-  document.getElementById('emp-sum-msme').textContent = msme !== '—' ? msme : 'Not provided';
-}
+        function jsValidate(s) {
+            let ok = true;
+            const al = document.getElementById('js-al' + s);
+            if (al) al.classList.remove('show');
+            if (s === 1) {
+                vClr('js_name', 'js_mob', 'js_email', 'js_pwd', 'js_cpwd');
+                if (g('js_name').trim().length < 2) {
+                    vErr('js_name');
+                    ok = false;
+                }
+                if (g('js_mob').replace(/\D/g, '').length < 10) {
+                    vErr('js_mob');
+                    ok = false;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('js_email').trim())) {
+                    vErr('js_email');
+                    ok = false;
+                }
+                const pw = g('js_pwd');
+                if (pw.length < 8) {
+                    vErr('js_pwd');
+                    ok = false;
+                }
+                if (g('js_cpwd') !== pw) {
+                    vErr('js_cpwd');
+                    ok = false;
+                }
+            }
+            if (s === 2) {
+                vClr('js_state', 'js_dist', 'js_city');
+                if (!g('js_state')) {
+                    vErr('js_state');
+                    ok = false;
+                }
+                if (!g('js_dist')) {
+                    vErr('js_dist');
+                    ok = false;
+                }
+                if (g('js_city').trim().length < 2) {
+                    vErr('js_city');
+                    ok = false;
+                }
+            }
+            if (s === 3) {
+                vClr('js_qual');
+                if (!g('js_qual')) {
+                    vErr('js_qual');
+                    ok = false;
+                }
+            }
+            if (s === 4) {
+                if (!document.querySelectorAll('.skill-chip input:checked').length) {
+                    if (al) al.classList.add('show');
+                    return false;
+                }
+            }
+            if (!ok && al) al.classList.add('show');
+            return ok;
+        }
 
-document.getElementById('empForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const gst = document.getElementById('emp_gstInput');
-  const pan = document.getElementById('emp_panInput');
-  let ok = true;
-  if (!gst.files || !gst.files[0]) { document.getElementById('err-emp_gst_cert').classList.add('show'); ok = false; }
-  if (!pan.files || !pan.files[0]) { document.getElementById('err-emp_pan_doc').classList.add('show'); ok = false; }
-  if (!ok) return;
-  const btn = document.getElementById('empSubmitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering Company...';
-});
+        function empValidate(s) {
+            let ok = true;
+            const al = document.getElementById('emp-al' + s);
+            if (al) al.classList.remove('show');
+            if (s === 1) {
+                vClr('ec_name', 'ec_addr', 'ec_state', 'ec_dist', 'ec_city', 'ec_pin');
+                if (g('ec_name').trim().length < 2) {
+                    vErr('ec_name');
+                    ok = false;
+                }
+                if (g('ec_addr').trim().length < 10) {
+                    vErr('ec_addr');
+                    ok = false;
+                }
+                if (!g('ec_state')) {
+                    vErr('ec_state');
+                    ok = false;
+                }
+                if (!g('ec_dist')) {
+                    vErr('ec_dist');
+                    ok = false;
+                }
+                if (g('ec_city').trim().length < 2) {
+                    vErr('ec_city');
+                    ok = false;
+                }
+                if (!/^\d{6}$/.test(g('ec_pin').trim())) {
+                    vErr('ec_pin');
+                    ok = false;
+                }
+            }
+            if (s === 2) {
+                vClr('eo_name', 'eo_mob', 'eh_name', 'eh_mob');
+                if (g('eo_name').trim().length < 2) {
+                    vErr('eo_name');
+                    ok = false;
+                }
+                if (g('eo_mob').replace(/\D/g, '').length < 10) {
+                    vErr('eo_mob');
+                    ok = false;
+                }
+                if (g('eh_name').trim().length < 2) {
+                    vErr('eh_name');
+                    ok = false;
+                }
+                if (g('eh_mob').replace(/\D/g, '').length < 10) {
+                    vErr('eh_mob');
+                    ok = false;
+                }
+            }
+            if (s === 3) {
+                vClr('e_email', 'e_pwd', 'e_cpwd');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('e_email').trim())) {
+                    vErr('e_email');
+                    ok = false;
+                }
+                const pw = g('e_pwd');
+                if (pw.length < 8) {
+                    vErr('e_pwd');
+                    ok = false;
+                }
+                if (g('e_cpwd') !== pw) {
+                    vErr('e_cpwd');
+                    ok = false;
+                }
+            }
+            if (s === 4) {
+                vClr('e_gst', 'e_pan');
+                if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g('e_gst').trim())) {
+                    vErr('e_gst');
+                    ok = false;
+                }
+                if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(g('e_pan').trim())) {
+                    vErr('e_pan');
+                    ok = false;
+                }
+            }
+            if (!ok && al) al.classList.add('show');
+            return ok;
+        }
 
-/* ─── SHARED UTILITIES ───────────────── */
-function togglePwd(id, btn) {
-  const inp = document.getElementById(id);
-  const ico = btn.querySelector('i');
-  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash'; }
-  else { inp.type = 'password'; ico.className = 'fa-solid fa-eye'; }
-}
+        /* ── SUMMARIES ── */
+        function jsBuildSummary() {
+            const qm = {
+                none: 'None',
+                '10th': '10th Pass',
+                '12th': '12th / HSC',
+                diploma: 'Diploma',
+                bachelor: "Bachelor's",
+                master: "Master's",
+                doctorate: 'Doctorate'
+            };
+            const skills = Array.from(document.querySelectorAll('.skill-chip input:checked')).map(c => c.value);
+            const q = document.getElementById('js_qual');
+            document.getElementById('ss-nm').textContent = g('js_name') || '—';
+            document.getElementById('ss-mb').textContent = g('js_mob') || '—';
+            document.getElementById('ss-em').textContent = g('js_email') || '—';
+            document.getElementById('ss-lc').textContent = [g('js_city'), g('js_dist'), g('js_state')].filter(Boolean).join(
+                ', ') || '—';
+            document.getElementById('ss-ql').textContent = (q && qm[q.value]) || q.value || '—';
+            document.getElementById('ss-xp').textContent = document.getElementById('exp_e').checked ? 'Experienced' :
+                'Fresher';
+            document.getElementById('ss-sk').textContent = skills.length ? skills.slice(0, 8).join(', ') + (skills.length >
+                8 ? ' +more' : '') : 'None';
+        }
 
-function checkStrength(val, barId) {
-  const bar = document.getElementById(barId);
-  if (!bar) return;
-  let score = 0;
-  if (val.length >= 8) score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[0-9]/.test(val)) score++;
-  if (/[^A-Za-z0-9]/.test(val)) score++;
-  bar.style.width = ['0%','30%','55%','75%','100%'][score];
-  bar.style.background = ['','#ef4444','#f97316','#eab308','#22c55e'][score];
-}
+        function empBuildSummary() {
+            document.getElementById('es-co').textContent = g('ec_name') || '—';
+            document.getElementById('es-lc').textContent = [g('ec_city'), g('ec_dist'), g('ec_state')].filter(Boolean).join(
+                ', ') || '—';
+            document.getElementById('es-ow').textContent = (g('eo_name') || '—') + (g('eo_mob') ? ' · ' + g('eo_mob') : '');
+            document.getElementById('es-hr').textContent = (g('eh_name') || '—') + (g('eh_mob') ? ' · ' + g('eh_mob') : '');
+            document.getElementById('es-em').textContent = g('e_email') || '—';
+            document.getElementById('es-gs').textContent = g('e_gst') || '—';
+            document.getElementById('es-pn').textContent = g('e_pan') || '—';
+            document.getElementById('es-ms').textContent = g('e_msme') || 'Not provided';
+        }
 
-function toggleExpFields(show) {
-  const el = document.getElementById('expFields');
-  el.style.display = show ? 'block' : 'none';
-}
+        /* ── SUBMIT ── */
+        function jsSubmit() {
+            const b = document.getElementById('jsBtnSub');
+            b.disabled = true;
+            b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
+        }
 
-function showFile(zoneId, labelId, input, maxMB) {
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
-    if (file.size > maxMB * 1024 * 1024) {
-      alert('File must not exceed ' + maxMB + ' MB.');
-      input.value = '';
-      return;
-    }
-    document.getElementById(labelId).textContent = file.name;
-  }
-}
+        function empSubmit() {
+            const b = document.getElementById('empBtnSub');
+            b.disabled = true;
+            b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering Company...';
+        }
 
-/* ─── LIVE CLEAR ERRORS ──────────────── */
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.lj-input').forEach(function(inp) {
-    ['input','change'].forEach(ev => inp.addEventListener(ev, function() {
-      this.classList.remove('field-error');
-      const errEl = document.getElementById('err-' + this.id);
-      if (errEl) errEl.classList.remove('show');
-    }));
-  });
+        /* ── TOGGLE PASSWORD ── */
+        function togPwd(id, btn) {
+            const i = document.getElementById(id);
+            const ico = btn.querySelector('i');
+            if (i.type === 'password') {
+                i.type = 'text';
+                ico.className = 'fa-solid fa-eye-slash';
+            } else {
+                i.type = 'password';
+                ico.className = 'fa-solid fa-eye';
+            }
+        }
 
-  /* Build skills checkboxes */
-  const skillsData = {
-    'IT & Software': ['PHP Developer','Java Developer','Python Developer','React Developer','Angular Developer','Node.js Developer','MySQL / Database','WordPress Developer','UI/UX Designer','Network Engineer'],
-    'Technical & Trade': ['Electrician','Plumber','Welder','Machine Operator','CNC Operator','Lathe Operator','Mechanic','HVAC Technician','Quality Inspector','Safety Officer'],
-    'Sales & Marketing': ['Sales Executive','Marketing Executive','Field Sales','Tele-calling','Business Development','Digital Marketing','SEO Specialist','Brand Manager'],
-    'Office & Admin': ['Data Entry','HR Executive','Accountant','Office Admin','Receptionist','Customer Support','Back Office','Payroll Executive'],
-    'Driver & Logistics': ['Driver','Delivery Executive','Forklift Operator','Warehouse Staff','Packing & Loading'],
-  };
-  const container = document.getElementById('skillsContainer');
-  Object.entries(skillsData).forEach(([cat, skills], i) => {
-    const sec = document.createElement('div');
-    sec.className = 'lj-fsec';
-    sec.style.marginTop = i === 0 ? '0' : '16px';
-    sec.innerHTML = `<div class="lj-fsec-lbl" style="font-size:.68rem;">${cat}</div><div class="lj-fsec-line"></div>`;
-    container.appendChild(sec);
-    const wrap = document.createElement('div');
-    wrap.className = 'lj-skill-wrap';
-    skills.forEach(skill => {
-      const id = 'skill_' + skill.toLowerCase().replace(/[^a-z0-9]/g,'_');
-      const chip = document.createElement('div');
-      chip.className = 'lj-skill-chip';
-      chip.innerHTML = `<input type="checkbox" id="${id}" name="skills[]" value="${skill}"><label for="${id}">${skill}</label>`;
-      wrap.appendChild(chip);
-    });
-    container.appendChild(wrap);
-  });
-});
-</script>
-</body>
-</html>
+        /* ── PASSWORD STRENGTH ── */
+        function pwdStr(v, bid) {
+            const b = document.getElementById(bid);
+            if (!b) return;
+            let s = 0;
+            if (v.length >= 8) s++;
+            if (/[A-Z]/.test(v)) s++;
+            if (/[0-9]/.test(v)) s++;
+            if (/[^A-Za-z0-9]/.test(v)) s++;
+            b.style.width = ['0%', '30%', '55%', '78%', '100%'][s];
+            b.style.background = ['', '#ef4444', '#f97316', '#eab308', '#22c55e'][s];
+        }
+
+        /* ── EXP TOGGLE ── */
+        function togExp(show) {
+            document.getElementById('expFields').style.display = show ? 'block' : 'none';
+        }
+
+        /* ── FILE LABEL ── */
+        function setFileLabel(inp, lid) {
+            if (inp.files && inp.files[0]) document.getElementById(lid).textContent = inp.files[0].name;
+        }
+
+        /* ── BUILD DOTS ── */
+        (function() {
+            const d = document.getElementById('rlDots');
+            for (let i = 0; i < 30; i++) {
+                const s = document.createElement('span');
+                d.appendChild(s);
+            }
+        })();
+
+        /* ── BUILD SKILLS ── */
+        (function() {
+            const data = {
+                'IT & Software': ['PHP Developer', 'Java Developer', 'Python Developer', 'React Developer',
+                    'Node.js Developer', 'WordPress Developer', 'UI/UX Designer', 'Network Engineer'
+                ],
+                'Technical & Trade': ['Electrician', 'Plumber', 'Welder', 'Machine Operator', 'CNC Operator',
+                    'Mechanic', 'HVAC Technician', 'Quality Inspector'
+                ],
+                'Sales & Marketing': ['Sales Executive', 'Field Sales', 'Tele-calling', 'Business Development',
+                    'Digital Marketing', 'SEO Specialist'
+                ],
+                'Office & Admin': ['Data Entry', 'HR Executive', 'Accountant', 'Office Admin', 'Receptionist',
+                    'Customer Support'
+                ],
+                'Driver & Logistics': ['Driver', 'Delivery Executive', 'Forklift Operator', 'Warehouse Staff'],
+            };
+            const c = document.getElementById('skillsBox');
+            Object.entries(data).forEach(([cat, skills], i) => {
+                const sec = document.createElement('div');
+                sec.className = 'fsec';
+                sec.style.marginTop = i === 0 ? '0' : '14px';
+                sec.innerHTML =
+                    `<div class="fsec-lbl bi" style="font-size:.66rem;">${cat}</div><div class="fsec-line"></div>`;
+                c.appendChild(sec);
+                const w = document.createElement('div');
+                w.className = 'skill-wrap';
+                skills.forEach(sk => {
+                    const id = 'sk_' + sk.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                    const ch = document.createElement('div');
+                    ch.className = 'skill-chip';
+                    ch.innerHTML =
+                        `<input type="checkbox" id="${id}" value="${sk}"><label for="${id}">${sk}</label>`;
+                    w.appendChild(ch);
+                });
+                c.appendChild(w);
+            });
+        })();
+
+        /* ── LIVE CLEAR ERRORS ── */
+        document.querySelectorAll('.finput').forEach(inp => {
+            ['input', 'change'].forEach(ev => inp.addEventListener(ev, function() {
+                this.classList.remove('err');
+                const e = document.getElementById('e-' + this.id);
+                if (e) e.classList.remove('show');
+            }));
+        });
+
+        /* ── INIT ── */
+        switchType('jobseeker');
+    </script>
+@endpush
