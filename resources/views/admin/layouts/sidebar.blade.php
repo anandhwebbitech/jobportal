@@ -5,15 +5,13 @@
         <img src="{{ asset('frontend/logo3.png')}}" alt="Logo" class="logo-img">
     </div>
 
-    <nav>
+      <nav>
 
         <!-- Dashboard -->
         <a href="{{ route('admin.dashboard')}}"
            class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-chart-line"></i> Dashboard
         </a>
-
-
         <!-- Employer -->
         <a onclick="toggleSubmenu(this)"
            class="has-submenu {{ request()->is(['admin/employers*','admin/jobs*']) ? 'open' : '' }}">
@@ -24,7 +22,7 @@
         <div class="submenu {{ request()->is(['admin/employers*','admin/jobs*']) ? 'open' : '' }}"
              id="employer-submenu">
 
-            <a href="#"
+            <a href="{{ route('admin.employers.index')}}"
                class="{{ request()->is('admin/employers*') ? 'active' : '' }}">
                 <i class="fa fa-list"></i> Employer List
             </a>
@@ -70,8 +68,8 @@
                 <i class="fa fa-lightbulb"></i> Skill
             </a>
 
-            <a href="#"
-               class="{{ request()->is('admin/education*') ? 'active' : '' }}">
+            <a href="{{ route('admin.educations.index')}}"
+               class="{{ request()->is('admin/educations*') ? 'active' : '' }}">
                 <i class="fa fa-graduation-cap"></i> Education
             </a>
 
@@ -84,8 +82,7 @@
 
 
         <!-- Settings -->
-        <a href="#"
-           class="{{ request()->is('admin/settings*') ? 'active' : '' }}">
+        <a href="{{ route('admin.settings.index','general')}}" class="{{ request()->is('admin/settings/*') ? 'active' : '' }}">
             <i class="fa fa-gear"></i> Settings
         </a>
 

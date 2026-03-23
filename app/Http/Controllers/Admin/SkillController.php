@@ -7,6 +7,7 @@ use App\Models\Skill;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Middleware\Skip;
+use Illuminate\Support\Facades\Validator;
 
 class SkillController extends Controller
 {
@@ -67,13 +68,22 @@ class SkillController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate([
-            'skill_name' => 'required|unique:skills,skill_name|max:255',
-            'description' => 'nullable|max:500'
+        $validator = Validator::make($request->all(), [
+            'skill_name'  => 'required|string|max:255|unique:skills,skill_name',
+            'description' => 'nullable|string|max:500',
+            'status'      => 'required|in:0,1',
         ],[
             'skill_name.required' => 'Skill name is required.',
             'skill_name.unique'   => 'This skill already exists.',
+            'status.required'     => 'Status is required.'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         Skill::create([
             'skill_name' => $request->skill_name,
@@ -81,8 +91,10 @@ class SkillController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('admin.skills.index')
-            ->with('success', 'Skill created successfully.');
+        return response()->json([
+            'status' => true,
+            'message' => 'Skill created successfully'
+        ]);
     }
     public function edit(Skill $skill)
     {
@@ -100,26 +112,23 @@ class SkillController extends Controller
         ]);
     }
 
-    public function update(Request $request, Skill $skill)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name'   => 'required|string|max:100',
-            'code'   => 'nullable|string|max:20',
-            'status' => 'required|boolean',
-        ], [
-            'name.required' => 'Skill name is required.',
-            'name.unique'   => 'This Skill name already exists.',
+        $request->validate([
+            'skill_name' => 'required|max:255|unique:skills,skill_name,'.$id,
+            'description' => 'nullable|max:500'
         ]);
 
-        // Update only needed fields (safe)
+        $skill = Skill::findOrFail($id);
+
         $skill->update([
-            'name'   => $validated['name'],
-            'code'   => $validated['code'] ?? null,
-            'status' => $validated['status'],
+            'skill_name' => $request->skill_name,
+            'description' => $request->description,
+            'status' => $request->status
         ]);
 
         return redirect()->route('admin.skills.index')
-            ->with('success', 'Skill updated successfully.');
+                ->with('success','Skill updated successfully');
     }
 
     public function destroy(Skill $skill)

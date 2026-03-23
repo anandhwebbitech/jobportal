@@ -1,0 +1,277 @@
+/* ════════════════════════════════════════════════════
+   SHARED AUTH STYLES — LinearJobs
+   Include via @push('styles') in each auth blade
+════════════════════════════════════════════════════ */
+
+/* ── AUTH PAGE WRAPPER ───────────────────────────── */
+.lj-auth-page {
+  min-height: calc(100vh - 64px);
+  background: var(--n50);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ── AUTH CARD ───────────────────────────────────── */
+.lj-auth-card {
+  background: #fff;
+  border: 1.5px solid var(--n200);
+  border-radius: var(--r-lg);
+  box-shadow: 0 4px 24px rgba(0,0,0,.07);
+  width: 100%; max-width: 480px;
+  overflow: hidden;
+  animation: authFadeUp .4s ease both;
+}
+@keyframes authFadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── AUTH HEADER BAND ────────────────────────────── */
+.lj-auth-head {
+  padding: 32px 36px 28px;
+  border-bottom: 1.5px solid var(--n100);
+  text-align: center;
+}
+.lj-auth-head-blue  { background: linear-gradient(135deg,#1a56db 0%,#1e429f 100%); }
+.lj-auth-head-green { background: linear-gradient(135deg,#057a55 0%,#046c4e 100%); }
+.lj-auth-head-amber { background: linear-gradient(135deg,#b45309 0%,#92400e 100%); }
+
+.lj-auth-ico {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  border: 2px solid rgba(255,255,255,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; color: #fff;
+  margin: 0 auto 14px;
+}
+.lj-auth-head-title {
+  font-size: 1.3rem; font-weight: 800;
+  color: #fff; letter-spacing: -.3px;
+  margin-bottom: 4px;
+}
+.lj-auth-head-sub {
+  font-size: .85rem;
+  color: rgba(255,255,255,.78);
+}
+
+/* ── AUTH BODY ───────────────────────────────────── */
+.lj-auth-body { padding: 32px 36px 28px; }
+
+/* ── FORM GROUP ──────────────────────────────────── */
+.lj-fg {
+  margin-bottom: 18px;
+}
+.lj-fg label {
+  display: block;
+  font-size: .825rem; font-weight: 600; color: var(--n700);
+  margin-bottom: 6px;
+}
+.lj-fg label span.req { color: #e02424; margin-left: 2px; }
+
+.lj-input-wrap {
+  position: relative;
+}
+.lj-input-wrap .lj-inp-ico {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--n400); font-size: .85rem; pointer-events: none;
+  z-index: 1;
+}
+.lj-input-wrap input,
+.lj-input-wrap select,
+.lj-input-wrap textarea {
+  width: 100%; box-sizing: border-box;
+  border: 1.5px solid var(--n200);
+  border-radius: var(--r);
+  font-family: var(--f); font-size: .9rem; color: var(--n900);
+  background: #fff;
+  padding: 11px 14px 11px 38px;
+  outline: none;
+  transition: border-color var(--t), box-shadow var(--t);
+  appearance: none; -webkit-appearance: none;
+}
+.lj-input-wrap input:focus,
+.lj-input-wrap select:focus,
+.lj-input-wrap textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+}
+.lj-input-wrap input::placeholder,
+.lj-input-wrap textarea::placeholder { color: var(--n400); }
+
+/* Select arrow */
+.lj-input-wrap select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 36px; cursor: pointer;
+}
+.lj-input-wrap select option { color: var(--n900); }
+
+/* password toggle */
+.lj-pw-toggle {
+  position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+  color: var(--n400); cursor: pointer; font-size: .85rem;
+  z-index: 2; background: none; border: none; padding: 0;
+  transition: color var(--t);
+}
+.lj-pw-toggle:hover { color: var(--blue); }
+
+/* No icon inputs */
+.lj-input-bare {
+  width: 100%; box-sizing: border-box;
+  border: 1.5px solid var(--n200);
+  border-radius: var(--r);
+  font-family: var(--f); font-size: .9rem; color: var(--n900);
+  background: #fff; padding: 11px 14px; outline: none;
+  transition: border-color var(--t), box-shadow var(--t);
+  appearance: none; -webkit-appearance: none;
+}
+.lj-input-bare:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.1);
+}
+
+/* ── GRID HELPERS ────────────────────────────────── */
+.lj-form-row { display: grid; gap: 14px; }
+.lj-form-row-2 { grid-template-columns: 1fr 1fr; }
+.lj-form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+@media (max-width: 520px) {
+  .lj-form-row-2, .lj-form-row-3 { grid-template-columns: 1fr; }
+}
+
+/* ── SECTION LABEL ───────────────────────────────── */
+.lj-form-section {
+  font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--n500);
+  margin: 22px 0 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.lj-form-section::after {
+  content: ''; flex: 1; height: 1px; background: var(--n200);
+}
+
+/* ── SUBMIT BTN ──────────────────────────────────── */
+.lj-auth-submit {
+  width: 100%; padding: 13px;
+  border: none; border-radius: var(--r);
+  font-family: var(--f); font-size: .9375rem; font-weight: 700;
+  color: #fff; cursor: pointer; letter-spacing: .01em;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background var(--t), transform .12s ease, box-shadow var(--t);
+  margin-top: 6px;
+}
+.lj-auth-submit:hover  { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+.lj-auth-submit:active { transform: translateY(0); }
+.lj-auth-submit-blue  { background: var(--blue); }
+.lj-auth-submit-blue:hover  { background: var(--blue-h); }
+.lj-auth-submit-green { background: var(--green); }
+.lj-auth-submit-green:hover { background: var(--green-h); }
+
+/* ── AUTH FOOTER LINKS ───────────────────────────── */
+.lj-auth-foot {
+  padding: 16px 36px 24px;
+  text-align: center;
+  font-size: .8375rem; color: var(--n500);
+  border-top: 1.5px solid var(--n100);
+}
+.lj-auth-foot a { color: var(--blue); font-weight: 600; text-decoration: none; }
+.lj-auth-foot a:hover { text-decoration: underline; }
+
+/* ── ALERT ───────────────────────────────────────── */
+.lj-alert {
+  padding: 11px 14px; border-radius: var(--r);
+  font-size: .85rem; margin-bottom: 18px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.lj-alert-err { background: #fef2f2; border: 1.5px solid #fca5a5; color: #991b1b; }
+.lj-alert-ok  { background: #f0fdf4; border: 1.5px solid #86efac; color: #166534; }
+
+/* ── FILE UPLOAD ─────────────────────────────────── */
+.lj-file-zone {
+  border: 2px dashed var(--n200);
+  border-radius: var(--r);
+  padding: 20px 16px;
+  text-align: center; cursor: pointer;
+  transition: border-color var(--t), background var(--t);
+  position: relative;
+}
+.lj-file-zone:hover { border-color: var(--blue); background: var(--blue-lt); }
+.lj-file-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.lj-file-ico { font-size: 1.6rem; color: var(--n400); margin-bottom: 6px; }
+.lj-file-lbl { font-size: .85rem; font-weight: 600; color: var(--n700); }
+.lj-file-sub { font-size: .75rem; color: var(--n400); margin-top: 2px; }
+
+/* ── SKILL CHIPS SELECT ──────────────────────────── */
+.lj-skill-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 10px;
+}
+.lj-skill-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--blue-lt); color: var(--blue);
+  border: 1px solid var(--blue-mid);
+  border-radius: 100px; padding: 4px 12px;
+  font-size: .78rem; font-weight: 600; cursor: pointer;
+  transition: background var(--t), color var(--t);
+  user-select: none;
+}
+.lj-skill-chip.active { background: var(--blue); color: #fff; }
+.lj-skill-chip input[type="checkbox"] { display: none; }
+
+/* ── RADIO GROUP ─────────────────────────────────── */
+.lj-radio-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.lj-radio-opt {
+  display: flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--n200); border-radius: var(--r);
+  padding: 9px 16px; cursor: pointer;
+  transition: border-color var(--t), background var(--t);
+  font-size: .875rem; font-weight: 500; color: var(--n700);
+  flex: 1; justify-content: center;
+}
+.lj-radio-opt input[type="radio"] { display: none; }
+.lj-radio-opt.checked { border-color: var(--blue); background: var(--blue-lt); color: var(--blue); font-weight: 700; }
+.lj-radio-opt i { font-size: .9rem; }
+
+/* ── PROGRESS STEPS ──────────────────────────────── */
+.lj-steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 28px;
+}
+.lj-step {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex: 1; position: relative;
+}
+.lj-step::after {
+  content: ''; position: absolute;
+  top: 17px; left: 50%; width: 100%; height: 2px;
+  background: var(--n200); z-index: 0;
+}
+.lj-step:last-child::after { display: none; }
+.lj-step-dot {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; font-weight: 800;
+  border: 2px solid var(--n200); background: #fff; color: var(--n400);
+  position: relative; z-index: 1;
+  transition: all .25s ease;
+}
+.lj-step.done .lj-step-dot  { background: var(--blue); border-color: var(--blue); color: #fff; }
+.lj-step.active .lj-step-dot { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 0 0 4px rgba(26,86,219,.15); }
+.lj-step.done::after { background: var(--blue); }
+.lj-step-lbl { font-size: .68rem; font-weight: 600; color: var(--n400); text-align: center; }
+.lj-step.active .lj-step-lbl { color: var(--blue); }
+.lj-step.done  .lj-step-lbl  { color: var(--n600); }
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 540px) {
+  .lj-auth-card { max-width: 100%; }
+  .lj-auth-head { padding: 24px 22px 20px; }
+  .lj-auth-body { padding: 24px 22px 20px; }
+  .lj-auth-foot { padding: 14px 22px 20px; }
+}
+
+/* Wide card for registration */
+.lj-auth-card-wide { max-width: 700px; }

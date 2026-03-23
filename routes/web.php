@@ -30,6 +30,8 @@ use App\Http\Controllers\JobSeeker\ProfileController as JobSeekerProfileControll
 use App\Http\Controllers\JobSeeker\ResumeController;
 use App\Http\Controllers\JobSeeker\SavedJobController;
 use App\Http\Controllers\JobSeeker\SettingsController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\EmployerController;
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 
@@ -41,28 +43,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
-        Route::resource('categories', CategoryController::class);
-        Route::resource('colors', ColorController::class);
         Route::resource('skills', SkillController::class);
-        Route::resource('sizes', SizeController::class);
-        Route::resource('subcategories', SubCategoryController::class);
-
-        Route::resource('products', ProductController::class);
-        Route::get('get-subcategories/{category}', [ProductController::class, 'getSubcategories'])
-            ->name('products.getSubcategories');
-        Route::delete('products/image/{id}', [ProductController::class, 'deleteImage'])
-            ->name('products.image.delete');
-
-        Route::resource('sliders', SliderController::class);
-        Route::post('sliders/{id}/toggle-status', [SliderController::class, 'toggleStatus'])
-            ->name('sliders.toggleStatus');
-
-        // Inventory
-        Route::get('inventory', [InventoryController::class, 'index'])->name('inventory.index');
-        Route::get('inventory/{id}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
-        Route::put('inventory/{id}', [InventoryController::class, 'update'])->name('inventory.update');
-
-        Route::resource('coupons', CouponController::class);
+        Route::resource('educations', EducationController::class);
+        Route::resource('employers', EmployerController::class);
+       
 
         Route::resource('users', CustomerController::class);
 
@@ -70,6 +54,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
 
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::post('/admin/employers/approve/{id}', [EmployerController::class, 'approve'])->name('employers.approve');
+
     });
 });
 
