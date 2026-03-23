@@ -153,7 +153,7 @@
                 serverSide: true,
 
                 ajax: '{{ route('admin.employers.index') }}',
-
+                order: [[1, 'asc']],
                 columns: [
 
                     {

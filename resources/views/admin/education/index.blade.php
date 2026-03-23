@@ -64,9 +64,8 @@ $(function(){
 
         processing: true,
         serverSide: true,
-
         ajax: '{{ route('admin.educations.index') }}',
-
+        order: [[1, 'asc']],
         columns: [
 
             {

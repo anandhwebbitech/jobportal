@@ -68,7 +68,8 @@ body {
     padding: 14px 18px;
     margin-bottom: 8px;
     border-radius: 18px;
-    color: #065f46;
+    /* color: #065f46; */
+    color:blue;
     text-decoration: none;
     font-weight: 500;
     transition: background var(--transition), color var(--transition);
@@ -84,7 +85,7 @@ body {
     box-shadow:
         inset 0 1px 0 #fff,
         0 12px 28px rgba(16, 185, 129, .25);
-    color: var(--emerald);
+    color: red;
 }
 
 /* ── Header ─────────────────────────────────────────── */
@@ -183,14 +184,15 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--emerald), var(--green));
+    /* background: linear-gradient(135deg, var(--emerald), var(--green)); */
     border: none;
     box-shadow: 0 14px 30px rgba(16, 185, 129, .40);
 }
 
 /* ── Table ──────────────────────────────────────────── */
 .table th {
-    color: #047857;
+    /* color: #047857; */
+    color: #00124d;
     font-weight: 600;
     border-bottom: 1px solid var(--border);
 }

@@ -41,7 +41,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AdminController::class, 'loginSubmit'])->name('login.submit');
 
     Route::middleware('admin')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admindashboard');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::resource('skills', SkillController::class);
         Route::resource('educations', EducationController::class);

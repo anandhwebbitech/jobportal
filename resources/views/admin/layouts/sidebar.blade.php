@@ -8,7 +8,7 @@
       <nav>
 
         <!-- Dashboard -->
-        <a href="{{ route('admin.dashboard')}}"
+        <a href="{{ route('admin.admindashboard')}}"
            class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
             <i class="fa-solid fa-chart-line"></i> Dashboard
         </a>

@@ -15,9 +15,9 @@ class SkillController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $pages = Skill::latest();
+            $skills = Skill::query();
 
-            return DataTables::of($pages)
+            return DataTables::of($skills)
                 ->addIndexColumn()
                 ->filter(function ($query) {
                     if (request()->has('search') && $search = request('search')['value']) {

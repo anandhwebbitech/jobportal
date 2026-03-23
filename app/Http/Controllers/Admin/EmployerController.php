@@ -16,7 +16,7 @@ class EmployerController extends Controller
     {
         if ($request->ajax()) {
 
-            $educations = Employer::latest();
+            $educations = Employer::query();
             // dd($educations->get());
 
             return DataTables::of($educations)

@@ -2050,7 +2050,7 @@
                                         <label class="flbl" for="js_name">Full Name <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                id="js_name" class="finput fc-b" placeholder="Your full name" /></div>
+                                                id="full_name" class="finput fc-b" placeholder="Your full name" /></div>
                                         <div class="ferr-msg" id="e-js_name"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Full name required (min. 2
                                                 chars).</span></div>
@@ -2059,7 +2059,7 @@
                                         <label class="flbl" for="js_mob">Mobile Number <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                type="tel" id="js_mob" class="finput fc-b"
+                                                type="tel" id="mobile" class="finput fc-b"
                                                 placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
                                         <div class="ferr-msg" id="e-js_mob"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
@@ -2070,7 +2070,7 @@
                                     <label class="flbl" for="js_email">Email Address <span
                                             class="req">*</span></label>
                                     <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
-                                            id="js_email" class="finput fc-b" placeholder="you@example.com" /></div>
+                                            id="email" class="finput fc-b" placeholder="you@example.com" /></div>
                                     <div class="ferr-msg" id="e-js_email"><i
                                             class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
                                             address.</span></div>
@@ -2085,9 +2085,9 @@
                                         <label class="flbl" for="js_pwd">Password <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="js_pwd" class="finput pr fc-b"
+                                            <input type="password" id="password" class="finput pr fc-b"
                                                 placeholder="Min. 8 characters" oninput="pwdStr(this.value,'js-pb')" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('js_pwd',this)"
+                                            <button type="button" class="fiw-r" onclick="togPwd('password',this)"
                                                 tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                         </div>
                                         <div class="pwd-wrap">
@@ -2103,9 +2103,9 @@
                                         <label class="flbl" for="js_cpwd">Confirm Password <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="js_cpwd" class="finput pr fc-b"
+                                            <input type="password" id="confirm_password" class="finput pr fc-b"
                                                 placeholder="Re-enter password" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('js_cpwd',this)"
+                                            <button type="button" class="fiw-r" onclick="togPwd('confirm_password',this)"
                                                 tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                         </div>
                                         <div class="ferr-msg" id="e-js_cpwd"><i
@@ -2124,7 +2124,7 @@
                                     <div class="fgrp">
                                         <label class="flbl" for="js_state">State <span class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
-                                            <select id="js_state" class="finput fc-b">
+                                            <select id="state" class="finput fc-b">
                                                 <option value="" disabled selected>Select State</option>
                                                 <option>Tamil Nadu</option>
                                                 <option>Kerala</option>
@@ -2142,7 +2142,7 @@
                                         <label class="flbl" for="js_dist">District <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
-                                            <select id="js_dist" class="finput fc-b">
+                                            <select id="district" class="finput fc-b">
                                                 <option value="" disabled selected>Select District</option>
                                                 <option>Chennai</option>
                                                 <option>Coimbatore</option>
@@ -2171,7 +2171,7 @@
                                         <label class="flbl" for="js_city">City / Town <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
-                                                id="js_city" class="finput fc-b" placeholder="Your city" /></div>
+                                                id="city" class="finput fc-b" placeholder="Your city" /></div>
                                         <div class="ferr-msg" id="e-js_city"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Please enter your
                                                 city.</span></div>
@@ -2188,7 +2188,7 @@
                                     <label class="flbl" for="js_qual">Highest Qualification <span
                                             class="req">*</span></label>
                                     <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
-                                        <select id="js_qual" class="finput fc-b">
+                                        <select id="qualification" class="finput fc-b">
                                             <option value="" disabled selected>Select Qualification</option>
                                             <option value="10th">10th Pass (SSLC)</option>
                                             <option value="12th">12th Pass (HSC)</option>
@@ -2222,7 +2222,7 @@
                                         <div class="fgrp">
                                             <label class="flbl" for="js_yrs">Years of Experience</label>
                                             <div class="fiw"><i class="fa-solid fa-clock fiw-l"></i>
-                                                <select id="js_yrs" class="finput fc-b">
+                                                <select id="ex_years" class="finput fc-b">
                                                     <option value="">Select Years</option>
                                                     <option>Less than 1 year</option>
                                                     <option>1 year</option>
@@ -2238,14 +2238,14 @@
                                         <div class="fgrp">
                                             <label class="flbl" for="js_pco">Previous Company</label>
                                             <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
-                                                    type="text" id="js_pco" class="finput fc-b"
+                                                    type="text" id="previous_company" class="finput fc-b"
                                                     placeholder="e.g. ABC Pvt Ltd" /></div>
                                         </div>
                                     </div>
                                     <div class="fgrp">
                                         <label class="flbl" for="js_prole">Previous Designation</label>
                                         <div class="fiw"><i class="fa-solid fa-id-badge fiw-l"></i><input
-                                                type="text" id="js_prole" class="finput fc-b"
+                                                type="text" id="previous_designation" class="finput fc-b"
                                                 placeholder="e.g. Sales Executive" /></div>
                                     </div>
                                 </div>
@@ -2264,7 +2264,7 @@
                                 <div class="frow">
                                     <div class="fgrp">
                                         <label class="flbl">Upload Resume</label>
-                                        <div class="file-zone"><input type="file" accept=".pdf,.doc,.docx"
+                                        <div class="file-zone"><input type="file" name="resume" id="resume"accept=".pdf,.doc,.docx"
                                                 onchange="setFileLabel(this,'js-rl')">
                                             <div class="fz-ico"><i class="fa-solid fa-file-pdf"
                                                     style="color:var(--blue);"></i></div>
@@ -2274,7 +2274,7 @@
                                     </div>
                                     <div class="fgrp">
                                         <label class="flbl">Profile Photo <span class="opt">Optional</span></label>
-                                        <div class="file-zone"><input type="file" accept="image/*"
+                                        <div class="file-zone"><input type="file" name="profile_photo" id="profile_photo" accept="image/*"
                                                 onchange="setFileLabel(this,'js-pl')">
                                             <div class="fz-ico"><i class="fa-solid fa-image"
                                                     style="color:var(--blue);"></i></div>
@@ -2666,13 +2666,27 @@
         }
 
         /* ── STICKY HEADER ── */
+        // const hdr = document.getElementById('mainHeader');
+        // window.addEventListener('scroll', () => {
+        //     hdr.classList.toggle('scrolled', window.scrollY > 20);
+        //     document.getElementById('toTop').classList.toggle('visible', window.scrollY > 300);
+        // }, {
+        //     passive: true
+        // });
         const hdr = document.getElementById('mainHeader');
+        const toTop = document.getElementById('toTop');
+
         window.addEventListener('scroll', () => {
-            hdr.classList.toggle('scrolled', window.scrollY > 20);
-            document.getElementById('toTop').classList.toggle('visible', window.scrollY > 300);
-        }, {
-            passive: true
-        });
+
+            if (hdr) {
+                hdr.classList.toggle('scrolled', window.scrollY > 20);
+            }
+
+            if (toTop) {
+                toTop.classList.toggle('visible', window.scrollY > 300);
+            }
+
+        }, { passive: true });
 
         /* ── MOBILE NAV ── */
         function toggleMobile() {
@@ -2849,48 +2863,48 @@
             const al = document.getElementById('js-al' + s);
             if (al) al.classList.remove('show');
             if (s === 1) {
-                vClr('js_name', 'js_mob', 'js_email', 'js_pwd', 'js_cpwd');
-                if (g('js_name').trim().length < 2) {
-                    vErr('js_name');
+                vClr('full_name', 'mobile', 'email', 'password', 'confirm_password');
+                if (g('full_name').trim().length < 2) {
+                    vErr('full_name');
                     ok = false;
                 }
-                if (g('js_mob').replace(/\D/g, '').length < 10) {
-                    vErr('js_mob');
+                if (g('mobile').replace(/\D/g, '').length < 10) {
+                    vErr('mobile');
                     ok = false;
                 }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('js_email').trim())) {
-                    vErr('js_email');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('email').trim())) {
+                    vErr('email');
                     ok = false;
                 }
-                const pw = g('js_pwd');
+                const pw = g('password');
                 if (pw.length < 8) {
-                    vErr('js_pwd');
+                    vErr('password');
                     ok = false;
                 }
-                if (g('js_cpwd') !== pw) {
-                    vErr('js_cpwd');
+                if (g('confirm_password') !== pw) {
+                    vErr('confirm_password');
                     ok = false;
                 }
             }
             if (s === 2) {
-                vClr('js_state', 'js_dist', 'js_city');
-                if (!g('js_state')) {
-                    vErr('js_state');
+                vClr('state', 'district', 'city');
+                if (!g('state')) {
+                    vErr('state');
                     ok = false;
                 }
-                if (!g('js_dist')) {
-                    vErr('js_dist');
+                if (!g('district')) {
+                    vErr('district');
                     ok = false;
                 }
-                if (g('js_city').trim().length < 2) {
-                    vErr('js_city');
+                if (g('city').trim().length < 2) {
+                    vErr('city');
                     ok = false;
                 }
             }
             if (s === 3) {
-                vClr('js_qual');
-                if (!g('js_qual')) {
-                    vErr('js_qual');
+                vClr('qualification');
+                if (!g('qualification')) {
+                    vErr('qualification');
                     ok = false;
                 }
             }
@@ -2997,11 +3011,11 @@
                 doctorate: 'Doctorate'
             };
             const skills = Array.from(document.querySelectorAll('.skill-chip input:checked')).map(c => c.value);
-            const q = document.getElementById('js_qual');
-            document.getElementById('ss-nm').textContent = g('js_name') || '—';
-            document.getElementById('ss-mb').textContent = g('js_mob') || '—';
-            document.getElementById('ss-em').textContent = g('js_email') || '—';
-            document.getElementById('ss-lc').textContent = [g('js_city'), g('js_dist'), g('js_state')].filter(Boolean).join(
+            const q = document.getElementById('qualification');
+            document.getElementById('ss-nm').textContent = g('full_name') || '—';
+            document.getElementById('ss-mb').textContent = g('mobile') || '—';
+            document.getElementById('ss-em').textContent = g('email') || '—';
+            document.getElementById('ss-lc').textContent = [g('city'), g('district'), g('state')].filter(Boolean).join(
                 ', ') || '—';
             document.getElementById('ss-ql').textContent = (q && qm[q.value]) || q.value || '—';
             document.getElementById('ss-xp').textContent = document.getElementById('exp_e').checked ? 'Experienced' :

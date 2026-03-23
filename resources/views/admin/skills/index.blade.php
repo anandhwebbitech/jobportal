@@ -40,6 +40,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('admin.skills.index') }}',
+                order: [[1, 'asc']],
                 columns: [
                     {
                         data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false,

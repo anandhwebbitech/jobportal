@@ -40,7 +40,7 @@
                 <span class="lj-nav-user">
                     <i class="fas fa-circle-user"></i> {{ Auth::user()->name }}
                 </span>
-                <a href="{{ route('dashboard') }}" class="lj-btn lj-btn-blue">Dashboard</a>
+                {{-- <a href="{{ route('dashboard') }}" class="lj-btn lj-btn-blue">Dashboard</a> --}}
                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
                     @csrf
                     <button type="submit" class="lj-btn lj-btn-ghost">Logout</button>

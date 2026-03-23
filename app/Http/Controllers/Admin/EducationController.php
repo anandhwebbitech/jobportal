@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\DataTables;
 use App\Models\Education;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 class EducationController extends Controller
 {
@@ -15,7 +15,7 @@ class EducationController extends Controller
     {
         if ($request->ajax()) {
 
-            $educations = Education::latest();
+            $educations = Education::query();
 
             return DataTables::of($educations)
                 ->addIndexColumn()

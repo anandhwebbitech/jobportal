@@ -56,26 +56,15 @@ class AdminController extends Controller
         // $orderCount = Order::count();
         $orderCount = 176;
         $customerCount = User::count();
-        $lowStockCount = Product::where('stock','<',5)->count();
-        $productCount = Product::count();
-        $categoryCount = Category::count();
-        $colorCount = Color::count();
-        $sizeCount = Size::count();
+        $lowStockCount = 1000;
+        $productCount = 1000;
+        $categoryCount = 1000;
+        $colorCount = 1000;
+        $sizeCount = 1000;
 
-        // $recentOrders = Order::latest()->take(5)->get();
         $recentOrders = [];
 
-        // $topProducts = Product::withCount('orderItems')
-                        // ->orderBy('order_items_count','desc')
-        $topProducts = Product::orderBy('id','desc')
-                        ->take(5)
-                        ->get()
-                        // ->map(function($p){
-                        //     $p->total_sold = $p->order_items_count;
-                        //     return $p;
-                        // })
-                        ;
-
+       
         $months = ['Jan','Feb','Mar','Apr','May','Jun'];
         $monthlySales = [1000,2000,3000,2500,4000,5000];
 
@@ -89,7 +78,6 @@ class AdminController extends Controller
             'colorCount',
             'sizeCount',
             'recentOrders',
-            'topProducts',
             'months',
             'monthlySales'
         ));
