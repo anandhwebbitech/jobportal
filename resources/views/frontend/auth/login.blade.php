@@ -1084,7 +1084,7 @@ resources/views/frontend/auth/employer-login.blade.php
 
         <!-- FORM -->
         <form id="loginForm" onsubmit="handleSubmit(); return false;">
-
+          @csrf
           <div class="fgroup">
             <label class="flabel" for="f_email">Email Address <span class="req">*</span></label>
             <div class="fiw">
@@ -1249,6 +1249,52 @@ resources/views/frontend/auth/employer-login.blade.php
         btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span id="submitLabel">' +
           (currentType === 'jobseeker' ? 'Sign In as Job Seeker' : 'Login to Dashboard') + '</span>';
       }, 2000);
+
+      let email = $('#f_email').val();
+      let password = $('#f_password').val();
+
+      $.ajax({
+          url: "{{ route('userlogin') }}", // define this route
+          type: "POST",
+          data: {
+              _token: $('meta[name="csrf-token"]').attr('content'),
+              email: email,
+              password: password
+          },
+          headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          },
+          beforeSend: function () {
+              $('#submitBtn').prop('disabled', true).text('Logging in...');
+          },
+
+          success: function (res) {
+
+              if (res.status) {
+                  toastr.success(res.message);
+
+                  // ✅ redirect based on role
+                  window.location.href = res.redirect;
+              } else {
+                  toastr.error(res.message);
+              }
+
+              $('#submitBtn').prop('disabled', false).text('Sign In');
+          },
+
+          error: function (xhr) {
+
+              let msg = 'Login failed';
+
+              if (xhr.responseJSON && xhr.responseJSON.message) {
+                  msg = xhr.responseJSON.message;
+              }
+
+              toastr.error(msg);
+
+              $('#submitBtn').prop('disabled', false).text('Sign In');
+          }
+      });
     }
 
     /* ─── INIT ───────────────────────────── */

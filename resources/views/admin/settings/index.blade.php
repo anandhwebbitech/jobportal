@@ -9,7 +9,7 @@
                 <h4 class="fw-bold mb-0">Application Settings</h4>
                 <small class="text-muted">Dashboard / Settings</small>
             </div>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary rounded-pill px-4">
+            <a href="{{ route('admin.admindashboard') }}" class="btn btn-primary rounded-pill px-4">
                 <i class="fa fa-arrow-left me-2"></i>Back to Dashboard
             </a>
         </div>

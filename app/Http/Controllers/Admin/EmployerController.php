@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employer;
+use App\Models\EmployerDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -16,10 +18,10 @@ class EmployerController extends Controller
     {
         if ($request->ajax()) {
 
-            $educations = Employer::query();
-            // dd($educations->get());
+            $employer = User::with('employerDetails')
+                ->where('role', 'employer');
 
-            return DataTables::of($educations)
+            return DataTables::of($employer)
                 ->addIndexColumn()
 
                 ->filter(function ($query) {
@@ -28,33 +30,48 @@ class EmployerController extends Controller
 
                         $query->where(function ($q) use ($search) {
 
-                            $q->where('company_name', 'like', "%{$search}%")
-                            ->orWhere('owner_name', 'like', "%{$search}%")
-                            ->orWhere('contact_number', 'like', "%{$search}%")
-                            ->orWhere('pan_number', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
+                            $q->where('users.email', 'like', "%{$search}%")
+                                ->orWhereHas('employerDetails', function ($q2) use ($search) {
+                                    $q2->where('company_name', 'like', "%{$search}%")
+                                    ->orWhere('owner_name', 'like', "%{$search}%")
+                                    ->orWhere('owner_mobile', 'like', "%{$search}%")
+                                    ->orWhere('pan_number', 'like', "%{$search}%");
+                                });
 
                         });
-
                     }
-
                 })
 
                 ->editColumn('status', function ($row) {
 
-                    switch ($row->status) {
-                        case 1:
+                    switch ($row->is_active) {
+                        case 0:
                             return '<span class="badge bg-warning">Pending</span>';
-                        case 2:
-                            return '<span class="badge bg-info">Waiting</span>';
-                        case 3:
+                        case 1:
                             return '<span class="badge bg-success">Approved</span>';
-                        case 4:
+                        case 3:
                             return '<span class="badge bg-danger">Rejected</span>';
                         default:
                             return '<span class="badge bg-secondary">Unknown</span>';
                     }
+                })
 
+                ->addColumn('company_name', function ($row) {
+                    return $row->employerDetails->company_name ?? '-';
+                })
+
+                ->addColumn('owner_name', function ($row) {
+                    return $row->employerDetails->owner_name ?? '-';
+                })
+
+                ->addColumn('mobile', function ($row) {
+                    return $row->employerDetails->owner_mobile ?? '-';
+                })
+                ->addColumn('gst', function ($row) {
+                    return $row->employerDetails->gst_number ?? '-';
+                })
+                ->addColumn('pan', function ($row) {
+                    return $row->employerDetails->pan_number ?? '-';
                 })
 
                 ->addColumn('action', function ($row) {
@@ -63,10 +80,9 @@ class EmployerController extends Controller
                         <select class="form-select form-select-sm changeStatus" 
                             data-id="'.$row->id.'" style="width:120px">
 
-                            <option value="1" '.($row->status == 1 ? 'selected' : '').'>Pending</option>
-                            <option value="2" '.($row->status == 2 ? 'selected' : '').'>Waiting</option>
-                            <option value="3" '.($row->status == 3 ? 'selected' : '').'>Approved</option>
-                            <option value="4" '.($row->status == 4 ? 'selected' : '').'>Rejected</option>
+                            <option value="0" '.($row->is_active == 0 ? 'selected' : '').'>Pending</option>
+                            <option value="1" '.($row->is_active == 1 ? 'selected' : '').'>Approved</option>
+                            <option value="3" '.($row->is_active == 3 ? 'selected' : '').'>Rejected</option>
 
                         </select>
                     ';
@@ -78,19 +94,17 @@ class EmployerController extends Controller
                                 data-id="'.$row->id.'"
                                 class="btn btn-sm btn-info viewEmployer"
                                 title="View">
-
                                 <i class="fa fa-eye"></i>
-
                             </button>
+
                             '.$statusDropdown.'
+
                             <button data-id="' . $row->id . '"
                                 data-table-id="employers-table"
                                 data-route="' . route('admin.employers.destroy', $row->id) . '" 
                                 class="btn btn-sm btn-danger delete"
                                 title="Delete">
-
                                 <i class="fa fa-trash"></i>
-
                             </button>
 
                         </div>
@@ -100,13 +114,12 @@ class EmployerController extends Controller
                 ->rawColumns(['status', 'action'])
                 ->make(true);
         }
-
         return view('admin.employer.index');
     }
 
     public function show($id)
     {
-        $employer = Employer::findOrFail($id);
+        $employer = User::with('employerDetails')->findOrFail($id);
         $employer->created_at_formatted = $employer->created_at 
         ? $employer->created_at->format('d M Y h:i A') 
         : '-';
@@ -115,7 +128,7 @@ class EmployerController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $employer = Employer::find($id);
+        $employer = User::find($id);
 
         if (!$employer) {
             return response()->json([
@@ -124,10 +137,10 @@ class EmployerController extends Controller
             ]);
         }
 
-        $employer->status = $request->status;
+        $employer->is_active = $request->status;
 
-        if ($request->status == 'rejected') {
-            $employer->message = $request->reject_message;
+        if ($request->is_active == 3) {
+            $employer->reject_message = $request->reject_message;
         }
 
         $employer->save();

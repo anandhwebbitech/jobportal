@@ -55,8 +55,8 @@ class JobController extends Controller
 
             'experience' => $request->experience,
 
-            'salary_min' => $request->salary_min,
-            'salary_max' => $request->salary_max,
+            'salary_min' => $request->salary_min ?? 0,
+            'salary_max' => $request->salary_max ?? 0,
 
             'job_type' => $request->job_type,
 
@@ -68,6 +68,7 @@ class JobController extends Controller
             'skills' => $request->skills,
 
             'expiry_date' => $request->expiry_date,
+            'status'    => 0,
         ]);
 
         return redirect()->route('jobs.index')

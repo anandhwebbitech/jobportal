@@ -90,4 +90,13 @@
     </div>
 
   </div>
+  <script>
+    // ✅ ADD HERE (GLOBAL CONFIG)
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: 4000
+    };
+</script>
 </footer>

@@ -39,7 +39,7 @@ class AdminController extends Controller
 
             if (Auth::user()->role === 'admin') {
                 $request->session()->regenerate();
-                return redirect()->route('admin.dashboard')->with('success', 'Login Successfully!');
+                return redirect()->route('admin.admindashboard')->with('success', 'Login Successfully!');
             }
 
             Auth::logout();

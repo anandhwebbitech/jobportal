@@ -34,6 +34,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Company Name</th>
+                                <th>Owner Name</th>
                                 <th>Email</th>
                                 <th>Contact</th>
                                 <th>GST</th>
@@ -165,14 +166,15 @@
                     },
 
                     { data: 'company_name', name: 'company_name' },
+                    { data: 'owner_name', name: 'owner_name' },                    
 
                     { data: 'email', name: 'email' },
 
-                    { data: 'contact_number', name: 'contact_number' },
+                    { data: 'mobile', name: 'mobile' },
 
-                    { data: 'gst_number', name: 'gst_number' },
+                    { data: 'gst', name: 'gst' },
 
-                    { data: 'pan_number', name: 'pan_number' },
+                    { data: 'pan', name: 'pan' },
 
                     {
                         data: 'status',
@@ -199,36 +201,37 @@
             let id = $(this).data('id');
 
             $.ajax({
-
                 url: "{{ url('admin/employers') }}/" + id,
                 type: "GET",
 
                 success: function (res) {
 
-                    $('#company_name').text(res.company_name);
-                    $('#owner_name').text(res.owner_name);
-                    $('#email').text(res.email);
-                    $('#contact_number').text(res.contact_number);
-                    $('#contact_type').text(res.contact_type);
-                    $('#alternate_contact_number').text(res.alternate_contact_number ?? '-');
-                    $('#address').text(res.address ?? '-');
-                    $('#gst_number').text(res.gst_number ?? '-');
-                    $('#pan_number').text(res.pan_number ?? '-');
+                    let details = res.employer_details || {}; // ✅ important
 
-                    let status = parseInt(res.status); 
+                    $('#company_name').text(details.company_name ?? '-');
+                    $('#owner_name').text(details.owner_name ?? '-');
+                    $('#email').text(res.email ?? '-');
+
+                    $('#contact_number').text(details.owner_mobile ?? '-');
+                    $('#contact_type').text('Owner'); // static or adjust if needed
+                    $('#alternate_contact_number').text(details.hr_mobile ?? '-');
+
+                    $('#address').text(details.company_address ?? '-');
+                    $('#gst_number').text(details.gst_number ?? '-');
+                    $('#pan_number').text(details.pan_number ?? '-');
+
+                    // ✅ STATUS FIX (use is_active)
+                    let status = parseInt(res.is_active);
                     let statusHtml = '';
 
                     switch(status) {
-                        case 1:
+                        case 0:
                             statusHtml = '<span class="badge bg-warning">Pending</span>';
                             break;
-                        case 2:
-                            statusHtml = '<span class="badge bg-info">Waiting</span>';
-                            break;
-                        case 3:
+                        case 1:
                             statusHtml = '<span class="badge bg-success">Approved</span>';
                             break;
-                        case 4:
+                        case 3:
                             statusHtml = '<span class="badge bg-danger">Rejected</span>';
                             break;
                         default:
@@ -240,10 +243,12 @@
                     $('#created_at').text(res.created_at_formatted ?? '-');
 
                     $('#viewEmployerModal').modal('show');
+                },
+
+                error: function (xhr) {
+                    console.log(xhr.responseText);
                 }
-
             });
-
         });
 
         let previousStatus;
@@ -259,7 +264,7 @@
             let status = select.val();
 
             // Reject → ask reason using Swal textarea
-            if (status == 4) {
+            if (status == 3) {
 
                 Swal.fire({
                     title: 'Reject Employer',

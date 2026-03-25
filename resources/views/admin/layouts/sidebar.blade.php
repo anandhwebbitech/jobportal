@@ -28,7 +28,7 @@
             </a>
 
             <a href="#"
-               class="{{ request()->is('admin/jobs*') ? 'active' : '' }}">
+               class="{{ request()->is('admin/employers*') ? 'active' : '' }}">
                 <i class="fa fa-briefcase"></i> Job List
             </a>
 
@@ -45,7 +45,7 @@
         <div class="submenu {{ request()->is('admin/jobseekers*') ? 'open' : '' }}"
              id="jobseeker-submenu">
 
-            <a href="#"
+            <a href="{{ route('admin.jobseekers.index')}}"
                class="{{ request()->is('admin/jobseekers*') ? 'active' : '' }}">
                 <i class="fa fa-list"></i> Seeker List
             </a>

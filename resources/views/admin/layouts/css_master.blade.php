@@ -10,6 +10,8 @@
 <link href="{{ asset('admin/common_css.css')}}" rel="stylesheet">
 <link rel="stylesheet"href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 <style>
     /* Base submenu (hidden state) */
     .submenu {

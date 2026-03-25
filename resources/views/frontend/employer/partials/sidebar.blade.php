@@ -4,7 +4,7 @@
 ══════════════════════════════════════════════════════════ --}}
 
 @php
-  $unread = auth()->check() ? (auth()->user()->employer->notifications()->where('is_read',0)->count() ?? 3) : 3;
+  $unread =  3;
 
   $empName  = auth()->check() ? auth()->user()->name : 'Karthik Selvan';
   $compName = auth()->check() ? (auth()->user()->employer->company_name ?? 'TechBridge Solutions') : 'TechBridge Solutions';
@@ -14,13 +14,9 @@
                 ->take(2)
                 ->implode('');
 
-  $planName = auth()->check()
-      ? (auth()->user()->employer->activePlan->name ?? '30 Day Plan')
-      : '30 Day Plan';
+  $planName ='30 Day Plan';
 
-  $planExpiry = auth()->check()
-      ? (auth()->user()->employer->activePlan?->expires_at?->format('d M Y') ?? '10 Apr 2025')
-      : '10 Apr 2025';
+  $planExpiry ='10 Apr 2025';
 
   $verified = true;
 

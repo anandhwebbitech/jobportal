@@ -2029,618 +2029,623 @@
                 </div>
 
                 <!-- ════ JOB SEEKER FORM ════ -->
-                <div id="jsForm">
-                    <div class="lj-card">
-                        <div class="card-head blue-hd" id="jsHead">
-                            <i class="fa-solid fa-user" id="jsHeadIco"></i>
-                            <div>
-                                <div class="card-head-title" id="jsHeadTitle">Personal Information</div>
-                                <div class="card-head-sub" id="jsHeadSub">Step 1 of 5 — Your basic details</div>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <!-- Panel 1 -->
-                            <div class="panel active" id="js-p1">
-                                <div class="step-alert" id="js-al1"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span id="js-al1-msg">Please fill in
-                                        all required fields.</span></div>
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_name">Full Name <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                id="full_name" class="finput fc-b" placeholder="Your full name" /></div>
-                                        <div class="ferr-msg" id="e-js_name"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Full name required (min. 2
-                                                chars).</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_mob">Mobile Number <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                type="tel" id="mobile" class="finput fc-b"
-                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
-                                        <div class="ferr-msg" id="e-js_mob"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
-                                                mobile number.</span></div>
-                                    </div>
-                                </div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="js_email">Email Address <span
-                                            class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
-                                            id="email" class="finput fc-b" placeholder="you@example.com" /></div>
-                                    <div class="ferr-msg" id="e-js_email"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
-                                            address.</span></div>
-                                </div>
-                                <div class="fsec">
-                                    <div class="fsec-line"></div>
-                                    <div class="fsec-lbl bi"><i class="fa-solid fa-lock"></i> Account Security</div>
-                                    <div class="fsec-line"></div>
-                                </div>
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_pwd">Password <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="password" class="finput pr fc-b"
-                                                placeholder="Min. 8 characters" oninput="pwdStr(this.value,'js-pb')" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('password',this)"
-                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                                        </div>
-                                        <div class="pwd-wrap">
-                                            <div class="pwd-bar" id="js-pb"></div>
-                                        </div>
-                                        <div class="ferr-msg" id="e-js_pwd"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
-                                                8 characters.</span></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Use letters, numbers &
-                                            symbols</div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_cpwd">Confirm Password <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="confirm_password" class="finput pr fc-b"
-                                                placeholder="Re-enter password" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('confirm_password',this)"
-                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
-                                        </div>
-                                        <div class="ferr-msg" id="e-js_cpwd"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
-                                                match.</span></div>
-                                    </div>
+                <form id="registrationForm" method="POST" action="{{ route('jobseeker_register.store') }}"   enctype="multipart/form-data">
+                    @csrf
+                    <div id="jsForm">
+                        <div class="lj-card">
+                            <div class="card-head blue-hd" id="jsHead">
+                                <i class="fa-solid fa-user" id="jsHeadIco"></i>
+                                <div>
+                                    <div class="card-head-title" id="jsHeadTitle">Personal Information</div>
+                                    <div class="card-head-sub" id="jsHeadSub">Step 1 of 5 — Your basic details</div>
                                 </div>
                             </div>
 
-                            <!-- Panel 2 -->
-                            <div class="panel" id="js-p2">
-                                <div class="step-alert" id="js-al2"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all location
-                                        fields.</span></div>
-                                <div class="frow3">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_state">State <span class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
-                                            <select id="state" class="finput fc-b">
-                                                <option value="" disabled selected>Select State</option>
-                                                <option>Tamil Nadu</option>
-                                                <option>Kerala</option>
-                                                <option>Karnataka</option>
-                                                <option>Andhra Pradesh</option>
-                                                <option>Telangana</option>
-                                                <option>Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="ferr-msg" id="e-js_state"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
-                                                state.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_dist">District <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
-                                            <select id="district" class="finput fc-b">
-                                                <option value="" disabled selected>Select District</option>
-                                                <option>Chennai</option>
-                                                <option>Coimbatore</option>
-                                                <option>Madurai</option>
-                                                <option>Tiruchirappalli</option>
-                                                <option>Salem</option>
-                                                <option>Tirunelveli</option>
-                                                <option>Erode</option>
-                                                <option>Vellore</option>
-                                                <option>Thanjavur</option>
-                                                <option>Dindigul</option>
-                                                <option>Kanchipuram</option>
-                                                <option>Tiruppur</option>
-                                                <option>Nagercoil</option>
-                                                <option>Cuddalore</option>
-                                                <option>Sivakasi</option>
-                                                <option>Karur</option>
-                                                <option>Namakkal</option>
-                                            </select>
-                                        </div>
-                                        <div class="ferr-msg" id="e-js_dist"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
-                                                district.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_city">City / Town <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
-                                                id="city" class="finput fc-b" placeholder="Your city" /></div>
-                                        <div class="ferr-msg" id="e-js_city"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please enter your
-                                                city.</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Panel 3 -->
-                            <div class="panel" id="js-p3">
-                                <div class="step-alert" id="js-al3"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please select your
-                                        qualification.</span></div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="js_qual">Highest Qualification <span
-                                            class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
-                                        <select id="qualification" class="finput fc-b">
-                                            <option value="" disabled selected>Select Qualification</option>
-                                            <option value="10th">10th Pass (SSLC)</option>
-                                            <option value="12th">12th Pass (HSC)</option>
-                                            <option value="diploma">Diploma</option>
-                                            <option value="bachelor">Bachelor's Degree</option>
-                                            <option value="master">Master's Degree</option>
-                                            <option value="doctorate">Doctorate / PhD</option>
-                                        </select>
-                                    </div>
-                                    <div class="ferr-msg" id="e-js_qual"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Please select your
-                                            qualification.</span></div>
-                                </div>
-                                <div class="fsec">
-                                    <div class="fsec-line"></div>
-                                    <div class="fsec-lbl bi"><i class="fa-solid fa-briefcase"></i> Experience Level</div>
-                                    <div class="fsec-line"></div>
-                                </div>
-                                <div class="fgrp">
-                                    <div class="exp-row">
-                                        <div class="exp-opt"><input type="radio" id="exp_f" name="exp"
-                                                value="fresher" checked onchange="togExp(false)"><label for="exp_f"><i
-                                                    class="fa-solid fa-seedling"></i> Fresher</label></div>
-                                        <div class="exp-opt"><input type="radio" id="exp_e" name="exp"
-                                                value="experienced" onchange="togExp(true)"><label for="exp_e"><i
-                                                    class="fa-solid fa-briefcase"></i> Experienced</label></div>
-                                    </div>
-                                </div>
-                                <div id="expFields" style="display:none;">
+                            <div class="card-body">
+                                <!-- Panel 1 -->
+                                <div class="panel active" id="js-p1">
+                                    <div class="step-alert" id="js-al1"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span id="js-al1-msg">Please fill in
+                                            all required fields.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
-                                            <label class="flbl" for="js_yrs">Years of Experience</label>
-                                            <div class="fiw"><i class="fa-solid fa-clock fiw-l"></i>
-                                                <select id="ex_years" class="finput fc-b">
-                                                    <option value="">Select Years</option>
-                                                    <option>Less than 1 year</option>
-                                                    <option>1 year</option>
-                                                    <option>2 years</option>
-                                                    <option>3 years</option>
-                                                    <option>4 years</option>
-                                                    <option>5 years</option>
-                                                    <option>6+ years</option>
-                                                    <option>10+ years</option>
+                                            <label class="flbl" for="js_name">Full Name <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                    id="full_name" name="full_name"class="finput fc-b" placeholder="Your full name" /></div>
+                                            <div class="ferr-msg" id="e-js_name"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Full name required (min. 2
+                                                    chars).</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_mob">Mobile Number <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                    type="tel" id="mobile" name="mobile" class="finput fc-b"
+                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                            <div class="ferr-msg" id="e-js_mob"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                    mobile number.</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_email">Email Address <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
+                                                id="email" name="email" class="finput fc-b" placeholder="you@example.com" /></div>
+                                        <div class="ferr-msg" id="e-js_email"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
+                                                address.</span></div>
+                                    </div>
+                                    <div class="fsec">
+                                        <div class="fsec-line"></div>
+                                        <div class="fsec-lbl bi"><i class="fa-solid fa-lock"></i> Account Security</div>
+                                        <div class="fsec-line"></div>
+                                    </div>
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_pwd">Password <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                                <input type="password" id="password" name="password"class="finput pr fc-b"
+                                                    placeholder="Min. 8 characters" oninput="pwdStr(this.value,'js-pb')" />
+                                                <button type="button" class="fiw-r" onclick="togPwd('password',this)"
+                                                    tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                            </div>
+                                            <div class="pwd-wrap">
+                                                <div class="pwd-bar" id="js-pb"></div>
+                                            </div>
+                                            <div class="ferr-msg" id="e-js_pwd"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                    8 characters.</span></div>
+                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Use letters, numbers &
+                                                symbols</div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_cpwd">Confirm Password <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                                <input type="password" id="confirm_password"  name="confirm_password"class="finput pr fc-b"
+                                                    placeholder="Re-enter password" />
+                                                <button type="button" class="fiw-r" onclick="togPwd('confirm_password',this)"
+                                                    tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                            </div>
+                                            <div class="ferr-msg" id="e-js_cpwd"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
+                                                    match.</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 2 -->
+                                <div class="panel" id="js-p2">
+                                    <div class="step-alert" id="js-al2"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all location
+                                            fields.</span></div>
+                                    <div class="frow3">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_state">State <span class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
+                                                <select id="state" name="state"class="finput fc-b">
+                                                    <option value="" disabled selected>Select State</option>
+                                                    <option>Tamil Nadu</option>
+                                                    <option>Kerala</option>
+                                                    <option>Karnataka</option>
+                                                    <option>Andhra Pradesh</option>
+                                                    <option>Telangana</option>
+                                                    <option>Other</option>
                                                 </select>
+                                            </div>
+                                            <div class="ferr-msg" id="e-js_state"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                    state.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_dist">District <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
+                                                <select id="district" name="district" class="finput fc-b">
+                                                    <option value="" disabled selected>Select District</option>
+                                                    <option>Chennai</option>
+                                                    <option>Coimbatore</option>
+                                                    <option>Madurai</option>
+                                                    <option>Tiruchirappalli</option>
+                                                    <option>Salem</option>
+                                                    <option>Tirunelveli</option>
+                                                    <option>Erode</option>
+                                                    <option>Vellore</option>
+                                                    <option>Thanjavur</option>
+                                                    <option>Dindigul</option>
+                                                    <option>Kanchipuram</option>
+                                                    <option>Tiruppur</option>
+                                                    <option>Nagercoil</option>
+                                                    <option>Cuddalore</option>
+                                                    <option>Sivakasi</option>
+                                                    <option>Karur</option>
+                                                    <option>Namakkal</option>
+                                                </select>
+                                            </div>
+                                            <div class="ferr-msg" id="e-js_dist"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                    district.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="js_city">City / Town <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
+                                                    id="city" name="city" class="finput fc-b" placeholder="Your city" /></div>
+                                            <div class="ferr-msg" id="e-js_city"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please enter your
+                                                    city.</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panel 3 -->
+                                <div class="panel" id="js-p3">
+                                    <div class="step-alert" id="js-al3"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please select your
+                                            qualification.</span></div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="js_qual">Highest Qualification <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
+                                            <select id="qualification"name="qualification" class="finput fc-b">
+                                                <option value="" disabled selected>Select Qualification</option>
+                                                <option value="10th">10th Pass (SSLC)</option>
+                                                <option value="12th">12th Pass (HSC)</option>
+                                                <option value="diploma">Diploma</option>
+                                                <option value="bachelor">Bachelor's Degree</option>
+                                                <option value="master">Master's Degree</option>
+                                                <option value="doctorate">Doctorate / PhD</option>
+                                            </select>
+                                        </div>
+                                        <div class="ferr-msg" id="e-js_qual"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please select your
+                                                qualification.</span></div>
+                                    </div>
+                                    <div class="fsec">
+                                        <div class="fsec-line"></div>
+                                        <div class="fsec-lbl bi"><i class="fa-solid fa-briefcase"></i> Experience Level</div>
+                                        <div class="fsec-line"></div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <div class="exp-row">
+                                            <div class="exp-opt"><input type="radio" id="exp_f" name="exp"
+                                                    value="fresher" checked onchange="togExp(false)"><label for="exp_f"><i
+                                                        class="fa-solid fa-seedling"></i> Fresher</label></div>
+                                            <div class="exp-opt"><input type="radio" id="exp_e" name="exp"
+                                                    value="experienced" onchange="togExp(true)"><label for="exp_e"><i
+                                                        class="fa-solid fa-briefcase"></i> Experienced</label></div>
+                                        </div>
+                                    </div>
+                                    <div id="expFields" style="display:none;">
+                                        <div class="frow">
+                                            <div class="fgrp">
+                                                <label class="flbl" for="js_yrs">Years of Experience</label>
+                                                <div class="fiw"><i class="fa-solid fa-clock fiw-l"></i>
+                                                    <select id="ex_years" name="ex_years" class="finput fc-b">
+                                                        <option value="">Select Years</option>
+                                                        <option>Less than 1 year</option>
+                                                        <option>1 year</option>
+                                                        <option>2 years</option>
+                                                        <option>3 years</option>
+                                                        <option>4 years</option>
+                                                        <option>5 years</option>
+                                                        <option>6+ years</option>
+                                                        <option>10+ years</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="fgrp">
+                                                <label class="flbl" for="js_pco">Previous Company</label>
+                                                <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
+                                                        type="text" id="previous_company" name="previous_company" class="finput fc-b"
+                                                        placeholder="e.g. ABC Pvt Ltd" /></div>
                                             </div>
                                         </div>
                                         <div class="fgrp">
-                                            <label class="flbl" for="js_pco">Previous Company</label>
-                                            <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
-                                                    type="text" id="previous_company" class="finput fc-b"
-                                                    placeholder="e.g. ABC Pvt Ltd" /></div>
+                                            <label class="flbl" for="js_prole">Previous Designation</label>
+                                            <div class="fiw"><i class="fa-solid fa-id-badge fiw-l"></i><input
+                                                    type="text" id="previous_designation" name="previous_designation" class="finput fc-b"
+                                                    placeholder="e.g. Sales Executive" /></div>
                                         </div>
                                     </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="js_prole">Previous Designation</label>
-                                        <div class="fiw"><i class="fa-solid fa-id-badge fiw-l"></i><input
-                                                type="text" id="previous_designation" class="finput fc-b"
-                                                placeholder="e.g. Sales Executive" /></div>
+                                </div>
+
+                                <!-- Panel 4 -->
+                                <div class="panel" id="js-p4">
+                                    <div class="step-alert" id="js-al4"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one
+                                            skill.</span></div>
+                                    <div id="skillsBox" name="skillsBox"></div>
+                                </div>
+
+                                <!-- Panel 5 -->
+                                <div class="panel" id="js-p5">
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl">Upload Resume</label>
+                                            <div class="file-zone"><input type="file" name="resume" id="resume"accept=".pdf,.doc,.docx"
+                                                    onchange="setFileLabel(this,'js-rl')">
+                                                <div class="fz-ico"><i class="fa-solid fa-file-pdf"
+                                                        style="color:var(--blue);"></i></div>
+                                                <div class="fz-title" id="js-rl">Click to upload resume</div>
+                                                <div class="fz-sub">PDF, DOC, DOCX — Max 5 MB</div>
+                                            </div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl">Profile Photo <span class="opt">Optional</span></label>
+                                            <div class="file-zone"><input type="file" name="profile_photo" id="profile_photo" accept="image/*"
+                                                    onchange="setFileLabel(this,'js-pl')">
+                                                <div class="fz-ico"><i class="fa-solid fa-image"
+                                                        style="color:var(--blue);"></i></div>
+                                                <div class="fz-title" id="js-pl">Click to upload photo</div>
+                                                <div class="fz-sub">JPG, PNG — Max 2 MB</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="summary-box">
+                                        <div class="summary-title"><i class="fa-solid fa-list-check"
+                                                style="color:var(--blue);"></i> Registration Summary</div>
+                                        <div class="summary-grid">
+                                            <div><span>Name: </span><strong id="ss-nm">—</strong></div>
+                                            <div><span>Mobile: </span><strong id="ss-mb">—</strong></div>
+                                            <div><span>Email: </span><strong id="ss-em">—</strong></div>
+                                            <div><span>Location: </span><strong id="ss-lc">—</strong></div>
+                                            <div><span>Qualification: </span><strong id="ss-ql">—</strong></div>
+                                            <div><span>Experience: </span><strong id="ss-xp">—</strong></div>
+                                            <div style="grid-column:1/-1;"><span>Skills: </span><strong
+                                                    id="ss-sk">—</strong></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Panel 4 -->
-                            <div class="panel" id="js-p4">
-                                <div class="step-alert" id="js-al4"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one
-                                        skill.</span></div>
-                                <div id="skillsBox"></div>
-                            </div>
-
-                            <!-- Panel 5 -->
-                            <div class="panel" id="js-p5">
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl">Upload Resume</label>
-                                        <div class="file-zone"><input type="file" name="resume" id="resume"accept=".pdf,.doc,.docx"
-                                                onchange="setFileLabel(this,'js-rl')">
-                                            <div class="fz-ico"><i class="fa-solid fa-file-pdf"
-                                                    style="color:var(--blue);"></i></div>
-                                            <div class="fz-title" id="js-rl">Click to upload resume</div>
-                                            <div class="fz-sub">PDF, DOC, DOCX — Max 5 MB</div>
-                                        </div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl">Profile Photo <span class="opt">Optional</span></label>
-                                        <div class="file-zone"><input type="file" name="profile_photo" id="profile_photo" accept="image/*"
-                                                onchange="setFileLabel(this,'js-pl')">
-                                            <div class="fz-ico"><i class="fa-solid fa-image"
-                                                    style="color:var(--blue);"></i></div>
-                                            <div class="fz-title" id="js-pl">Click to upload photo</div>
-                                            <div class="fz-sub">JPG, PNG — Max 2 MB</div>
-                                        </div>
-                                    </div>
+                            <div class="card-foot">
+                                <div class="foot-info" id="jsFootInfo">Already have an account? <a href="#">Sign In</a>
                                 </div>
-                                <div class="summary-box">
-                                    <div class="summary-title"><i class="fa-solid fa-list-check"
-                                            style="color:var(--blue);"></i> Registration Summary</div>
-                                    <div class="summary-grid">
-                                        <div><span>Name: </span><strong id="ss-nm">—</strong></div>
-                                        <div><span>Mobile: </span><strong id="ss-mb">—</strong></div>
-                                        <div><span>Email: </span><strong id="ss-em">—</strong></div>
-                                        <div><span>Location: </span><strong id="ss-lc">—</strong></div>
-                                        <div><span>Qualification: </span><strong id="ss-ql">—</strong></div>
-                                        <div><span>Experience: </span><strong id="ss-xp">—</strong></div>
-                                        <div style="grid-column:1/-1;"><span>Skills: </span><strong
-                                                id="ss-sk">—</strong></div>
-                                    </div>
+                                <div class="foot-btns">
+                                    <button type="button"  class="btn-prev" id="jsBtnPrev" onclick="jsNav(-1)" style="display:none;"><i
+                                            class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn-next blue-next" id="jsBtnNext" onclick="jsNav(1)">Next <i
+                                            class="fa-solid fa-arrow-right"></i></button>
+                                    <button type="submit"class="btn-submit blue-sub" id="jsBtnSub" style="display:none;"
+                                        ><i class="fa-solid fa-user-plus"></i> Create Account</button>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="card-foot">
-                            <div class="foot-info" id="jsFootInfo">Already have an account? <a href="#">Sign In</a>
-                            </div>
-                            <div class="foot-btns">
-                                <button class="btn-prev" id="jsBtnPrev" onclick="jsNav(-1)" style="display:none;"><i
-                                        class="fa-solid fa-arrow-left"></i> Back</button>
-                                <button class="btn-next blue-next" id="jsBtnNext" onclick="jsNav(1)">Next <i
-                                        class="fa-solid fa-arrow-right"></i></button>
-                                <button class="btn-submit blue-sub" id="jsBtnSub" style="display:none;"
-                                    onclick="jsSubmit()"><i class="fa-solid fa-user-plus"></i> Create Account</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- /jsForm -->
-
+                    </div><!-- /jsForm -->
+                </form>
                 <!-- ════ EMPLOYER FORM ════ -->
-                <div id="empForm" style="display:none;">
-                    <div class="lj-card">
-                        <div class="card-head green-hd" id="empHead">
-                            <i class="fa-solid fa-building" id="empHeadIco"></i>
-                            <div>
-                                <div class="card-head-title" id="empHeadTitle">Company Information</div>
-                                <div class="card-head-sub" id="empHeadSub">Step 1 of 5 — Tell us about your business</div>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <!-- Emp Panel 1 -->
-                            <div class="panel active" id="emp-p1">
-                                <div class="step-alert" id="emp-al1"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all required
-                                        fields.</span></div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="ec_name">Company Name <span
-                                            class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input type="text"
-                                            id="ec_name" class="finput fc-g"
-                                            placeholder="e.g. ABC Industries Pvt Ltd" /></div>
-                                    <div class="ferr-msg" id="e-ec_name"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Company name is
-                                            required.</span></div>
-                                </div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="ec_addr">Company Address <span
-                                            class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-map-pin fiw-l t"></i>
-                                        <textarea id="ec_addr" class="finput fc-g" rows="3" placeholder="Full registered address"></textarea>
-                                    </div>
-                                    <div class="ferr-msg" id="e-ec_addr"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Please enter your company
-                                            address.</span></div>
-                                </div>
-                                <div class="frow3">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="ec_state">State <span class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
-                                            <select id="ec_state" class="finput fc-g">
-                                                <option value="" disabled selected>Select State</option>
-                                                <option>Tamil Nadu</option>
-                                                <option>Kerala</option>
-                                                <option>Karnataka</option>
-                                                <option>Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="ferr-msg" id="e-ec_state"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
-                                                state.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="ec_dist">District <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
-                                            <select id="ec_dist" class="finput fc-g">
-                                                <option value="" disabled selected>Select District</option>
-                                                <option>Chennai</option>
-                                                <option>Coimbatore</option>
-                                                <option>Madurai</option>
-                                                <option>Tiruchirappalli</option>
-                                                <option>Salem</option>
-                                                <option>Erode</option>
-                                                <option>Vellore</option>
-                                                <option>Tiruppur</option>
-                                            </select>
-                                        </div>
-                                        <div class="ferr-msg" id="e-ec_dist"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please select a
-                                                district.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="ec_city">City <span class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
-                                                id="ec_city" class="finput fc-g" placeholder="City" /></div>
-                                        <div class="ferr-msg" id="e-ec_city"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Please enter the
-                                                city.</span></div>
-                                    </div>
-                                </div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="ec_pin">Pincode <span class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input type="text"
-                                            id="ec_pin" class="finput fc-g" placeholder="6-digit pincode"
-                                            maxlength="6" style="max-width:200px;" /></div>
-                                    <div class="ferr-msg" id="e-ec_pin"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit
-                                            pincode.</span></div>
+                <form id="employer_registrationForm" method="POST" action="{{ route('employer_register.store') }}"   enctype="multipart/form-data">
+                    @csrf
+                    <div id="empForm" style="display:none;">
+                        <div class="lj-card">
+                            <div class="card-head green-hd" id="empHead">
+                                <i class="fa-solid fa-building" id="empHeadIco"></i>
+                                <div>
+                                    <div class="card-head-title" id="empHeadTitle">Company Information</div>
+                                    <div class="card-head-sub" id="empHeadSub">Step 1 of 5 — Tell us about your business</div>
                                 </div>
                             </div>
 
-                            <!-- Emp Panel 2 -->
-                            <div class="panel" id="emp-p2">
-                                <div class="step-alert" id="emp-al2"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all contact
-                                        fields.</span></div>
-                                <div class="fsec" style="margin-top:0;">
-                                    <div class="fsec-lbl gi"><i class="fa-solid fa-user-tie"></i> Owner / Director</div>
-                                    <div class="fsec-line"></div>
-                                </div>
-                                <div class="frow">
+                            <div class="card-body">
+                                <!-- Emp Panel 1 -->
+                                <div class="panel active" id="emp-p1">
+                                    <div class="step-alert" id="emp-al1"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all required
+                                            fields.</span></div>
                                     <div class="fgrp">
-                                        <label class="flbl" for="eo_name">Owner Name <span
+                                        <label class="flbl" for="ec_name">Company Name <span
                                                 class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                id="eo_name" class="finput fc-g" placeholder="Full name" /></div>
-                                        <div class="ferr-msg" id="e-eo_name"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Owner name is
+                                        <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input type="text"
+                                                id="company_name" name="company_name" class="finput fc-g"
+                                                placeholder="e.g. ABC Industries Pvt Ltd" /></div>
+                                        <div class="ferr-msg" id="e-ec_name"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Company name is
                                                 required.</span></div>
                                     </div>
                                     <div class="fgrp">
-                                        <label class="flbl" for="eo_mob">Owner Mobile <span
+                                        <label class="flbl" for="ec_addr">Company Address <span
                                                 class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                type="tel" id="eo_mob" class="finput fc-g"
-                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
-                                        <div class="ferr-msg" id="e-eo_mob"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
-                                                mobile number.</span></div>
-                                    </div>
-                                </div>
-                                <div class="fsec">
-                                    <div class="fsec-lbl gi"><i class="fa-solid fa-user-gear"></i> HR / Recruiter</div>
-                                    <div class="fsec-line"></div>
-                                </div>
-                                <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't have
-                                        a dedicated HR, enter the owner's details again below.</span></div>
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="eh_name">HR Name <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                id="eh_name" class="finput fc-g" placeholder="Full name" /></div>
-                                        <div class="ferr-msg" id="e-eh_name"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>HR name is
-                                                required.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="eh_mob">HR Mobile <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                type="tel" id="eh_mob" class="finput fc-g"
-                                                placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
-                                        <div class="ferr-msg" id="e-eh_mob"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
-                                                mobile number.</span></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Emp Panel 3 -->
-                            <div class="panel" id="emp-p3">
-                                <div class="step-alert" id="emp-al3"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all account
-                                        fields.</span></div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="e_email">Official Email Address <span
-                                            class="req">*</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
-                                            id="e_email" class="finput fc-g" placeholder="company@example.com" /></div>
-                                    <div class="ferr-msg" id="e-e_email"><i
-                                            class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
-                                            address.</span></div>
-                                    <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your login
-                                        email</div>
-                                </div>
-                                <div class="fsec">
-                                    <div class="fsec-line"></div>
-                                    <div class="fsec-lbl gi"><i class="fa-solid fa-lock"></i> Account Security</div>
-                                    <div class="fsec-line"></div>
-                                </div>
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="e_pwd">Password <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="e_pwd" class="finput pr fc-g"
-                                                placeholder="Min. 8 characters" oninput="pwdStr(this.value,'e-pb')" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('e_pwd',this)"
-                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        <div class="fiw"><i class="fa-solid fa-map-pin fiw-l t"></i>
+                                            <textarea id="company_address" name="company_address" class="finput fc-g" rows="3" placeholder="Full registered address"></textarea>
                                         </div>
-                                        <div class="pwd-wrap">
-                                            <div class="pwd-bar" id="e-pb"></div>
+                                        <div class="ferr-msg" id="e-ec_addr"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Please enter your company
+                                                address.</span></div>
+                                    </div>
+                                    <div class="frow3">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="ec_state">State <span class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
+                                                <select id="c_state" name="c_state" class="finput fc-g">
+                                                    <option value="" disabled selected>Select State</option>
+                                                    <option>Tamil Nadu</option>
+                                                    <option>Kerala</option>
+                                                    <option>Karnataka</option>
+                                                    <option>Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="ferr-msg" id="e-ec_state"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                    state.</span></div>
                                         </div>
-                                        <div class="ferr-msg" id="e-e_pwd"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
-                                                8 characters.</span></div>
-                                    </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="e_cpwd">Confirm Password <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                            <input type="password" id="e_cpwd" class="finput pr fc-g"
-                                                placeholder="Re-enter password" />
-                                            <button type="button" class="fiw-r" onclick="togPwd('e_cpwd',this)"
-                                                tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="ec_dist">District <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
+                                                <select id="c_district" name="c_district" class="finput fc-g">
+                                                    <option value="" disabled selected>Select District</option>
+                                                    <option>Chennai</option>
+                                                    <option>Coimbatore</option>
+                                                    <option>Madurai</option>
+                                                    <option>Tiruchirappalli</option>
+                                                    <option>Salem</option>
+                                                    <option>Erode</option>
+                                                    <option>Vellore</option>
+                                                    <option>Tiruppur</option>
+                                                </select>
+                                            </div>
+                                            <div class="ferr-msg" id="e-ec_dist"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please select a
+                                                    district.</span></div>
                                         </div>
-                                        <div class="ferr-msg" id="e-e_cpwd"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
-                                                match.</span></div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="ec_city">City <span class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
+                                                    id="c_city" name="c_city" class="finput fc-g" placeholder="City" /></div>
+                                            <div class="ferr-msg" id="e-ec_city"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Please enter the
+                                                    city.</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="ec_pin">Pincode <span class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input type="text"
+                                                id="c_pincode" name="c_pincode"class="finput fc-g" placeholder="6-digit pincode"
+                                                maxlength="6" style="max-width:200px;" /></div>
+                                        <div class="ferr-msg" id="e-ec_pin"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit
+                                                pincode.</span></div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Emp Panel 4 -->
-                            <div class="panel" id="emp-p4">
-                                <div class="step-alert" id="emp-al4"><i
-                                        class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and PAN
-                                        numbers.</span></div>
-                                <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your business
-                                        details are encrypted and used only for verification. Only verified employers can
-                                        post jobs.</span></div>
-                                <div class="frow">
-                                    <div class="fgrp">
-                                        <label class="flbl" for="e_gst">GST Number <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
-                                                type="text" id="e_gst" class="finput fc-g"
-                                                placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
-                                                oninput="this.value=this.value.toUpperCase()" /></div>
-                                        <div class="ferr-msg" id="e-e_gst"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 15-character
-                                                GST number.</span></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> 15-character
-                                            alphanumeric GST number</div>
+                                <!-- Emp Panel 2 -->
+                                <div class="panel" id="emp-p2">
+                                    <div class="step-alert" id="emp-al2"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all contact
+                                            fields.</span></div>
+                                    <div class="fsec" style="margin-top:0;">
+                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-tie"></i> Owner / Director</div>
+                                        <div class="fsec-line"></div>
                                     </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="e_pan">PAN Number <span
-                                                class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-id-card fiw-l"></i><input
-                                                type="text" id="e_pan" class="finput fc-g"
-                                                placeholder="e.g. AABCU9603R" maxlength="10"
-                                                oninput="this.value=this.value.toUpperCase()" /></div>
-                                        <div class="ferr-msg" id="e-e_pan"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-character
-                                                PAN number.</span></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company / Individual
-                                            PAN number</div>
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="eo_name">Owner Name <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                    id="c_ownername" name="c_ownername"class="finput fc-g" placeholder="Full name" /></div>
+                                            <div class="ferr-msg" id="e-eo_name"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Owner name is
+                                                    required.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="eo_mob">Owner Mobile <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                    type="tel" id="c_mobile" name="c_mobile"class="finput fc-g"
+                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                            <div class="ferr-msg" id="e-eo_mob"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                    mobile number.</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="fsec">
+                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-gear"></i> HR / Recruiter</div>
+                                        <div class="fsec-line"></div>
+                                    </div>
+                                    <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't have
+                                            a dedicated HR, enter the owner's details again below.</span></div>
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="eh_name">HR Name <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
+                                                    id="c_hr_name"  name="c_hr_name"class="finput fc-g" placeholder="Full name" /></div>
+                                            <div class="ferr-msg" id="e-eh_name"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>HR name is
+                                                    required.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="eh_mob">HR Mobile <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
+                                                    type="tel" id="c_hr_mobile" name="c_hr_mobile" class="finput fc-g"
+                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                            <div class="ferr-msg" id="e-eh_mob"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
+                                                    mobile number.</span></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="fgrp">
-                                    <label class="flbl" for="e_msme">MSME Number <span
-                                            class="opt">Optional</span></label>
-                                    <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input type="text"
-                                            id="e_msme" class="finput fc-g" placeholder="UDYAM-TN-01-0000000"
-                                            style="max-width:380px;" /></div>
-                                    <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration number
-                                        — recommended for MSMEs</div>
-                                </div>
-                            </div>
 
-                            <!-- Emp Panel 5 -->
-                            <div class="panel" id="emp-p5">
-                                <div class="frow">
+                                <!-- Emp Panel 3 -->
+                                <div class="panel" id="emp-p3">
+                                    <div class="step-alert" id="emp-al3"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all account
+                                            fields.</span></div>
                                     <div class="fgrp">
-                                        <label class="flbl">GST Certificate <span class="req">*</span></label>
-                                        <div class="file-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png"
-                                                onchange="setFileLabel(this,'eg-rl')">
-                                            <div class="fz-ico"><i class="fa-solid fa-file-invoice"
+                                        <label class="flbl" for="e_email">Official Email Address <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
+                                                id="c_email" name="c_email" class="finput fc-g" placeholder="company@example.com" /></div>
+                                        <div class="ferr-msg" id="e-e_email"><i
+                                                class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
+                                                address.</span></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your login
+                                            email</div>
+                                    </div>
+                                    <div class="fsec">
+                                        <div class="fsec-line"></div>
+                                        <div class="fsec-lbl gi"><i class="fa-solid fa-lock"></i> Account Security</div>
+                                        <div class="fsec-line"></div>
+                                    </div>
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="e_pwd">Password <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                                <input type="password" id="c_password" name="c_password" class="finput pr fc-g"
+                                                    placeholder="Min. 8 characters" oninput="pwdStr(this.value,'e-pb')" />
+                                                <button type="button" class="fiw-r" onclick="togPwd('e_pwd',this)"
+                                                    tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                            </div>
+                                            <div class="pwd-wrap">
+                                                <div class="pwd-bar" id="e-pb"></div>
+                                            </div>
+                                            <div class="ferr-msg" id="e-e_pwd"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                    8 characters.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="e_cpwd">Confirm Password <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
+                                                <input type="password" id="c_confirm_password" name="c_confirm_password" class="finput pr fc-g"
+                                                    placeholder="Re-enter password" />
+                                                <button type="button" class="fiw-r" onclick="togPwd('e_cpwd',this)"
+                                                    tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                            </div>
+                                            <div class="ferr-msg" id="e-e_cpwd"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
+                                                    match.</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Emp Panel 4 -->
+                                <div class="panel" id="emp-p4">
+                                    <div class="step-alert" id="emp-al4"><i
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and PAN
+                                            numbers.</span></div>
+                                    <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your business
+                                            details are encrypted and used only for verification. Only verified employers can
+                                            post jobs.</span></div>
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl" for="e_gst">GST Number <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
+                                                    type="text" id="c_gst" name="c_gst" class="finput fc-g"
+                                                    placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
+                                                    oninput="this.value=this.value.toUpperCase()" /></div>
+                                            <div class="ferr-msg" id="e-e_gst"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 15-character
+                                                    GST number.</span></div>
+                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> 15-character
+                                                alphanumeric GST number</div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl" for="e_pan">PAN Number <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-id-card fiw-l"></i><input
+                                                    type="text" id="c_pan" name="c_pan" class="finput fc-g"
+                                                    placeholder="e.g. AABCU9603R" maxlength="10"
+                                                    oninput="this.value=this.value.toUpperCase()" /></div>
+                                            <div class="ferr-msg" id="e-e_pan"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-character
+                                                    PAN number.</span></div>
+                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company / Individual
+                                                PAN number</div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl" for="e_msme">MSME Number <span
+                                                class="opt">Optional</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input type="text"
+                                                id="c_msme" name="c_msme" class="finput fc-g" placeholder="UDYAM-TN-01-0000000"
+                                                style="max-width:380px;" /></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration number
+                                            — recommended for MSMEs</div>
+                                    </div>
+                                </div>
+
+                                <!-- Emp Panel 5 -->
+                                <div class="panel" id="emp-p5">
+                                    <div class="frow">
+                                        <div class="fgrp">
+                                            <label class="flbl">GST Certificate <span class="req">*</span></label>
+                                            <div class="file-zone"><input type="file" id="gst_certificate" name="gst_certificate" accept=".pdf,.jpg,.jpeg,.png"
+                                                    onchange="setFileLabel(this,'eg-rl')">
+                                                <div class="fz-ico"><i class="fa-solid fa-file-invoice"
+                                                        style="color:var(--green);"></i></div>
+                                                <div class="fz-title" id="eg-rl">Click to upload GST certificate</div>
+                                                <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                            </div>
+                                            <div class="ferr-msg" id="e-eg_gstf"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>GST certificate is
+                                                    required.</span></div>
+                                        </div>
+                                        <div class="fgrp">
+                                            <label class="flbl">PAN Document <span class="req">*</span></label>
+                                            <div class="file-zone"><input type="file" id="pan_document" name="pan_document" accept=".pdf,.jpg,.jpeg,.png"
+                                                    onchange="setFileLabel(this,'ep-rl')">
+                                                <div class="fz-ico"><i class="fa-solid fa-id-card"
+                                                        style="color:var(--green);"></i></div>
+                                                <div class="fz-title" id="ep-rl">Click to upload PAN document</div>
+                                                <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                            </div>
+                                            <div class="ferr-msg" id="e-eg_panf"><i
+                                                    class="fa-solid fa-circle-exclamation"></i><span>PAN document is
+                                                    required.</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="fgrp">
+                                        <label class="flbl">MSME Certificate <span class="opt">Optional</span></label>
+                                        <div class="file-zone" style="max-width:380px;"><input type="file" id="msme_certificate" name="msme_certificate"
+                                                accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
+                                            <div class="fz-ico"><i class="fa-solid fa-industry"
                                                     style="color:var(--green);"></i></div>
-                                            <div class="fz-title" id="eg-rl">Click to upload GST certificate</div>
+                                            <div class="fz-title" id="em-rl">Click to upload MSME certificate</div>
                                             <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
                                         </div>
-                                        <div class="ferr-msg" id="e-eg_gstf"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>GST certificate is
-                                                required.</span></div>
                                     </div>
-                                    <div class="fgrp">
-                                        <label class="flbl">PAN Document <span class="req">*</span></label>
-                                        <div class="file-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png"
-                                                onchange="setFileLabel(this,'ep-rl')">
-                                            <div class="fz-ico"><i class="fa-solid fa-id-card"
-                                                    style="color:var(--green);"></i></div>
-                                            <div class="fz-title" id="ep-rl">Click to upload PAN document</div>
-                                            <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
+                                    <div class="summary-box">
+                                        <div class="summary-title"><i class="fa-solid fa-list-check"
+                                                style="color:var(--green);"></i> Registration Summary</div>
+                                        <div class="summary-grid">
+                                            <div><span>Company: </span><strong id="es-co">—</strong></div>
+                                            <div><span>Location: </span><strong id="es-lc">—</strong></div>
+                                            <div><span>Owner: </span><strong id="es-ow">—</strong></div>
+                                            <div><span>HR: </span><strong id="es-hr">—</strong></div>
+                                            <div><span>Email: </span><strong id="es-em">—</strong></div>
+                                            <div><span>GST: </span><strong id="es-gs">—</strong></div>
+                                            <div><span>PAN: </span><strong id="es-pn">—</strong></div>
+                                            <div><span>MSME: </span><strong id="es-ms">Not provided</strong></div>
                                         </div>
-                                        <div class="ferr-msg" id="e-eg_panf"><i
-                                                class="fa-solid fa-circle-exclamation"></i><span>PAN document is
-                                                required.</span></div>
                                     </div>
                                 </div>
-                                <div class="fgrp">
-                                    <label class="flbl">MSME Certificate <span class="opt">Optional</span></label>
-                                    <div class="file-zone" style="max-width:380px;"><input type="file"
-                                            accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
-                                        <div class="fz-ico"><i class="fa-solid fa-industry"
-                                                style="color:var(--green);"></i></div>
-                                        <div class="fz-title" id="em-rl">Click to upload MSME certificate</div>
-                                        <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
-                                    </div>
+                            </div>
+
+                            <div class="card-foot">
+                                <div class="foot-info" id="empFootInfo">Already registered? <a href="#">Login here</a>
                                 </div>
-                                <div class="summary-box">
-                                    <div class="summary-title"><i class="fa-solid fa-list-check"
-                                            style="color:var(--green);"></i> Registration Summary</div>
-                                    <div class="summary-grid">
-                                        <div><span>Company: </span><strong id="es-co">—</strong></div>
-                                        <div><span>Location: </span><strong id="es-lc">—</strong></div>
-                                        <div><span>Owner: </span><strong id="es-ow">—</strong></div>
-                                        <div><span>HR: </span><strong id="es-hr">—</strong></div>
-                                        <div><span>Email: </span><strong id="es-em">—</strong></div>
-                                        <div><span>GST: </span><strong id="es-gs">—</strong></div>
-                                        <div><span>PAN: </span><strong id="es-pn">—</strong></div>
-                                        <div><span>MSME: </span><strong id="es-ms">Not provided</strong></div>
-                                    </div>
+                                <div class="foot-btns">
+                                    <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)" style="display:none;"><i
+                                            class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button  type="button" class="btn-next green-next" id="empBtnNext" onclick="empNav(1)">Next <i
+                                            class="fa-solid fa-arrow-right"></i></button>
+                                    <button type="submit" class="btn-submit green-sub" id="employer_register" style="display:none;"
+                                        onclick="empSubmit()"><i class="fa-solid fa-building-flag"></i> Register
+                                        Company</button>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="card-foot">
-                            <div class="foot-info" id="empFootInfo">Already registered? <a href="#">Login here</a>
-                            </div>
-                            <div class="foot-btns">
-                                <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)" style="display:none;"><i
-                                        class="fa-solid fa-arrow-left"></i> Back</button>
-                                <button class="btn-next green-next" id="empBtnNext" onclick="empNav(1)">Next <i
-                                        class="fa-solid fa-arrow-right"></i></button>
-                                <button class="btn-submit green-sub" id="empBtnSub" style="display:none;"
-                                    onclick="empSubmit()"><i class="fa-solid fa-building-flag"></i> Register
-                                    Company</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- /empForm -->
-
+                    </div><!-- /empForm -->
+                </form>
+                
             </div><!-- /reg-right -->
         </div><!-- /reg-split -->
     </main>
@@ -2825,7 +2830,7 @@
             document.getElementById('empHeadSub').textContent = m.sub;
             document.getElementById('empBtnPrev').style.display = s > 1 ? '' : 'none';
             document.getElementById('empBtnNext').style.display = s < 5 ? '' : 'none';
-            document.getElementById('empBtnSub').style.display = s === 5 ? '' : 'none';
+            document.getElementById('employer_register').style.display = s === 5 ? '' : 'none';
             renderSideSteps(s, empSideLabels, false);
             window.scrollTo({
                 top: 0,
@@ -2923,75 +2928,75 @@
             const al = document.getElementById('emp-al' + s);
             if (al) al.classList.remove('show');
             if (s === 1) {
-                vClr('ec_name', 'ec_addr', 'ec_state', 'ec_dist', 'ec_city', 'ec_pin');
-                if (g('ec_name').trim().length < 2) {
-                    vErr('ec_name');
+                vClr('company_name', 'company_address', 'c_state', 'c_district', 'c_city', 'c_pincode');
+                if (g('company_name').trim().length < 2) {
+                    vErr('company_name');
                     ok = false;
                 }
-                if (g('ec_addr').trim().length < 10) {
-                    vErr('ec_addr');
+                if (g('company_address').trim().length < 10) {
+                    vErr('company_address');
                     ok = false;
                 }
-                if (!g('ec_state')) {
-                    vErr('ec_state');
+                if (!g('c_state')) {
+                    vErr('c_state');
                     ok = false;
                 }
-                if (!g('ec_dist')) {
-                    vErr('ec_dist');
+                if (!g('c_district')) {
+                    vErr('c_district');
                     ok = false;
                 }
-                if (g('ec_city').trim().length < 2) {
-                    vErr('ec_city');
+                if (g('c_city').trim().length < 2) {
+                    vErr('c_city');
                     ok = false;
                 }
-                if (!/^\d{6}$/.test(g('ec_pin').trim())) {
-                    vErr('ec_pin');
+                if (!/^\d{6}$/.test(g('c_pincode').trim())) {
+                    vErr('c_pincode');
                     ok = false;
                 }
             }
             if (s === 2) {
-                vClr('eo_name', 'eo_mob', 'eh_name', 'eh_mob');
-                if (g('eo_name').trim().length < 2) {
-                    vErr('eo_name');
+                vClr('c_ownername', 'c_mobile', 'c_hr_name', 'c_hr_mobile');
+                if (g('c_ownername').trim().length < 2) {
+                    vErr('c_ownername');
                     ok = false;
                 }
-                if (g('eo_mob').replace(/\D/g, '').length < 10) {
-                    vErr('eo_mob');
+                if (g('c_mobile').replace(/\D/g, '').length < 10) {
+                    vErr('c_mobile');
                     ok = false;
                 }
-                if (g('eh_name').trim().length < 2) {
-                    vErr('eh_name');
+                if (g('c_hr_name').trim().length < 2) {
+                    vErr('c_hr_name');
                     ok = false;
                 }
-                if (g('eh_mob').replace(/\D/g, '').length < 10) {
-                    vErr('eh_mob');
+                if (g('c_hr_mobile').replace(/\D/g, '').length < 10) {
+                    vErr('c_hr_mobile');
                     ok = false;
                 }
             }
             if (s === 3) {
-                vClr('e_email', 'e_pwd', 'e_cpwd');
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('e_email').trim())) {
-                    vErr('e_email');
+                vClr('c_email', 'c_password', 'c_confirm_password');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('c_email').trim())) {
+                    vErr('c_email');
                     ok = false;
                 }
-                const pw = g('e_pwd');
+                const pw = g('c_password');
                 if (pw.length < 8) {
-                    vErr('e_pwd');
+                    vErr('c_password');
                     ok = false;
                 }
-                if (g('e_cpwd') !== pw) {
-                    vErr('e_cpwd');
+                if (g('c_confirm_password') !== pw) {
+                    vErr('c_confirm_password');
                     ok = false;
                 }
             }
             if (s === 4) {
-                vClr('e_gst', 'e_pan');
-                if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g('e_gst').trim())) {
-                    vErr('e_gst');
+                vClr('c_gst', 'c_pan');
+                if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g('c_gst').trim())) {
+                    vErr('c_gst');
                     ok = false;
                 }
-                if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(g('e_pan').trim())) {
-                    vErr('e_pan');
+                if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(g('c_pan').trim())) {
+                    vErr('c_pan');
                     ok = false;
                 }
             }
@@ -3025,15 +3030,15 @@
         }
 
         function empBuildSummary() {
-            document.getElementById('es-co').textContent = g('ec_name') || '—';
-            document.getElementById('es-lc').textContent = [g('ec_city'), g('ec_dist'), g('ec_state')].filter(Boolean).join(
+            document.getElementById('es-co').textContent = g('company_name') || '—';
+            document.getElementById('es-lc').textContent = [g('c_city'), g('c_district'), g('c_state')].filter(Boolean).join(
                 ', ') || '—';
-            document.getElementById('es-ow').textContent = (g('eo_name') || '—') + (g('eo_mob') ? ' · ' + g('eo_mob') : '');
-            document.getElementById('es-hr').textContent = (g('eh_name') || '—') + (g('eh_mob') ? ' · ' + g('eh_mob') : '');
-            document.getElementById('es-em').textContent = g('e_email') || '—';
-            document.getElementById('es-gs').textContent = g('e_gst') || '—';
-            document.getElementById('es-pn').textContent = g('e_pan') || '—';
-            document.getElementById('es-ms').textContent = g('e_msme') || 'Not provided';
+            document.getElementById('es-ow').textContent = (g('c_ownername') || '—') + (g('c_mobile') ? ' · ' + g('c_mobile') : '');
+            document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g('c_hr_mobile') : '');
+            document.getElementById('es-em').textContent = g('c_email') || '—';
+            document.getElementById('es-gs').textContent = g('c_gst') || '—';
+            document.getElementById('es-pn').textContent = g('c_pan') || '—';
+            document.getElementById('es-ms').textContent = g('c_msme') || 'Not provided';
         }
 
         /* ── SUBMIT ── */
@@ -3042,9 +3047,144 @@
             b.disabled = true;
             b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
         }
+        document.getElementById('jsBtnSub').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            let form = document.getElementById('registrationForm');
+            let formData = new FormData(form);
+
+            let btn = document.getElementById('jsBtnSub');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+
+                if (data.status) {
+                    toastr.success(data.message);
+                    
+                    setTimeout(() => {
+                        form.reset();
+                        document.getElementById('ss-nm').innerText = '—';
+                        document.getElementById('ss-mb').innerText = '—';
+                        document.getElementById('ss-em').innerText = '—';
+                        document.getElementById('ss-lc').innerText = '—';
+                        document.getElementById('ss-ql').innerText = '—';
+                        document.getElementById('ss-xp').innerText = '—';
+                        document.getElementById('ss-sk').innerText = '—';
+
+                        document.getElementById('js-rl').innerText = 'Click to upload resume';
+                        document.getElementById('js-pl').innerText = 'Click to upload photo';
+
+                        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                        document.getElementById('js-p1').classList.add('active');
+
+                        document.getElementById('jsBtnPrev').style.display = 'none';
+                        document.getElementById('jsBtnNext').style.display = 'inline-block';
+                        document.getElementById('jsBtnSub').style.display = 'none';
+                    }, 1500);
+                } else {
+                    toastr.error(data.message);
+                }
+
+            })
+            .catch(error => {
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+
+                if (error.errors) {
+                    Object.values(error.errors).forEach(err => {
+                        toastr.error(err[0]);
+                    });
+                } else {
+                    toastr.error('Something went wrong');
+                }
+            });
+        });
+
+        document.getElementById('employer_register').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            let form = document.getElementById('employer_registrationForm');
+            let formData = new FormData(form);
+
+            let btn = document.getElementById('employer_register');
+            btn.disabled = true;
+            btn.innerHTML = 'Processing...';
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+
+                if (data.status) {
+                    toastr.success(data.message);
+                    
+                    setTimeout(() => {
+                        form.reset();
+                        document.getElementById('es-co').innerText = '—';
+                        document.getElementById('es-lc').innerText = '—';
+                        document.getElementById('es-ow').innerText = '—';
+                        document.getElementById('es-hr').innerText = '—';
+                        document.getElementById('es-em').innerText = '—';
+                        document.getElementById('es-gs').innerText = '—';
+                        document.getElementById('es-pn').innerText = '—';
+                        document.getElementById('es-ms').innerText = '—';
+
+                        document.getElementById('eg-rl').innerText = 'Click to upload resume';
+                        document.getElementById('ep-rl').innerText = 'Click to upload photo';
+                        document.getElementById('em-rl').innerText = 'Click to upload photo';
+
+                        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                        document.getElementById('emp-p1').classList.add('active');
+
+                        document.getElementById('empBtnPrev').style.display = 'none';
+                        document.getElementById('empBtnNext').style.display = 'inline-block';
+                        document.getElementById('employer_register').style.display = 'none';
+                    }, 1500);
+                } else {
+                    toastr.error(data.message);
+                }
+
+            })
+            .catch(error => {
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+
+                if (error.errors) {
+                    Object.values(error.errors).forEach(err => {
+                        toastr.error(err[0]);
+                    });
+                } else {
+                    toastr.error('Something went wrong');
+                }
+            });
+        });
 
         function empSubmit() {
-            const b = document.getElementById('empBtnSub');
+            const b = document.getElementById('employer_register');
             b.disabled = true;
             b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering Company...';
         }

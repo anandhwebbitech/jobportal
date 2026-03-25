@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\JobApplication;
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -106,8 +107,6 @@ class DashboardController extends Controller
             'city'                => 'required|string|max:100',
             'experience_required' => 'required|string|max:50',
             'vacancies'           => 'required|integer|min:1|max:500',
-            'salary_min'          => 'required|numeric|min:0',
-            'salary_max'          => 'nullable|numeric|min:0|gte:salary_min',
             'education'           => 'required|string|max:50',
             'job_type'            => 'required|in:Full Time,Part Time,Contract',
             'status'              => 'required|in:active,inactive',
@@ -127,22 +126,21 @@ class DashboardController extends Controller
 
         $job = Job::create([
             'employer_id'         => auth()->id(),
-            'job_title'           => $request->job_title,
-            'job_category'        => $request->job_category,
-            'industry_type'       => $request->industry_type,
-            'description'         => $request->description,
-            'responsibilities'    => $request->responsibilities,
-            'benefits'            => $request->benefits,
-            'state'               => $request->state,
-            'district'            => $request->district,
-            'city'                => $request->city,
-            'experience_required' => $request->experience_required,
-            'vacancies'           => $request->vacancies,
-            'salary_min'          => $request->salary_min,
+            'title'               => $request->job_title ?? 'Title',
+            'slug'                => Str::slug($request->title),
+            'description'         => $request->description?? null,
+            'responsibilities'    => $request->responsibilities?? null,
+            'benefits'            => $request->benefits?? null,
+            'state'               => $request->state?? null,
+            'district'            => $request->district?? null,
+            'city'                => $request->city?? null,
+            'experience_required' => $request->experience_required?? null,
+            'vacancies'           => $request->vacancies?? null,
+            'salary_min'          => $request->salary_min ?? 0,
             'salary_max'          => $request->salary_max ?? $request->salary_min,
-            'education'           => $request->education,
-            'job_type'            => $request->job_type,
-            'status'              => $request->status,
+            'education'           => $request->education?? null,
+            'job_type'            => $request->job_type?? null,
+            'status'              => $request->status?? null,
             'skills'              => json_encode($skills),
             'screening_questions' => json_encode($screening),
         ]);
@@ -211,8 +209,6 @@ class DashboardController extends Controller
             'city'                => 'required|string|max:100',
             'experience_required' => 'required|string|max:50',
             'vacancies'           => 'required|integer|min:1|max:500',
-            'salary_min'          => 'required|numeric|min:0',
-            'salary_max'          => 'nullable|numeric|min:0|gte:salary_min',
             'education'           => 'required|string|max:50',
             'job_type'            => 'required|in:Full Time,Part Time,Contract',
             'status'              => 'required|in:active,inactive',

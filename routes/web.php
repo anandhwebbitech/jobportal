@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\JobSeekerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SizeController;
@@ -33,8 +34,9 @@ use App\Http\Controllers\JobSeeker\SettingsController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EmployerController;
 
-Route::get('/', [AdminController::class, 'login'])->name('login');
 
+Route::get('/', [AdminController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('userlogin');
 Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/login', [AdminController::class, 'login'])->name('login');
@@ -46,17 +48,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('skills', SkillController::class);
         Route::resource('educations', EducationController::class);
         Route::resource('employers', EmployerController::class);
-       
-
+        Route::resource('jobseekers', JobSeekerController::class);
         Route::resource('users', CustomerController::class);
-
         Route::get('settings/index/{type?}', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
-
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         Route::post('/admin/employers/approve/{id}', [EmployerController::class, 'approve'])->name('employers.approve');
-
     });
+    Route::post('jobseekers/{id}/approve', [JobSeekerController::class, 'Approve'])->name('jobseekers.approve');
 });
 
 
@@ -100,7 +99,8 @@ Route::middleware(['frontend'])->group(function () {
         ->name('jobs.apply.submit');
         
 });
-
+Route::post('/jobseeker-register-store', [AuthController::class, 'jobseekerRegisterSubmit'])->name('jobseeker_register.store');
+Route::post('/employer-register-store', [AuthController::class, 'employerRegisterSubmit'])->name('employer_register.store');
 Route::controller(AuthController::class)->group(callback: function () {
 
     // Job Seeker
