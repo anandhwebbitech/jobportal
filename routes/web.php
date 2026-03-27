@@ -33,7 +33,7 @@ use App\Http\Controllers\JobSeeker\SavedJobController;
 use App\Http\Controllers\JobSeeker\SettingsController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EmployerController;
-
+use App\Http\Controllers\Admin\JobController;
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('userlogin');
@@ -49,11 +49,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('educations', EducationController::class);
         Route::resource('employers', EmployerController::class);
         Route::resource('jobseekers', JobSeekerController::class);
+        Route::resource('jobs',JobController::class);
         Route::resource('users', CustomerController::class);
         Route::get('settings/index/{type?}', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         Route::post('/admin/employers/approve/{id}', [EmployerController::class, 'approve'])->name('employers.approve');
+        Route::post('/admin/jobs/approve/{id}', [JobController::class, 'approve'])->name('jobs.approve');
     });
     Route::post('jobseekers/{id}/approve', [JobSeekerController::class, 'Approve'])->name('jobseekers.approve');
 });
@@ -125,6 +127,9 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::get('/reset-password/{token}', 'resetPassword')->name('reset.password');
     Route::post('/reset-password', 'resetPasswordSubmit')->name('reset.password.submit');
 
+    Route::get('/jobs-preview/{id}', [AuthController::class, 'preview'])
+    ->name('jobs.preview');
+
     Route::post('/logout', 'logout')->name('logout');
 
 });
@@ -156,7 +161,7 @@ Route::prefix('employer')->name('employer.')->middleware('employer')->group(func
     Route::get('/jobs/{id}/edit', [EmployerDashboardController::class, 'jobsEdit'])->name('jobs.edit');
     Route::put('/jobs/{id}', [EmployerDashboardController::class, 'jobsUpdate'])->name('jobs.update');
     Route::delete('/jobs/{id}', [EmployerDashboardController::class, 'jobsDestroy'])->name('jobs.destroy');
-    Route::patch('/jobs/{id}/toggle', [EmployerDashboardController::class, 'jobsToggle'])->name('jobs.toggle');
+    Route::post('/jobs/{id}/toggle', [EmployerDashboardController::class, 'jobsToggle'])->name('jobs.toggle');
 
     // Candidates
     Route::get('/candidates', [EmployerDashboardController::class, 'candidates'])->name('candidates');

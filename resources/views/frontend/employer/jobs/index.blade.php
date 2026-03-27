@@ -326,6 +326,7 @@ body{font-family:var(--fb);}
 }
 </style>
 @endpush
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 @section('content')
 <div class="idx-wrap">
@@ -348,7 +349,7 @@ body{font-family:var(--fb);}
         <div class="idx-stats">
           @php
             $totalJobs    = $jobs->total() ?? count($jobs);
-            $activeJobs   = isset($jobs) ? (is_object($jobs) && method_exists($jobs,'getCollection') ? $jobs->getCollection() : collect($jobs))->where('status','active')->count() : 0;
+            $activeJobs   = isset($jobs) ? (is_object($jobs) && method_exists($jobs,'getCollection') ? $jobs->getCollection() : collect($jobs))->where('status','1')->count() : 0;
             $totalApps    = isset($jobs) ? (is_object($jobs) && method_exists($jobs,'getCollection') ? $jobs->getCollection() : collect($jobs))->sum(fn($j) => $j->applications_count ?? $j->applicants_count ?? 0) : 0;
           @endphp
           <div class="idx-stat">
@@ -402,8 +403,8 @@ body{font-family:var(--fb);}
       <i class="fa-solid fa-filter"></i>
       <select id="statusFilter" class="idx-select" onchange="filterJobs()">
         <option value="">All Statuses</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+        <option value="1">Active</option>
+        <option value="0">Inactive</option>
       </select>
     </div>
     <div class="idx-select-wrap">
@@ -454,10 +455,10 @@ body{font-family:var(--fb);}
         <tbody>
           @foreach($jobs as $job)
           <tr class="job-row"
-            data-title="{{ strtolower($job->job_title) }}"
+            data-title="{{ strtolower($job->title) }}"
             data-status="{{ strtolower($job->status) }}"
-            data-category="{{ $job->job_category ?? '' }}"
-            data-location="{{ strtolower(($job->city ?? '').($job->district ?? '')) }}"
+            data-category="{{ $job->category ?? '' }}"
+            data-location="{{ strtolower(($job->location ?? '').($job->district ?? '')) }}"
           >
             {{-- Job Title --}}
             <td>
@@ -465,13 +466,13 @@ body{font-family:var(--fb);}
                 <div class="idx-job-ico">
                   @php
                     $catIcons = ['IT & Software'=>'fa-laptop-code','Technical & Trade'=>'fa-wrench','Sales & Marketing'=>'fa-chart-line','Office & Admin'=>'fa-building','Driver & Logistics'=>'fa-truck','Manufacturing'=>'fa-industry','Healthcare'=>'fa-heart-pulse','Education'=>'fa-graduation-cap','Hospitality'=>'fa-concierge-bell','Other'=>'fa-briefcase'];
-                    $ico = $catIcons[$job->job_category ?? ''] ?? 'fa-briefcase';
+                    $ico = $catIcons[$job->category ?? ''] ?? 'fa-briefcase';
                   @endphp
                   <i class="fa-solid {{ $ico }}"></i>
                 </div>
                 <div>
                   <div class="idx-job-title">
-                    <a href="{{ route('jobs.show', $job->id) }}" target="_blank">{{ $job->job_title }}</a>
+                    <a href="{{ route('employer.jobs.show', $job->id) }}" target="_blank">{{ $job->title }}</a>
                   </div>
                   <div class="idx-job-meta">
                     @if($job->job_type ?? false)
@@ -483,14 +484,14 @@ body{font-family:var(--fb);}
                     @if($job->salary_range ?? false)
                       <span class="idx-meta-pill"><i class="fa-solid fa-indian-rupee-sign"></i> {{ $job->salary_range }}</span>
                     @endif
-                  </div>
+                
                 </div>
               </div>
             </td>
 
             {{-- Status --}}
             <td>
-              @php $st = strtolower($job->status ?? 'inactive'); @endphp
+              @php $st = strtolower($job->status == 1) ?'active': 'inactive'; @endphp
               <span class="idx-badge {{ $st }}">
                 <span class="idx-badge-dot"></span>
                 {{ ucfirst($st) }}
@@ -517,7 +518,7 @@ body{font-family:var(--fb);}
 
             {{-- Category --}}
             <td>
-              <div style="font-family:var(--fh);font-size:.78rem;font-weight:700;color:var(--ink2);">{{ $job->job_category ?? '—' }}</div>
+              <div style="font-family:var(--fh);font-size:.78rem;font-weight:700;color:var(--ink2);">{{ $job->category ?? '—' }}</div>
             </td>
 
             {{-- Location --}}
@@ -531,7 +532,7 @@ body{font-family:var(--fb);}
             {{-- Actions --}}
             <td>
               <div class="idx-actions">
-                <a href="{{ route('jobs.show', $job->id) }}" class="idx-btn view" title="View Job" target="_blank">
+                <a href="{{ route('employer.jobs.show', $job->id) }}" class="idx-btn view" title="View Job" target="_blank">
                   <i class="fa-solid fa-eye"></i>
                 </a>
                 <a href="{{ route('employer.jobs.edit', $job->id) }}" class="idx-btn edit" title="Edit Job">
@@ -540,12 +541,15 @@ body{font-family:var(--fb);}
                 <a href="{{ route('employer.candidates', $job->id) }}" class="idx-btn apps" title="View Applicants">
                   <i class="fa-solid fa-users"></i>
                 </a>
-                <form action="{{ route('employer.jobs.toggle', $job->id) }}" method="POST" style="display:inline;">
-                  @csrf
-                  <button type="submit" class="idx-btn tog" title="{{ $st==='active' ? 'Deactivate' : 'Activate' }}">
-                    <i class="fa-solid {{ $st==='active' ? 'fa-pause' : 'fa-play' }}"></i>
-                  </button>
-                </form>
+             
+                <button 
+                    class="idx-btn tog toggleJobBtn" 
+                    data-url="{{ route('employer.jobs.toggle', $job->id) }}"
+                    data-status="{{ $st }}"
+                    title="{{ $st==='1' ? 'Deactivate' : 'Activate' }}"
+                >
+                    <i class="fa-solid {{ $st==='0' ? 'fa-pause' : 'fa-play' }}"></i>
+                </button>
                 <button type="button" class="idx-btn del" title="Delete Job"
                   onclick="openDeleteModal('{{ $job->id }}','{{ addslashes($job->job_title) }}')">
                   <i class="fa-solid fa-trash"></i>
@@ -632,11 +636,53 @@ body{font-family:var(--fb);}
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: "3000"
+};
+</script>
+<script>
+// job status change
+$(document).on('click', '.toggleJobBtn', function () {
+    let btn = $(this);
+    let url = btn.data('url');
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function (response) {
+
+            if (response.status == 1) {
+                btn.find('i').removeClass('fa-play').addClass('fa-pause');
+            } else {
+                btn.find('i').removeClass('fa-pause').addClass('fa-play');
+            }
+
+            toastr.success(response.message || 'Updated successfully');
+            setTimeout(() => {
+              location.reload(); //
+            }, 800); 
+        },
+        error: function () {
+            toastr.error('Something went wrong!');
+        }
+    });
+});
+
 /* ══ DELETE MODAL ══ */
 function openDeleteModal(id, title){
   document.getElementById('modalJobTitle').textContent = title;
-  document.getElementById('deleteForm').action = '/employer/jobs/'+id;
+  let url = "{{ route('employer.jobs.destroy', ':id') }}";
+  url = url.replace(':id', id);
+  document.getElementById('deleteForm').action = url;
   document.getElementById('deleteModal').classList.add('open');
 }
 function closeDeleteModal(){

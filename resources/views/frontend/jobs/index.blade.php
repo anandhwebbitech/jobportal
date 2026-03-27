@@ -1112,9 +1112,9 @@
                             @if ($job->job_type)
                                 <span class="lj-job-tag type">{{ $job->job_type }}</span>
                             @endif
-                            @if ($job->experience_required)
+                            @if ($job->experience)
                                 <span class="lj-job-tag"><i class="fa-solid fa-check"></i>
-                                    {{ $job->experience_required }}</span>
+                                    {{ $job->experience }}</span>
                             @endif
                             @foreach (array_slice($job->benefits ?? [], 0, 2) as $benefit)
                                 <span class="lj-job-tag">{{ $benefit }}</span>
@@ -1284,30 +1284,36 @@
         // ── LOAD PREVIEW ─────────────────────────────────────
         let currentJobId = null;
 
-        async function loadPreview(jobId, cardEl) {
-            // Highlight active card
-            document.querySelectorAll('.lj-job-card').forEach(c => c.classList.remove('active'));
-            cardEl.classList.add('active');
-            currentJobId = jobId;
+        function loadPreview(jobId, cardEl) {
 
-            // Show loading
-            const previewEmpty = document.getElementById('previewEmpty');
-            const previewContent = document.getElementById('previewContent');
-            previewEmpty.style.display = 'none';
-            previewContent.style.display = 'block';
-            document.getElementById('prevTitle').textContent = 'Loading...';
+            // Active card highlight
+            $('.lj-job-card').removeClass('active');
+            $(cardEl).addClass('active');
 
-            try {
-                const response = await fetch(`/api/jobs/${jobId}`);
-                if (!response.ok) throw new Error('Failed to fetch job');
-                const job = await response.json();
-                console.log('Fetched job:', job);
-                renderPreview(job);
-            } catch (error) {
-                console.error('Error fetching job:', error);
-                // Fallback: redirect to job details page
-                // window.location.href = `/jobs/${jobId}`;
-            }
+            const previewEmpty = $('#previewEmpty');
+            const previewContent = $('#previewContent');
+
+            previewEmpty.hide();
+            previewContent.show();
+            $('#prevTitle').text('Loading...');
+
+            $.ajax({
+                url: "{{ url('/jobs-preview') }}/" + jobId,
+                type: 'GET',
+                success: function (job) {
+
+                    console.log('Fetched job:', job);
+
+                    renderPreview(job);
+
+                },
+                error: function (xhr) {
+
+                    console.error('Error:', xhr);
+
+                    toastr.error('Failed to load job preview');
+                }
+            });
         }
 
         function renderPreview(job) {
@@ -1326,7 +1332,7 @@
                 `<i class="fa-solid fa-location-dot"></i> ${job.city}, ${job.district}, Tamil Nadu`;
 
             // Apply & details links (dynamic)
-            const applyUrl = `/jobs/${job.id}/apply`;
+            const applyUrl = "{{ route('jobs.apply', ':id') }}".replace(':id', job.id);
             const detailUrl = `/jobs/${job.id}`;
             document.getElementById('prevApplyBtn').href = applyUrl;
             document.getElementById('prevApplyBtnBottom').href = applyUrl;
@@ -1335,9 +1341,13 @@
             // Meta grid
             const meta = document.getElementById('prevMeta');
             meta.innerHTML = `
-    <div class="lj-meta-item"><div class="lj-meta-label">Salary</div><div class="lj-meta-value"><i class="fa-solid fa-indian-rupee-sign"></i>${job.salary_range || 'Not disclosed'}</div></div>
+    <div class="lj-meta-item"><div class="lj-meta-label">Salary</div><div class="lj-meta-value"><i class="fa-solid fa-indian-rupee-sign"></i>${
+            (job.salary_min && job.salary_max)
+            ? `₹${Math.round(job.salary_min / 1000)}k - ₹${Math.round(job.salary_max / 1000)}k/mo`
+            : 'Not disclosed'
+        }</div></div>
     <div class="lj-meta-item"><div class="lj-meta-label">Job Type</div><div class="lj-meta-value"><i class="fa-solid fa-clock"></i>${job.job_type || '—'}</div></div>
-    <div class="lj-meta-item"><div class="lj-meta-label">Experience</div><div class="lj-meta-value"><i class="fa-solid fa-briefcase"></i>${job.experience_required || '—'}</div></div>
+    <div class="lj-meta-item"><div class="lj-meta-label">Experience</div><div class="lj-meta-value"><i class="fa-solid fa-briefcase"></i>${job.experience || '—'}</div></div>
     <div class="lj-meta-item"><div class="lj-meta-label">Education</div><div class="lj-meta-value"><i class="fa-solid fa-graduation-cap"></i>${job.education || '—'}</div></div>
   `;
 
@@ -1361,6 +1371,7 @@
             const benefitsEl = document.getElementById('prevBenefits');
             benefitsEl.innerHTML = (job.benefits || []).map(b =>
                 `<span class="lj-benefit-tag"><i class="fa-solid fa-check"></i>${b}</span>`).join('');
+            document.getElementById('prevEducation').textContent = job.education;
 
             // Scroll preview to top
             document.getElementById('jobPreview').scrollTop = 0;

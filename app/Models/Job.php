@@ -7,29 +7,13 @@ use App\Models\JobApplication;
 
 class Job extends Model
 {
-    protected $fillable = [
-        'title',
-        'slug',
-        'company_name',
-        'location',
-        'district',
-        'state',
-        'experience',
-        'salary_min',
-        'salary_max',
-        'job_type',
-        'description',
-        'responsibilities',
-        'benefits',
-        'education',
-        'skills',
-        'expiry_date',
-        'status'
-    ];
+   
+    protected $guarded = [];
 
     // Cast expiry_date to Carbon
     protected $casts = [
         'expiry_date' => 'date',
+       
     ];
 
     // Job → Applications relationship
@@ -57,4 +41,6 @@ class Job extends Model
     {
         return $value ? explode("\n", $value) : [];
     }
+
+
 }

@@ -86,6 +86,50 @@
             font-weight: 600;
             margin-bottom: 6px;
         }
+
+        /* Table overall */
+.table {
+    font-size: 13px; /* 🔥 main fix */
+}
+
+/* Table header */
+.table thead th {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d; /* soft grey like dashboard */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Table body */
+.table tbody td {
+    font-size: 13px;
+    font-weight: 400;
+    color: #212529;
+}
+
+/* Status badges */
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+}
+
+/* Action buttons (icons) */
+.table .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+/* Reduce row height */
+.table td, 
+.table th {
+    padding: 8px 10px;
+    vertical-align: middle;
+}
+body {
+    font-family: 'Inter', sans-serif;
+}
     </style>
 </head>
 

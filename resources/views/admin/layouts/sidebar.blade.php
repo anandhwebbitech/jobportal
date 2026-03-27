@@ -1,4 +1,36 @@
 <!-- ── Sidebar ── -->
+<style>
+    /* hide submenu by default */
+.submenu {
+    display: none;
+    padding-left: 15px;
+}
+
+/* show when open */
+.submenu.open {
+    display: block;
+}
+
+/* active link */
+.sidebar a.active {
+    background: #e6f4ea;
+    color: #198754;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* parent active */
+.has-submenu.open {
+    color: #198754;
+    font-weight: 600;
+}
+
+/* arrow rotate */
+.has-submenu.open .submenu-arrow {
+    transform: rotate(180deg);
+    transition: 0.3s;
+}
+</style>
 <aside class="sidebar" id="sidebar">
 
     <div class="sidebar-logo mb-4">
@@ -27,8 +59,8 @@
                 <i class="fa fa-list"></i> Employer List
             </a>
 
-            <a href="#"
-               class="{{ request()->is('admin/employers*') ? 'active' : '' }}">
+            <a href="{{ route('admin.jobs.index')}}"
+               class="{{ request()->is('admin/jobs*') ? 'active' : '' }}">
                 <i class="fa fa-briefcase"></i> Job List
             </a>
 

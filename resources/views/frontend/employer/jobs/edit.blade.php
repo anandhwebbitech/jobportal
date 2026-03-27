@@ -11,8 +11,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap');
 
         /* ══════════════════════════════════════
-                   DESIGN TOKENS (shared with create)
-                ══════════════════════════════════════ */
+                           DESIGN TOKENS (shared with create)
+                        ══════════════════════════════════════ */
         :root {
             --ink: #0c1425;
             --ink2: #1e293b;
@@ -1282,7 +1282,7 @@
                 </div>
                 <div class="pj-hero-jobcard">
                     <i class="fa-solid fa-briefcase" style="color:#a7f3d0;"></i>
-                    Editing: <strong>{{ $job->job_title }}</strong>
+                    Editing: <strong>{{ $job->title }}</strong>
                     &middot; Posted {{ $job->created_at->diffForHumans() }}
                 </div>
             </div>
@@ -1367,7 +1367,7 @@
                                     <input type="text" id="job_title" name="job_title"
                                         class="pj-input @error('job_title') err @enderror"
                                         placeholder="e.g. Senior Sales Executive"
-                                        value="{{ old('job_title', $job->job_title) }}" />
+                                        value="{{ old('title', $job->title) }}" />
                                 </div>
                                 <div class="pj-ferr @error('job_title') show @enderror" id="err-job_title">
                                     <i class="fa-solid fa-circle-exclamation"></i><span>Job title is required (min. 3
@@ -1483,7 +1483,7 @@
                                         maxlength="500" oninput="charCount(this,'benCnt',500)">
                                         {{ old('benefits', is_array($job->benefits) ? implode("\n", $job->benefits) : $job->benefits) }}
                                                 </textarea>
-                                                                        </div>
+                                </div>
 
                                 <div style="display:flex;justify-content:flex-end;margin-top:6px;">
                                     <div class="pj-counter" id="benCnt">0 / 500</div>
@@ -1569,7 +1569,7 @@
                                         <div class="pj-iw-prefix"><i class="fa-solid fa-city"></i></div>
                                         <input type="text" id="city" name="city"
                                             class="pj-input @error('city') err @enderror" placeholder="e.g. Coimbatore"
-                                            value="{{ old('city', $job->city) }}" />
+                                            value="{{ old('location', $job->location) }}" />
                                     </div>
                                     <div class="pj-ferr @error('city') show @enderror" id="err-city">
                                         <i class="fa-solid fa-circle-exclamation"></i><span>Please enter the city/town
@@ -1641,7 +1641,7 @@
                                         <input type="number" id="vacancies" name="vacancies"
                                             class="pj-input @error('vacancies') err @enderror" placeholder="e.g. 3"
                                             min="1" max="100"
-                                            value="{{ old('vacancies', $job->vacancies) }}" />
+                                            value="{{ old('num_vacancies', $job->num_vacancies) }}" />
                                     </div>
                                     <div class="pj-ferr @error('vacancies') show @enderror" id="err-vacancies">
                                         <i class="fa-solid fa-circle-exclamation"></i><span>At least 1 vacancy
@@ -1658,11 +1658,21 @@
                                 </label>
                                 <div class="pj-iw">
                                     <div class="pj-iw-prefix"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                                    @php
+                                        $selectedSalary = '';
+
+                                        if (!empty($job->salary_min) && !empty($job->salary_max)) {
+                                            $selectedSalary = $job->salary_min . '-' . $job->salary_max;
+                                        } elseif ($job->salary_min == 0 && $job->salary_max == 0) {
+                                            $selectedSalary = 'Not Disclosed';
+                                        }
+                                    @endphp
                                     <select id="salary_range" name="salary_range"
                                         class="pj-input @error('salary_range') err @enderror">
                                         <option value="" disabled
-                                            {{ old('salary_range', $job->salary_range) ? '' : 'selected' }}>Select Salary
-                                            Range</option>
+                                            {{ old('salary_range', $selectedSalary) ? '' : 'selected' }}>
+                                            Select Salary Range
+                                        </option>
                                         @php
                                             $salaryRanges = [
                                                 'Not Disclosed' => 'Not Disclosed',
@@ -1681,8 +1691,9 @@
                                         @endphp
                                         @foreach ($salaryRanges as $lbl => $val)
                                             <option value="{{ $val }}"
-                                                {{ old('salary_range', $job->salary_range) === $val ? 'selected' : '' }}>
-                                                {{ $lbl }}</option>
+                                                {{ old('salary_range', $selectedSalary) === $val ? 'selected' : '' }}>
+                                                {{ $lbl }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -1748,6 +1759,9 @@
                                     Job Status <span class="pj-req">*</span>
                                 </label>
                                 <div class="pj-type-grid pj-type2" style="max-width:460px;">
+                                    @php
+                                        $selectedStatus = old('status', $job->status == 1 ? 'active' : 'inactive');
+                                    @endphp
                                     @foreach ([
             'active' => ['Active', 'fa-circle-check', 'Visible to job seekers immediately'],
             'inactive' => ['Inactive', 'fa-circle-pause', 'Hidden — publish later'],
@@ -1755,7 +1769,8 @@
                                         <div class="pj-type-opt">
                                             <input type="radio" id="status_{{ $val }}" name="status"
                                                 value="{{ $val }}"
-                                                {{ old('status', $job->status) === $val ? 'checked' : '' }}>
+                                                {{ $selectedStatus === $val ? 'checked' : '' }}>
+
                                             <label for="status_{{ $val }}">
                                                 <div class="pj-type-ico"><i class="fa-solid {{ $ico }}"></i>
                                                 </div>

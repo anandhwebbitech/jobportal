@@ -187,7 +187,7 @@
 @section('content')
 @php
   $j       = $job ?? null;
-  $status  = $j->status ?? 'active';
+  $status  = $j->status ==1 ?'active' : 'in-active';
   $skills  = is_string($j->skills ?? null) ? json_decode($j->skills, true) : ($j->skills ?? []);
   $sq      = is_string($j->screening_questions ?? null) ? json_decode($j->screening_questions, true) : ($j->screening_questions ?? []);
   $salary  = ($j && ($j->salary_min ?? 0) + ($j->salary_max ?? 0) > 0)
@@ -274,32 +274,39 @@
         <div class="js-prose">{{ $j->description ?? 'No description provided.' }}</div>
       </div>
     </div>
-
+    {{-- @dd($j, $j->responsibilities); --}}
     {{-- Responsibilities --}}
-    @if($j && $j->responsibilities)
+
+
     <div class="js-card">
       <div class="js-card-head">
         <div class="js-card-head-ico"><i class="fa-solid fa-list-check"></i></div>
         <div class="js-card-head-title">Responsibilities</div>
       </div>
       <div class="js-card-body">
-        <div class="js-prose">{{ $j->responsibilities }}</div>
+        <ul class="js-prose">
+          @foreach($j->responsibilities as $res)
+            <li>{{ $res }}</li>
+          @endforeach
+        </ul>
       </div>
     </div>
-    @endif
 
-    {{-- Benefits --}}
-    @if($j && $j->benefits)
+
+
     <div class="js-card">
       <div class="js-card-head">
         <div class="js-card-head-ico"><i class="fa-solid fa-gift"></i></div>
         <div class="js-card-head-title">Benefits</div>
       </div>
       <div class="js-card-body">
-        <div class="js-prose">{{ $j->benefits }}</div>
+        <ul class="js-prose">
+          @foreach($j->benefits as $ben)
+            <li>{{ $ben }}</li>
+          @endforeach
+        </ul>
       </div>
     </div>
-    @endif
 
     {{-- Screening Questions --}}
     <div class="js-card">
@@ -463,14 +470,14 @@
           <div class="js-info-ico blue"><i class="fa-solid fa-layer-group"></i></div>
           <div>
             <div class="js-info-label">Category</div>
-            <div class="js-info-value">{{ $j->job_category ?? '—' }}</div>
+            <div class="js-info-value">{{ $j->category ?? '—' }}</div>
           </div>
         </div>
         <div class="js-info-row">
           <div class="js-info-ico purple"><i class="fa-solid fa-industry"></i></div>
           <div>
             <div class="js-info-label">Industry</div>
-            <div class="js-info-value">{{ $j->industry_type ?? '—' }}</div>
+            <div class="js-info-value">{{ $j->industry ?? '—' }}</div>
           </div>
         </div>
         <div class="js-info-row">
@@ -491,7 +498,7 @@
           <div class="js-info-ico blue"><i class="fa-solid fa-briefcase"></i></div>
           <div>
             <div class="js-info-label">Experience Required</div>
-            <div class="js-info-value">{{ $j->experience_required ?? '—' }}</div>
+            <div class="js-info-value">{{ $j->experience ?? '—' }}</div>
           </div>
         </div>
         <div class="js-info-row">
@@ -505,7 +512,7 @@
           <div class="js-info-ico orange"><i class="fa-solid fa-users"></i></div>
           <div>
             <div class="js-info-label">Vacancies</div>
-            <div class="js-info-value">{{ $j->vacancies ?? 1 }} position(s)</div>
+            <div class="js-info-value">{{ $j->num_vacancies ?? 1 }} position(s)</div>
           </div>
         </div>
         <div class="js-info-row">
@@ -528,7 +535,7 @@
           </div>
           <div>
             <div class="js-info-label">Status</div>
-            <div class="js-info-value" style="text-transform:capitalize;">{{ $status }}</div>
+            <div class="js-info-value" style="text-transform:capitalize;">{{ $status  }}</div>
           </div>
         </div>
       </div>

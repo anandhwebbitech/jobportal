@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Employer;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmployerDetail;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\JobApplication;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+
 
 class DashboardController extends Controller
 {
@@ -95,59 +100,81 @@ class DashboardController extends Controller
 
     public function jobsStore(Request $request)
     {
-        $request->validate([
-            'job_title'           => 'required|string|min:3|max:150',
-            'job_category'        => 'required|string|max:100',
-            'industry_type'       => 'required|string|max:100',
-            'description'         => 'required|string|min:50|max:3000',
-            'responsibilities'    => 'required|string|min:20|max:2000',
-            'benefits'            => 'nullable|string|max:500',
-            'state'               => 'required|string|max:100',
-            'district'            => 'required|string|max:100',
-            'city'                => 'required|string|max:100',
-            'experience_required' => 'required|string|max:50',
-            'vacancies'           => 'required|integer|min:1|max:500',
-            'education'           => 'required|string|max:50',
-            'job_type'            => 'required|in:Full Time,Part Time,Contract',
-            'status'              => 'required|in:active,inactive',
-            'skills'              => 'required|string',
-            'screening_questions' => 'nullable|string',
-            'terms'               => 'accepted',
-        ]);
+        try {
 
-        // Decode skills
-        $skills = json_decode($request->skills, true) ?? [];
-        if (empty($skills)) {
-            return back()->withInput()->withErrors(['skills' => 'Please add at least one skill.']);
+            $request->validate([
+                'job_title'           => 'required|string|min:3|max:150',
+                'job_category'        => 'required|string|max:100',
+                'industry_type'       => 'required|string|max:100',
+                'description'         => 'required|string|min:50|max:3000',
+                'responsibilities'    => 'required|string|min:20|max:2000',
+                'benefits'            => 'nullable|string|max:500',
+                'state'               => 'required|string|max:100',
+                'district'            => 'required|string|max:100',
+                'city'                => 'required|string|max:100',
+                'experience_required' => 'required|string|max:50',
+                'vacancies'           => 'required|integer|min:1|max:2000',
+                'education'           => 'required|string|max:50',
+                'job_type'            => 'required|in:Full Time,Part Time,Contract',
+                'status'              => 'required|in:active,inactive',
+                'skills'              => 'required|string',
+                'terms'               => 'accepted',
+            ]);
+
+            // responsibilities & benefits (fixed)
+
+            // skills decode
+            $skills = json_decode($request->skills, true);
+            if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
+                return back()->withInput()->withErrors([
+                    'skills' => 'Invalid skills format'
+                ]);
+            }
+
+            // salary split
+            $salaryMin = 0;
+            $salaryMax = 0;
+
+            if ($request->salary_range) {
+                $parts = explode('-', $request->salary_range);
+                $salaryMin = $parts[0] ?? 0;
+                $salaryMax = $parts[1] ?? 0;
+            }
+
+            $company = EmployerDetail::where('user_id', auth()->id())->first();
+
+            $job = Job::create([
+                'company_name'     => $company->company_name ?? null,
+                'category'         => $request->job_category,
+                'industry'         => $request->industry_type,
+                'title'            => $request->job_title,
+                'slug'             => Str::slug($request->job_title) . '-' . time(),
+                'description'      => $request->description,
+                'responsibilities' => $request->responsibilities,
+                'benefits'         => $request->benefits,
+                'state'            => $request->state,
+                'district'         => $request->district,
+                'location'         => $request->city,
+                'experience'       => $request->experience_required,
+                'salary_min'       => $salaryMin,
+                'salary_max'       => $salaryMax,
+                'education'        => $request->education,
+                'job_type'         => $request->job_type,
+                'status'           => $request->status === 'active' ? 1 : 0,
+                'skills'           => json_encode($skills),
+                'num_vacancies'    => $request->vacancies,
+                'admin_status'     => 0,
+                'is_new'           => 1,
+                'expiry_date'      => Carbon::now()->addDays(10),
+            ]);
+
+            return redirect()
+                ->route('employer.jobs.show', $job->id)
+                ->with('success', 'Job created successfully!');
+
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', $e->getMessage());
         }
-
-        // Decode screening questions
-        $screening = json_decode($request->screening_questions ?? '[]', true) ?? [];
-
-        $job = Job::create([
-            'employer_id'         => auth()->id(),
-            'title'               => $request->job_title ?? 'Title',
-            'slug'                => Str::slug($request->title),
-            'description'         => $request->description?? null,
-            'responsibilities'    => $request->responsibilities?? null,
-            'benefits'            => $request->benefits?? null,
-            'state'               => $request->state?? null,
-            'district'            => $request->district?? null,
-            'city'                => $request->city?? null,
-            'experience_required' => $request->experience_required?? null,
-            'vacancies'           => $request->vacancies?? null,
-            'salary_min'          => $request->salary_min ?? 0,
-            'salary_max'          => $request->salary_max ?? $request->salary_min,
-            'education'           => $request->education?? null,
-            'job_type'            => $request->job_type?? null,
-            'status'              => $request->status?? null,
-            'skills'              => json_encode($skills),
-            'screening_questions' => json_encode($screening),
-        ]);
-
-        return redirect()
-            ->route('employer.jobs.show', $job->id)
-            ->with('success', 'Job "' . $job->job_title . '" published successfully!');
     }
 
 
@@ -195,57 +222,92 @@ class DashboardController extends Controller
 
     public function jobsUpdate(Request $request, $id)
     {
-        $job = Job::findOrFail($id);
+        try {
 
-        $request->validate([
-            'job_title'           => 'required|string|min:3|max:150',
-            'job_category'        => 'required|string|max:100',
-            'industry_type'       => 'required|string|max:100',
-            'description'         => 'required|string|min:50|max:3000',
-            'responsibilities'    => 'required|string|min:20|max:2000',
-            'benefits'            => 'nullable|string|max:500',
-            'state'               => 'required|string|max:100',
-            'district'            => 'required|string|max:100',
-            'city'                => 'required|string|max:100',
-            'experience_required' => 'required|string|max:50',
-            'vacancies'           => 'required|integer|min:1|max:500',
-            'education'           => 'required|string|max:50',
-            'job_type'            => 'required|in:Full Time,Part Time,Contract',
-            'status'              => 'required|in:active,inactive',
-            'skills'              => 'required|string',
-        ]);
+            $job = Job::findOrFail($id);
 
-        // Decode skills
-        $skills = json_decode($request->skills, true) ?? [];
-        if (empty($skills)) {
-            return back()->withInput()->withErrors(['skills' => 'Please add at least one skill.']);
+            // ✅ Validation
+            $request->validate([
+                'job_title'           => 'required|string|min:3|max:150',
+                'job_category'        => 'required|string|max:100',
+                'industry_type'       => 'required|string|max:100',
+                'description'         => 'required|string|min:50|max:3000',
+                'responsibilities'    => 'required|string|min:20|max:2000',
+                'benefits'            => 'nullable|string|max:500',
+                'state'               => 'required|string|max:100',
+                'district'            => 'required|string|max:100',
+                'city'                => 'required|string|max:100',
+                'experience_required' => 'required|string|max:50',
+                'vacancies'           => 'required|integer|min:1|max:2000',
+                'education'           => 'required|string|max:50',
+                'job_type'            => 'required|in:Full Time,Part Time,Contract',
+                'status'              => 'required|in:active,inactive',
+                'skills'              => 'required|string',
+            ]);
+
+            // ✅ responsibilities & benefits (clean)
+
+            // ✅ skills decode
+            $skills = json_decode($request->skills, true);
+            if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
+                return back()->withInput()->withErrors([
+                    'skills' => 'Invalid skills format'
+                ]);
+            }
+
+            // ✅ salary split (same as store)
+            $salaryMin = 0;
+            $salaryMax = 0;
+
+            if ($request->salary_range) {
+                if ($request->salary_range === 'Not Disclosed') {
+                    $salaryMin = 0;
+                    $salaryMax = 0;
+                } elseif (str_contains($request->salary_range, '+')) {
+                    $salaryMin = (int) str_replace('+', '', $request->salary_range);
+                    $salaryMax = $salaryMin;
+                } else {
+                    $parts = explode('-', $request->salary_range);
+                    $salaryMin = $parts[0] ?? 0;
+                    $salaryMax = $parts[1] ?? 0;
+                }
+            }
+
+            $company = EmployerDetail::where('user_id', auth()->id())->first();
+            // ✅ UPDATE
+            $job->update([
+                'company_name'     => $company->company_name ?? null,
+                'category'         => $request->job_category,
+                'industry'         => $request->industry_type,
+                'title'            => $request->job_title,
+                'slug'             => Str::slug($request->job_title) . '-' . time(),
+                'description'      => $request->description,
+                'responsibilities' => $request->responsibilities,
+                'benefits'         => $request->benefits,
+                'state'            => $request->state,
+                'district'         => $request->district,
+                'location'         => $request->city,
+                'experience'       => $request->experience_required,
+                'salary_min'       => $salaryMin,
+                'salary_max'       => $salaryMax,
+                'education'        => $request->education,
+                'job_type'         => $request->job_type,
+                'status'           => $request->status === 'active' ? 1 : 0,
+                'skills'           => json_encode($skills),
+                'num_vacancies'    => $request->vacancies,
+            ]);
+
+            // ✅ Success
+            return redirect()
+                ->route('employer.jobs.show', $job->id)
+                ->with('success', 'Job "' . $job->title . '" updated successfully!');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
         }
-
-        $job->update([
-            'job_title'           => $request->job_title,
-            'job_category'        => $request->job_category,
-            'industry_type'       => $request->industry_type,
-            'description'         => $request->description,
-            'responsibilities'    => $request->responsibilities,
-            'benefits'            => $request->benefits,
-            'state'               => $request->state,
-            'district'            => $request->district,
-            'city'                => $request->city,
-            'experience_required' => $request->experience_required,
-            'vacancies'           => $request->vacancies,
-            'salary_min'          => $request->salary_min,
-            'salary_max'          => $request->salary_max ?? $request->salary_min,
-            'education'           => $request->education,
-            'job_type'            => $request->job_type,
-            'status'              => $request->status,
-            'skills'              => json_encode($skills),
-        ]);
-
-        return redirect()
-            ->route('employer.jobs.show', $job->id)
-            ->with('success', 'Job "' . $job->job_title . '" updated successfully!');
     }
-
 
     /* ==============================
        JOBS — DELETE
@@ -261,7 +323,7 @@ class DashboardController extends Controller
         $job->delete();
 
         return redirect()
-            ->route('frontend.employer.jobs.index')
+            ->route('employer.jobs.index')
             ->with('success', 'Job "' . $title . '" has been deleted.');
     }
 
@@ -272,13 +334,25 @@ class DashboardController extends Controller
 
     public function jobsToggle($id)
     {
-        $job = Job::findOrFail($id);
-        $job->status = ($job->status === 'active') ? 'inactive' : 'active';
-        $job->save();
+        try {
+            $job = Job::findOrFail($id);
 
-        $action = $job->status === 'active' ? 'activated' : 'deactivated';
+            $job->status = ($job->status == '1') ? '0' : '1';
+            $job->save();
 
-        return back()->with('success', 'Job "' . $job->job_title . '" has been ' . $action . '.');
+            $action = $job->status === '1' ? 'activated' : 'deactivated';
+
+            return response()->json([
+                'status' => $job->status,
+                'message' => 'Job "' . $job->title . '" has been ' . $action . '.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!'
+            ], 500);
+        }
     }
 
 

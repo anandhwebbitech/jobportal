@@ -52,10 +52,11 @@ class JobSeekerController extends Controller
                         <button class="btn btn-sm btn-info viewUser" data-id="'.$row->id.'">
                             <i class="fa fa-eye"></i> 
                         </button>
-                        <button class="btn btn-sm btn-danger delete" data-id="'.$row->id.'">
-                            <i class="fa fa-trash"></i> 
-                        </button>
+                       
                     ';
+                    //  <button class="btn btn-sm btn-danger delete" data-id="'.$row->id.'">
+                    //         <i class="fa fa-trash"></i> 
+                    //     </button>
                 })
                 ->rawColumns(['status', 'action'])
                 ->make(true);

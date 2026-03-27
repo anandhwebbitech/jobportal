@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\EmployerDetail;
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
 use Illuminate\Support\Facades\DB;
+
 
 class AuthController extends Controller
 {
@@ -457,6 +459,18 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    public function preview($id)
+    {
+        $job = Job::findOrFail($id);
+        // dd($job);
+        // convert JSON fields to array
+        // $job->responsibilities = json_decode($job->responsibilities, true);
+        // $job->benefits = json_decode($job->benefits, true);
+        // $job->skills = json_decode($job->skills, true);
+
+        return response()->json($job);
     }
 
 }
