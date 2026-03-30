@@ -1,6 +1,7 @@
 {{-- profile.blade.php --}}
 @extends('frontend.jobseeker.layout')
 @section('title', 'My Profile')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 
 @section('content')
 
@@ -16,7 +17,7 @@
   <div class="lj-card-head">
     <div class="lj-card-title"><i class="fa-solid fa-user"></i> Personal Information</div>
   </div>
-  <form method="POST" action="{{ route('jobseeker.profile.update') }}" enctype="multipart/form-data">
+  <form id="profileForm" method="POST" action="{{ route('jobseeker.profile.update') }}" enctype="multipart/form-data">
     @csrf @method('PUT')
     <div class="lj-card-body">
 
@@ -52,7 +53,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-user lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="name"
-              value="{{ old('name', optional(auth()->user())->name) }}"
+              value="{{ old('name', $user->name ?? '') }}"
               placeholder="Your full name" required/>
           </div>
           @error('name')<div style="font-size:.72rem;color:var(--red);margin-top:3px;">{{ $message }}</div>@enderror
@@ -62,7 +63,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-mobile-screen lj-input-ico"></i>
             <input class="lj-input has-ico" type="tel" name="mobile"
-              value="{{ old('mobile', optional(auth()->user())->mobile) }}"
+              value="{{ old('mobile', $user->details->mobile ?? '') }}"
               placeholder="+91 XXXXX XXXXX" maxlength="15" required/>
           </div>
           @error('mobile')<div style="font-size:.72rem;color:var(--red);margin-top:3px;">{{ $message }}</div>@enderror
@@ -72,7 +73,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-envelope lj-input-ico"></i>
             <input class="lj-input has-ico" type="email" name="email"
-              value="{{ old('email', optional(auth()->user())->email) }}"
+              value="{{ old('email',  $user->email?? '') }}"
               placeholder="you@example.com" required/>
           </div>
           @error('email')<div style="font-size:.72rem;color:var(--red);margin-top:3px;">{{ $message }}</div>@enderror
@@ -82,7 +83,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-calendar lj-input-ico"></i>
             <input class="lj-input has-ico" type="date" name="dob"
-              value="{{ old('dob', optional(auth()->user())->dob) }}"/>
+              value="{{ old('dob', $user->details->dob ?? '') }}"/>
           </div>
         </div>
         <div class="lj-fgroup">
@@ -90,7 +91,10 @@
           <select class="lj-input" name="gender">
             <option value="">Select gender</option>
             @foreach(['male'=>'Male','female'=>'Female','other'=>'Other'] as $val => $label)
-              <option value="{{ $val }}" {{ old('gender', optional(auth()->user())->gender) == $val ? 'selected' : '' }}>{{ $label }}</option>
+              <option value="{{ $val }}" 
+                {{ old('gender', optional($user->details)->gender) == $val ? 'selected' : '' }}>
+                {{ $label }}
+              </option>
             @endforeach
           </select>
         </div>
@@ -99,7 +103,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-align-left lj-input-ico ta"></i>
             <textarea class="lj-input has-ico" name="bio" rows="3"
-              placeholder="Brief description of yourself and your career goals...">{{ old('bio', optional(auth()->user())->bio) }}</textarea>
+              placeholder="Brief description of yourself and your career goals...">{{ old('bio', $user->details->bio ?? '') }}</textarea>
           </div>
         </div>
       </div>
@@ -112,7 +116,7 @@
             <option value="">Select state</option>
             @php $states = ['Tamil Nadu','Karnataka','Kerala','Andhra Pradesh','Telangana','Maharashtra','Gujarat','Rajasthan','Uttar Pradesh','Delhi']; @endphp
             @foreach($states as $s)
-              <option value="{{ $s }}" {{ old('state', optional(auth()->user())->state) == $s ? 'selected' : '' }}>{{ $s }}</option>
+              <option value="{{ $s }}" {{ old('state', $user->details->state ?? '') == $s ? 'selected' : '' }}>{{ $s }}</option>
             @endforeach
           </select>
         </div>
@@ -122,7 +126,7 @@
             <option value="">Select district</option>
             @php $districts = ['Coimbatore','Chennai','Madurai','Tiruchirappalli','Salem','Tirunelveli','Erode','Vellore','Thanjavur','Dindigul','Kanchipuram','Tiruppur','Nagercoil','Cuddalore','Pollachi','Hosur','Ooty','Karur','Namakkal']; @endphp
             @foreach($districts as $d)
-              <option value="{{ $d }}" {{ old('district', optional(auth()->user())->district) == $d ? 'selected' : '' }}>{{ $d }}</option>
+              <option value="{{ $d }}" {{ old('district', $user->details->district ?? '') == $d ? 'selected' : '' }}>{{ $d }}</option>
             @endforeach
           </select>
         </div>
@@ -131,7 +135,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-city lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="city"
-              value="{{ old('city', optional(auth()->user())->city) }}" placeholder="e.g. Coimbatore"/>
+              value="{{ old('city', $user->details->city ?? '') }}" placeholder="e.g. Coimbatore"/>
           </div>
         </div>
       </div>
@@ -148,7 +152,7 @@
   <div class="lj-card-head">
     <div class="lj-card-title"><i class="fa-solid fa-graduation-cap"></i> Education</div>
   </div>
-  <form method="POST" action="{{ route('jobseeker.profile.education') }}">
+  <form id="educationForm" method="POST" action="{{ route('jobseeker.profile.education') }}">
     @csrf @method('PUT')
     <div class="lj-card-body">
       <div class="lj-form-grid">
@@ -158,7 +162,7 @@
             <option value="">Select level</option>
             @php $levels = ['10th Pass (SSLC)'=>'10th','12th Pass (HSC)'=>'12th','Diploma'=>'diploma','Bachelor\'s Degree'=>'bachelor','Master\'s Degree'=>'master','Doctorate / PhD'=>'doctorate']; @endphp
             @foreach($levels as $label => $val)
-              <option value="{{ $val }}" {{ old('education_level', $user->education_level ?? '') == $val ? 'selected' : '' }}>{{ $label }}</option>
+              <option value="{{ $val }}" {{ old('education_level', $user->details->qualification ?? '') == $val ? 'selected' : '' }}>{{ $label }}</option>
             @endforeach
           </select>
         </div>
@@ -167,7 +171,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-school lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="institution"
-              value="{{ old('institution', $user->institution ?? '') }}"
+              value="{{ old('institution_name', $user->details->institution_name ?? '') }}"
               placeholder="College / School name" required/>
           </div>
         </div>
@@ -176,7 +180,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-book lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="course"
-              value="{{ old('course', $user->course ?? '') }}" placeholder="e.g. B.E. Computer Science"/>
+              value="{{ old('course_degree', $user->details->course_degree ?? '') }}" placeholder="e.g. B.E. Computer Science"/>
           </div>
         </div>
         <div class="lj-fgroup">
@@ -184,7 +188,7 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-flask lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="specialization"
-              value="{{ old('specialization', $user->specialization ?? '') }}" placeholder="e.g. Software Engineering"/>
+              value="{{ old('specialization', $user->details->specialization ?? '') }}" placeholder="e.g. Software Engineering"/>
           </div>
         </div>
         <div class="lj-fgroup">
@@ -192,7 +196,7 @@
           <select class="lj-input" name="passing_year" required>
             <option value="">Select year</option>
             @for($y = date('Y'); $y >= 1990; $y--)
-              <option value="{{ $y }}" {{ old('passing_year', $user->passing_year ?? '') == $y ? 'selected' : '' }}>{{ $y }}</option>
+              <option value="{{ $y }}" {{ old('year_of_passing', $user->details->year_of_passing ?? '') == $y ? 'selected' : '' }}>{{ $y }}</option>
             @endfor
           </select>
         </div>
@@ -201,9 +205,9 @@
           <div class="lj-input-wrap">
             <i class="fa-solid fa-percent lj-input-ico"></i>
             <input class="lj-input has-ico" type="text" name="grade"
-              value="{{ old('grade', $user->grade ?? '') }}" placeholder="e.g. 78% or 8.5 CGPA"/>
+              value="{{ old('percentage', $user->details->percentage ?? '') }}" placeholder="e.g. 78% or 8.5 CGPA"/>
           </div>
-        </div>
+        </div>  
       </div>
     </div>
     <div class="lj-form-footer">
@@ -217,31 +221,31 @@
   <div class="lj-card-head">
     <div class="lj-card-title"><i class="fa-solid fa-briefcase"></i> Work Experience</div>
   </div>
-  <form method="POST" action="{{ route('jobseeker.profile.experience') }}">
+  <form id="experienceForm" method="POST" action="{{ route('jobseeker.profile.experience') }}">
     @csrf @method('PUT')
     <div class="lj-card-body">
       <div class="lj-form-grid">
         <div class="lj-fgroup">
           <label class="lj-label">Experience Level <span class="req">*</span></label>
           <select class="lj-input" name="experience_level" required onchange="toggleExpFields(this.value)">
-            <option value="fresher"     {{ old('experience_level', auth()->user()?->experience_level) == 'fresher'     ? 'selected' : '' }}>Fresher</option>
-            <option value="experienced" {{ old('experience_level', auth()->user()?->experience_level) == 'experienced' ? 'selected' : '' }}>Experienced</option>
+            <option value="fresher"     {{ old('exp', $user->details->exp) == 'fresher'     ? 'selected' : '' }}>Fresher</option>
+            <option value="experienced" {{ old('exp', $user->details->exp) == 'experienced' ? 'selected' : '' }}>Experienced</option>
           </select>
         </div>
         <div class="lj-fgroup">
           <label class="lj-label">Total Years of Experience</label>
           <select class="lj-input" name="years_experience">
             <option value="">Select (if experienced)</option>
-            <option value="less_1" {{ old('years_experience', auth()->user()?->years_experience) == 'less_1' ? 'selected' : '' }}>Less than 1 year</option>
+            <option value="less_1" {{ old('ex_years',$user->details->ex_years) == 'less_1' ? 'selected' : '' }}>Less than 1 year</option>
             @for($y = 1; $y <= 15; $y++)
-              <option value="{{ $y }}" {{ old('years_experience', auth()->user()?->years_experience) == $y ? 'selected' : '' }}>{{ $y }} {{ $y == 1 ? 'year' : 'years' }}</option>
+              <option value="{{ $y }}" {{ old('ex_years', $user->details->ex_years) == $y ? 'selected' : '' }}>{{ $y }} {{ $y == 1 ? 'year' : 'years' }}</option>
             @endfor
-            <option value="15+" {{ old('years_experience', auth()->user()?->years_experience) == '15+' ? 'selected' : '' }}>15+ years</option>
+            <option value="15+" {{ old('ex_years',$user->details->ex_years) == '15+' ? 'selected' : '' }}>15+ years</option>
           </select>
         </div>
       </div>
 
-      <div id="expExtraFields" style="{{ old('experience_level', auth()->user()->experience_level ?? 'fresher') == 'experienced' ? '' : 'display:none;' }}">
+      <div id="expExtraFields" style="{{ old('ex_years', $user->details->ex_years ?? 'fresher') == 'experienced' ? '' : 'display:none;' }}">
         <div class="lj-form-divider"><i class="fa-solid fa-briefcase"></i> Previous Employment</div>
         <div class="lj-form-grid">
           <div class="lj-fgroup">
@@ -249,7 +253,7 @@
             <div class="lj-input-wrap">
               <i class="fa-solid fa-building lj-input-ico"></i>
               <input class="lj-input has-ico" type="text" name="previous_company"
-                value="{{ old('previous_company', auth()->user()?->previous_company) }}" placeholder="Company name"/>
+                value="{{ old('previous_company',$user->details->previous_company) }}" placeholder="Company name"/>
             </div>
           </div>
           <div class="lj-fgroup">
@@ -257,7 +261,7 @@
             <div class="lj-input-wrap">
               <i class="fa-solid fa-id-badge lj-input-ico"></i>
               <input class="lj-input has-ico" type="text" name="previous_designation"
-                value="{{ old('previous_designation', auth()->user()?->previous_designation) }}" placeholder="e.g. Junior PHP Developer"/>
+                value="{{ old('previous_designation', $user->details->previous_designation) }}" placeholder="e.g. Junior PHP Developer"/>
             </div>
           </div>
           <div class="lj-fgroup">
@@ -265,7 +269,7 @@
             <div class="lj-input-wrap">
               <i class="fa-solid fa-indian-rupee-sign lj-input-ico"></i>
               <input class="lj-input has-ico" type="text" name="current_salary"
-                value="{{ old('current_salary', auth()->user()?->current_salary) }}" placeholder="e.g. ₹25,000/month"/>
+                value="{{ old('last_salary', $user->details->last_salary ?? '') }}" placeholder="e.g. ₹25,000/month"/>
             </div>
           </div>
           <div class="lj-fgroup">
@@ -300,7 +304,7 @@
   <div class="lj-card-head">
     <div class="lj-card-title"><i class="fa-solid fa-screwdriver-wrench"></i> Skills</div>
   </div>
-  <form method="POST" action="{{ route('jobseeker.profile.skills') }}">
+  <form id="skillsForm" method="POST" action="{{ route('jobseeker.profile.skills') }}">
     @csrf @method('PUT')
     <div class="lj-card-body">
       <div class="lj-info-box">
@@ -314,7 +318,7 @@
         @foreach(is_array($userSkills) ? $userSkills : json_decode($userSkills, true) ?? [] as $skill)
           <span class="lj-skill-tag selected">
             {{ $skill }}
-            <input type="hidden" name="skills[]" value="{{ $skill }}"/>
+            <input type="hidden" name="skills[]" value="{{ $skill }}">
             <span class="rm"><i class="fa-solid fa-xmark"></i></span>
           </span>
         @endforeach
@@ -322,12 +326,20 @@
 
       <div style="font-size:.78rem;font-weight:600;color:var(--n600);margin-bottom:9px;">Add More Skills</div>
       <div class="chip-select" id="suggestedSkills">
-        @php $allSkills = ['React.js','Vue.js','Node.js','REST API','Docker','AWS','Redis','WordPress','Python','CodeIgniter','Angular','TypeScript','MongoDB','PostgreSQL','Linux','Nginx','jQuery','Bootstrap','Tailwind CSS','Figma','Photoshop']; @endphp
-        @foreach($allSkills as $s)
-          @if(!in_array($s, is_array($userSkills) ? $userSkills : json_decode($userSkills, true) ?? []))
-            <span class="chip" onclick="addSkill('{{ $s }}', this)">{{ $s }}</span>
-          @endif
-        @endforeach
+        @if(!empty($user->details->skills))
+          @foreach(explode(',', $user->details->skills) as $skill)
+            <span style="
+              display:inline-block;
+              background:#eef3ff;
+              color:#0d6efd;
+              padding:5px 10px;
+              border-radius:20px;
+              margin:3px;
+              font-size:12px;">
+              {{ trim($skill) }}
+            </span>
+          @endforeach
+        @endif
       </div>
 
       <div style="display:flex;gap:8px;margin-top:13px;">
@@ -349,6 +361,15 @@
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "3000"
+};
+</script>
 <script>
 function toggleExpFields(val) {
   document.getElementById('expExtraFields').style.display = val === 'experienced' ? 'block' : 'none';
@@ -396,5 +417,158 @@ function previewAvatar(input) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+$('#profileForm').on('submit', function(e) {
+    e.preventDefault(); // 🔥 VERY IMPORTANT
+
+    let formData = new FormData(this);
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+            toastr.success(res.message); // ✅ success toast
+        },
+
+        error: function(err) {
+            if (err.status === 422) {
+                let errors = err.responseJSON.errors;
+
+                // loop validation errors
+                $.each(errors, function(key, value) {
+                    toastr.error(value[0]); // ❌ show each error
+                });
+            } else {
+                toastr.error('Something went wrong!');
+            }
+        }
+    });
+});
+$(document).ready(function () {
+
+    // ✅ EDUCATION AJAX
+    $('#educationForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+
+            success: function(res) {
+                toastr.success(res.message);
+            },
+
+            error: function(err) {
+                handleErrors(err);
+            }
+        });
+    });
+
+
+    // ✅ EXPERIENCE AJAX
+    $('#experienceForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+
+            success: function(res) {
+                toastr.success(res.message);
+            },
+
+            error: function(err) {
+                handleErrors(err);
+            }
+        });
+    });
+
+
+    // ✅ COMMON ERROR HANDLER
+    function handleErrors(err) {
+        if (err.status === 422) {
+            let errors = err.responseJSON.errors;
+
+            $.each(errors, function(key, value) {
+                toastr.error(value[0]);
+            });
+        } else {
+            toastr.error('Something went wrong!');
+        }
+    }
+
+});
+$(document).ready(function () {
+
+    $('#skillsForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+
+        // ✅ collect skills dynamically
+        let skills = [];
+        $('#selectedSkillsCloud .lj-skill-tag').each(function () {
+            skills.push($(this).text().trim());
+        });
+
+        let formData = new FormData();
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        formData.append('_method', 'PUT');
+
+        // append skills array
+        skills.forEach(skill => {
+            formData.append('skills[]', skill);
+        });
+
+        $.ajax({
+            url: form.attr('action'),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function(res) {
+                toastr.success(res.message);
+            },
+
+            error: function(err) {
+                if (err.status === 422) {
+                    let errors = err.responseJSON.errors;
+
+                    $.each(errors, function(key, value) {
+                        toastr.error(value[0]);
+                    });
+                } else {
+                    toastr.error('Something went wrong!');
+                }
+            }
+        });
+    });
+
+});
 </script>
 @endpush

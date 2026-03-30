@@ -191,16 +191,16 @@
                         <!-- RIGHT: Actions -->
                         <div class="d-flex gap-2">
 
-                            <button type="button" class="btn btn-light border" data-bs-dismiss="modal">
-                                Close
+                            <button type="button" class="btn btn-light border " data-bs-dismiss="modal">
+                                 <i class="fa-solid fa-xmark me-1"></i>Close
                             </button>
 
                             <button type="button" class="btn btn-outline-danger px-4 changeStatus" data-status="3" id="rejectJob">
-                                Reject
+                                <i class="fa-solid fa-circle-xmark me-1"></i>Reject
                             </button>
 
                             <button type="button" class="btn btn-primary px-4 changeStatus" data-status="1" id="approveJob">
-                                Approve
+                               <i class="fa-solid fa-circle-check me-1"></i> Approve
                             </button>
 
                         </div>

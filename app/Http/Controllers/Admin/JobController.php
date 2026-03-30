@@ -9,6 +9,7 @@ use App\Models\Job;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Mail;
 
 
 class JobController extends Controller
@@ -89,10 +90,41 @@ class JobController extends Controller
         }
 
         $job->save();
+        $job->refresh();
 
+        $this->JobStatusMail($job);
         return response()->json([
             'status' => true,
             'message' => 'Job status updated successfully'
         ]);
+    }
+
+    public function JobStatusMail($job)
+    {
+        $employer = $job->employer;
+
+        if (!$employer) {
+            return;
+        }
+
+        // ✅ Correct status mapping
+        $statusText = match ((int)$job->admin_status) {
+            1 => 'Approved',
+            3 => 'Rejected',
+            default => 'Pending',
+        };
+
+        $data = [
+            'name' => $employer->name,
+            'email' => $employer->email,
+            'job_title' => $job->title,
+            'status' => $statusText,
+            'reject_message' => $job->reject_message ?? '',
+        ];
+
+        Mail::send('emails.job_status_mail', $data, function ($message) use ($data, $statusText) {
+            $message->to($data['email'])
+                ->subject('Your Job "' . $data['job_title'] . '" is ' . $statusText);
+        });
     }
 }

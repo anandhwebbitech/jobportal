@@ -54,4 +54,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(EmployerDetail::class);
     }
+
+    public function userdetails()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+    public function resumes()
+    {
+        return $this->hasMany(Resume::class);
+    }
 }

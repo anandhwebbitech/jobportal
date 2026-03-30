@@ -192,5 +192,50 @@ function handleResumeFile(input) {
   document.getElementById('resumeSub').textContent   = (file.size/1024/1024).toFixed(2)+' MB';
   document.getElementById('resumeIcon').innerHTML    = '<i class="fa-solid fa-file-check" style="color:var(--green);"></i>';
 }
+
+$(document).ready(function () {
+
+    $('#resumeUploadForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = this;
+        let formData = new FormData(form);
+
+        let btn = $('#resumeUploadBtn');
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Uploading...');
+
+        $.ajax({
+            url: $(form).attr('action'),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function(res) {
+                toastr.success(res.message);
+
+                // ✅ Optional: reload to show new resume
+                setTimeout(() => location.reload(), 1500);
+            },
+
+            error: function(err) {
+                if (err.status === 422) {
+                    let errors = err.responseJSON.errors;
+
+                    $.each(errors, function(key, value) {
+                        toastr.error(value[0]);
+                    });
+                } else {
+                    toastr.error('Upload failed!');
+                }
+            },
+
+            complete: function() {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-cloud-arrow-up"></i> Save Resume');
+            }
+        });
+    });
+
+});
 </script>
 @endpush

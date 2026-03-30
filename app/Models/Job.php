@@ -41,6 +41,9 @@ class Job extends Model
     {
         return $value ? explode("\n", $value) : [];
     }
-
+    public function employer()
+    {
+        return $this->belongsTo(User::class, 'user_id'); // adjust if needed
+    }
 
 }
