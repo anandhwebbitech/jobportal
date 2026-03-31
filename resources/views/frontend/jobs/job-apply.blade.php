@@ -7,6 +7,8 @@
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
 <style>
 /* ── PAGE ─────────────────────────────────────────── */
 .lj-apply-page{background:var(--n50);min-height:calc(100vh - 64px);padding:36px 20px 60px;}
@@ -590,285 +592,283 @@ value="{{ old('current_location') }}"                      required />
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "3000"
+};
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
-document.addEventListener('DOMContentLoaded', function() {
-
-/* ── STEP NAVIGATION ────────────────────────────── */
-let applyStep = 1;
-
-function showApplyStep(step) {
-
-  // hide all tabs
-  document.querySelectorAll('.lj-apply-tab').forEach(t => t.classList.remove('active'));
-
-  // show selected tab
-  document.getElementById('applyTab' + step).classList.add('active');
-
-  // reset all steps
-  document.querySelectorAll('.lj-apply-step').forEach(s => {
-    s.classList.remove('active','done');
+  /* ─────────────────────────────────────────────
+     CLEAR FIELD ERRORS
+  ───────────────────────────────────────────── */
+  document.querySelectorAll('.lj-input').forEach(input => {
+    ['input', 'change'].forEach(ev => {
+      input.addEventListener(ev, function () {
+        this.classList.remove('field-error');
+        const err = document.getElementById('err-' + this.id);
+        if (err) err.classList.remove('show');
+      });
+    });
   });
 
-  // update step progress
-  document.querySelectorAll('.lj-apply-step').forEach(s => {
+  /* ─────────────────────────────────────────────
+     STEP NAVIGATION
+  ───────────────────────────────────────────── */
+  window.nextApplyStep = function (step) {
 
-    const n = parseInt(s.dataset.step);
-    const numEl = document.getElementById('stepNum' + n);
+    if (!validateStep(step)) return;
 
-    if (n < step) {
-      s.classList.add('done');
-      numEl.innerHTML = '<i class="fa-solid fa-check" style="font-size:.6rem;"></i>';
-    }
+    document.getElementById('applyTab' + step).classList.remove('active');
+    document.getElementById('applyTab' + (step + 1)).classList.add('active');
 
-  });
+    updateStepsUI(step + 1);
 
-  // activate current step
-  document.getElementById('applyStep' + step).classList.add('active');
+    if (step + 1 === 3) updateSummary();
 
-  applyStep = step;
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (step === 3) buildSummary();
-}
-
-window.nextApplyStep = function(from) {
-
-  if (!validateApplyStep(from)) return;
-
-  showApplyStep(from + 1);
-
-}
-
-window.prevApplyStep = function(from) {
-
-  showApplyStep(from - 1);
-
-}
-
-/* ── VALIDATION ─────────────────────────────────── */
-function validateApplyStep(step) {
-
-  let valid = true;
-
-  const alertEl = document.getElementById('alert' + step);
-
-  if (alertEl) alertEl.classList.remove('show');
-
-  if (step === 1) {
-
-    const name = document.getElementById('applicant_name');
-    const mobile = document.getElementById('applicant_mobile');
-    const email = document.getElementById('applicant_email');
-    const location = document.getElementById('current_location');
-
-    if (!name.value.trim() || name.value.trim().length < 2) {
-      showErr('applicant_name','Full name is required.');
-      valid=false;
-    }
-
-    if (mobile.value.replace(/\D/g,'').length < 10) {
-      showErr('applicant_mobile','Enter a valid 10-digit number.');
-      valid=false;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      showErr('applicant_email','Enter a valid email.');
-      valid=false;
-    }
-
-    if (!location.value.trim()) {
-      showErr('current_location','Location is required.');
-      valid=false;
-    }
-
-  }
-
-  if (step === 2) {
-
-    const notice = document.getElementById('notice_period');
-
-    if (!notice.value) {
-      showErr('notice_period','Please select your availability.');
-      valid=false;
-    }
-
-  }
-
-  if (!valid && alertEl) alertEl.classList.add('show');
-
-  return valid;
-
-}
-
-function showErr(id, msg) {
-
-  const f = document.getElementById(id);
-  const e = document.getElementById('err-' + id);
-
-  if (f) f.classList.add('field-error');
-
-  if (e) {
-
-    e.classList.add('show');
-
-    const sp = e.querySelector('span');
-
-    if(sp && msg) sp.textContent = msg;
-
-  }
-
-}
-
-/* ── CLEAR ERRORS ───────────────────────────────── */
-document.querySelectorAll('.lj-input').forEach(inp => {
-
-  ['input','change'].forEach(ev =>
-    inp.addEventListener(ev, function() {
-
-      this.classList.remove('field-error');
-
-      const e = document.getElementById('err-' + this.id);
-
-      if (e) e.classList.remove('show');
-
-    })
-  );
-
-});
-
-/* ── RADIO STYLE ───────────────────────────────── */
-function syncRadioLabels() {
-
-  const fresher = document.getElementById('exp_fresher');
-  const experienced = document.getElementById('exp_experienced');
-
-  const fl = document.getElementById('expFresherLabel');
-  const el = document.getElementById('expExpLabel');
-
-  if (fresher && fresher.checked) {
-
-    fl.style.borderColor = 'var(--blue)';
-    fl.style.color = 'var(--blue)';
-    fl.style.background = 'rgba(26,86,219,.05)';
-
-    el.style.borderColor = '';
-    el.style.color = '';
-    el.style.background = '';
-
-  }
-
-  else if (experienced && experienced.checked) {
-
-    el.style.borderColor = 'var(--blue)';
-    el.style.color = 'var(--blue)';
-    el.style.background = 'rgba(26,86,219,.05)';
-
-    fl.style.borderColor = '';
-    fl.style.color = '';
-    fl.style.background = '';
-
-  }
-
-}
-
-window.toggleExpFields = function(show) {
-
-  document.getElementById('expExtraFields').style.display = show ? 'block' : 'none';
-
-  syncRadioLabels();
-
-}
-
-/* ── FILE UPLOAD ───────────────────────────────── */
-window.showFile = function(zoneId, labelId, input, maxMB) {
-
-  if (input.files && input.files[0]) {
-
-    const file = input.files[0];
-
-    const errKey = zoneId === 'resumeZone' ? 'err-resume' : 'err-photo';
-
-    if (file.size > maxMB * 1024 * 1024) {
-
-      document.getElementById(errKey).classList.add('show');
-
-      input.value = '';
-
-      return;
-
-    }
-
-    document.getElementById(errKey).classList.remove('show');
-
-    document.getElementById(labelId).textContent = file.name;
-
-  }
-
-}
-
-/* ── SUMMARY ───────────────────────────────────── */
-function buildSummary() {
-
-  const v = id => (document.getElementById(id)||{}).value || '—';
-
-  document.getElementById('sumName').textContent = v('applicant_name');
-  document.getElementById('sumMobile').textContent = v('applicant_mobile');
-  document.getElementById('sumEmail').textContent = v('applicant_email');
-  document.getElementById('sumLocation').textContent = v('current_location');
-
-  const exp = document.getElementById('exp_experienced').checked ? 'Experienced' : 'Fresher';
-
-  document.getElementById('sumExp').textContent = exp;
-
-  const noticeMap = {
-    immediate:'Immediate',
-    1_week:'Within 1 Week',
-    2_weeks:'Within 2 Weeks',
-    1_month:'Within 1 Month',
-    2_months:'Within 2 Months',
-    3_months:'3+ Months'
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  document.getElementById('sumNotice').textContent =
-    noticeMap[v('notice_period')] || '—';
+  window.prevApplyStep = function (step) {
 
-}
+    document.getElementById('applyTab' + step).classList.remove('active');
+    document.getElementById('applyTab' + (step - 1)).classList.add('active');
 
-/* ── FORM SUBMIT VALIDATION ───────────────────── */
-const form = document.getElementById('applyForm');
+    updateStepsUI(step - 1);
 
-if (form) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-  form.addEventListener('submit', function(e) {
+  /* ─────────────────────────────────────────────
+     VALIDATION
+  ───────────────────────────────────────────── */
+  function validateStep(step) {
 
-    const resumeInput = document.getElementById('resumeInput');
+    let valid = true;
+    const tab = document.getElementById('applyTab' + step);
 
-    if (!resumeInput.files.length) {
+    const requiredFields = tab.querySelectorAll('[required]');
 
-      e.preventDefault();
+    requiredFields.forEach(field => {
 
-      document.getElementById('err-resume').classList.add('show');
+      if (!field.value || !field.value.trim()) {
 
-      document.getElementById('alert3').classList.add('show');
+        valid = false;
 
-      return;
+        field.classList.add('field-error');
 
+        const err = document.getElementById('err-' + field.id);
+        if (err) err.classList.add('show');
+      }
+    });
+
+    if (!valid) {
+      document.getElementById('alert' + step)?.classList.add('show');
+
+      setTimeout(() => {
+        document.getElementById('alert' + step)?.classList.remove('show');
+      }, 3000);
     }
 
-    const btn = document.getElementById('applySubmitBtn');
+    return valid;
+  }
 
-    btn.disabled = true;
+  /* ─────────────────────────────────────────────
+     STEP UI (TOP PROGRESS BAR)
+  ───────────────────────────────────────────── */
+  function updateStepsUI(activeStep) {
 
-    btn.innerHTML =
-      '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+    for (let i = 1; i <= 3; i++) {
 
-  });
+      const el = document.getElementById('applyStep' + i);
 
-}
+      el.classList.remove('active', 'done');
 
-syncRadioLabels();
+      if (i < activeStep) el.classList.add('done');
+      else if (i === activeStep) el.classList.add('active');
+    }
+  }
+
+  /* ─────────────────────────────────────────────
+     EXPERIENCE TOGGLE
+  ───────────────────────────────────────────── */
+  window.toggleExpFields = function (show) {
+    document.getElementById('expExtraFields').style.display = show ? 'block' : 'none';
+    syncRadioLabels();
+  };
+
+  function syncRadioLabels() {
+
+    const fresher = document.getElementById('exp_fresher');
+    const experienced = document.getElementById('exp_experienced');
+
+    const fl = document.getElementById('expFresherLabel');
+    const el = document.getElementById('expExpLabel');
+
+    if (fresher.checked) {
+      fl.style.borderColor = 'var(--blue)';
+      fl.style.color = 'var(--blue)';
+      fl.style.background = 'rgba(26,86,219,.05)';
+
+      el.style.borderColor = '';
+      el.style.color = '';
+      el.style.background = '';
+    } else if (experienced.checked) {
+      el.style.borderColor = 'var(--blue)';
+      el.style.color = 'var(--blue)';
+      el.style.background = 'rgba(26,86,219,.05)';
+
+      fl.style.borderColor = '';
+      fl.style.color = '';
+      fl.style.background = '';
+    }
+  }
+
+  /* ─────────────────────────────────────────────
+     FILE UPLOAD HANDLER
+  ───────────────────────────────────────────── */
+  window.showFile = function (zoneId, labelId, input, maxMB) {
+
+    if (input.files && input.files[0]) {
+
+      const file = input.files[0];
+      const errKey = zoneId === 'resumeZone' ? 'err-resume' : 'err-photo';
+
+      if (file.size > maxMB * 1024 * 1024) {
+
+        document.getElementById(errKey).classList.add('show');
+        input.value = '';
+        return;
+      }
+
+      document.getElementById(errKey).classList.remove('show');
+      document.getElementById(labelId).textContent = file.name;
+    }
+  };
+
+  /* ─────────────────────────────────────────────
+     SUMMARY
+  ───────────────────────────────────────────── */
+  function updateSummary() {
+
+    document.getElementById('sumName').textContent =
+      document.getElementById('applicant_name').value || '—';
+
+    document.getElementById('sumMobile').textContent =
+      document.getElementById('applicant_mobile').value || '—';
+
+    document.getElementById('sumEmail').textContent =
+      document.getElementById('applicant_email').value || '—';
+
+    document.getElementById('sumLocation').textContent =
+      document.getElementById('current_location').value || '—';
+
+    const exp = document.querySelector('input[name="experience_level"]:checked');
+    document.getElementById('sumExp').textContent = exp ? exp.value : '—';
+
+    const notice = document.getElementById('notice_period');
+    document.getElementById('sumNotice').textContent =
+      notice.options[notice.selectedIndex]?.text || '—';
+  }
+
+  /* ─────────────────────────────────────────────
+     FORM SUBMIT
+  ───────────────────────────────────────────── */
+  const form = document.getElementById('applyForm');
+
+  if (form) {
+
+    form.addEventListener('submit', function (e) {
+
+      const resumeInput = document.getElementById('resumeInput');
+
+      if (!resumeInput.files.length) {
+
+        e.preventDefault();
+
+        document.getElementById('err-resume').classList.add('show');
+        document.getElementById('alert3').classList.add('show');
+
+        return;
+      }
+
+      const btn = document.getElementById('applySubmitBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+    });
+  }
+
+  syncRadioLabels();
+});
+$(document).ready(function () {
+
+    $('#applyForm').on('submit', function (e) {
+        e.preventDefault();
+
+        let form = $('#applyForm')[0];
+        let formData = new FormData(form);
+
+        $('#applySubmitBtn').prop('disabled', true).text('Submitting...');
+
+        $.ajax({
+            url: "{{ route('jobs.apply.submit', $job->id) }}",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+
+            success: function (response) {
+
+                $('#applySubmitBtn').prop('disabled', false).text('Submit Application');
+
+                if (response.success) {
+                    toastr.success(response.message); // ✅ SUCCESS TOAST
+
+                    $('#applyForm')[0].reset();
+
+                    // optional redirect after delay
+                    if (response.redirect) {
+                        setTimeout(function () {
+                            window.location.href = response.redirect;
+                        }, 1500);
+                    }
+                } else {
+                    toastr.error(response.message || 'Something went wrong!');
+                }
+            },
+
+            error: function (xhr) {
+
+                $('#applySubmitBtn').prop('disabled', false).text('Submit Application');
+
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+
+                    $('.lj-field-err').removeClass('show');
+
+                    $.each(errors, function (key, value) {
+                        $('#err-' + key)
+                            .addClass('show')
+                            .find('span')
+                            .text(value[0]);
+
+                        // 🔴 Show first error as toast
+                        toastr.error(value[0]);
+                    });
+
+                } else {
+                    toastr.error('Server error! Please try again.');
+                }
+            }
+        });
+    });
 
 });
 </script>

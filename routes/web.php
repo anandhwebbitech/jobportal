@@ -91,7 +91,7 @@ Route::controller(FrontendJobController::class)->group(function () {
     Route::get('/jobs/{slug}', action: 'show')->name('jobs.show');
 
 });
-
+Route::post('/jobs/apply/{id}', [FrontendJobController::class, 'applyJob'])->name('jobs.apply.submit');
 
 Route::middleware(['frontend'])->group(function () {
     Route::get('/jobs', [JobApiController::class, 'index']);          // List jobs
@@ -168,7 +168,14 @@ Route::prefix('employer')->name('employer.')->middleware('employer')->group(func
     Route::get('/candidates/{id}', [EmployerDashboardController::class, 'candidatesShow'])->name('candidates.show');
     Route::patch('/candidates/{id}/status', [EmployerDashboardController::class, 'candidatesStatus'])->name('candidates.status');
     Route::get('/candidates/{id}/resume', [EmployerDashboardController::class, 'candidatesResume'])->name('candidates.resume');
+    
+    Route::post('/employer/candidate/update-status', [EmployerDashboardController::class, 'updateStatus'])
+    ->name('candidate.update.status');
 
+    Route::get('/employer/candidate/download-resume/{id}', [EmployerDashboardController::class, 'downloadResume'])
+    ->name('candidateresume.download');
+    Route::get('/employer/resume/view/{id}', [EmployerDashboardController::class, 'viewResume'])
+    ->name('resume.view');
     // Resume Database
     Route::get('/resume', [EmployerDashboardController::class, 'resume'])->name('resume');
     Route::get('/resume/{id}/view', [EmployerDashboardController::class, 'resumeView'])->name('resume.view');
@@ -242,7 +249,9 @@ Route::prefix('jobseeker')
         Route::delete('/{id}', [SavedJobController::class, 'remove'])->name('remove');
 
     });
-
+    Route::post('/jobs/toggle-save', [SavedJobController::class, 'toggleSave'])->name('jobs.toggleSave');
+    Route::get('/jobs/get-saved', [SavedJobController::class, 'getSavedJobs'])->name('jobs.getSaved');
+    Route::delete('/jobseeker/saved/{id}', [SavedJobController::class, 'destroy'])->name('saved.destroy');
     // JOB ALERTS
     Route::prefix('alerts')->name('alerts.')->group(function () {
 

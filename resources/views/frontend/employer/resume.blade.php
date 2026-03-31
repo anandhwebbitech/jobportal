@@ -131,14 +131,14 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
         <option>Most Recent</option><option>Most Experienced</option><option>Name A-Z</option>
       </select>
     </div>
-
-    @php $resumes=[
+    {{-- <?php dd($resumes); ?> --}}
+    {{-- @php $resumes=[
       ['init'=>'SK','name'=>'Senthil Kumar', 'skills'=>['Java','Spring Boot','MySQL'],   'exp'=>'5 yrs','edu'=>'B.Tech', 'loc'=>'Chennai',    'industry'=>'IT'],
       ['init'=>'AP','name'=>'Anitha P',       'skills'=>['Python','Django','AWS'],        'exp'=>'3 yrs','edu'=>'MCA',    'loc'=>'Coimbatore', 'industry'=>'IT'],
       ['init'=>'RT','name'=>'Rajesh T',       'skills'=>['AutoCAD','SolidWorks','CNC'],  'exp'=>'7 yrs','edu'=>'Diploma','loc'=>'Salem',      'industry'=>'Manufacturing'],
       ['init'=>'LN','name'=>'Lakshmi N',      'skills'=>['Tally','GST','Accounting'],    'exp'=>'4 yrs','edu'=>'B.Com',  'loc'=>'Madurai',    'industry'=>'Finance'],
       ['init'=>'BS','name'=>'Bharath S',      'skills'=>['React','Vue','Node.js'],       'exp'=>'2 yrs','edu'=>'B.E',    'loc'=>'Trichy',     'industry'=>'IT'],
-    ]; @endphp
+    ]; @endphp --}}
 
     @foreach($resumes as $r)
     <div class="resume-card">
@@ -153,14 +153,22 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
         </div>
         <div class="rc-skills">
           @foreach($r['skills'] as $sk)
-          <span class="skill-tag">{{ $sk }}</span>
+              <span class="skill-tag">{{ $sk }}</span>
           @endforeach
         </div>
       </div>
       <div class="rc-actions">
-        <button class="btn-outline btn-sm"><i class="fas fa-eye"></i> View</button>
-        <button class="btn-outline btn-sm"><i class="fas fa-download"></i> Download</button>
-        <button class="btn-outline btn-sm"><i class="fas fa-envelope"></i> Contact</button>
+          <button class="btn-outline btn-sm viewBtn" data-id="{{ $r['id'] }}">
+              <i class="fas fa-eye"></i> View
+          </button>
+
+          <button class="btn-outline btn-sm downloadBtn" data-id="{{ $r['id'] }}">
+              <i class="fas fa-download"></i> Download
+          </button>
+
+          <button class="btn-outline btn-sm">
+              <i class="fas fa-envelope"></i> Contact
+          </button>
       </div>
     </div>
     @endforeach
@@ -172,5 +180,38 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
 <script>
 function applyFilters() { /* Wire to server-side search */ }
 function resetFilters() { document.querySelectorAll('.fs-input').forEach(i => i.value = ''); }
+
+const viewBaseUrl = "{{ route('employer.resume.view', ':id') }}";
+const downloadBaseUrl = "{{ route('employer.candidateresume.download', ':id') }}";
+
+// VIEW
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.viewBtn')) {
+        let id = e.target.closest('.viewBtn').dataset.id;
+
+        if (!id) {
+            alert('No resume found');
+            return;
+        }
+
+        let url = viewBaseUrl.replace(':id', id);
+        window.open(url, '_blank'); // 👁 open
+    }
+});
+
+// DOWNLOAD
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.downloadBtn')) {
+        let id = e.target.closest('.downloadBtn').dataset.id;
+
+        if (!id) {
+            alert('No resume found');
+            return;
+        }
+
+        let url = downloadBaseUrl.replace(':id', id);
+        window.open(url, '_blank'); // ⬇ download
+    }
+});
 </script>
 @endpush

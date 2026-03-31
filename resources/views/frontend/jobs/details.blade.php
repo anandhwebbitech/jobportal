@@ -119,6 +119,19 @@
   .lj-benefit-grid{grid-template-columns:1fr;}
   .lj-jd-title{font-size:1.2rem;}
 }
+.custom-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--blue);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    z-index: 9999;
+    font-size: 0.9rem;
+    opacity: 0.95;
+}
 </style>
 @endpush
 
@@ -294,7 +307,7 @@
               <i class="fa-solid fa-right-to-bracket"></i> Login to Apply
             </a>
           @endauth
-          <button class="lj-save-main-btn" onclick="toggleSaveJob(this)">
+          <button class="lj-save-main-btn" onclick="toggleSaveJob(this, {{ $job->id }})" data-jobid="{{ $job->id }}">
             <i class="fa-regular fa-bookmark"></i> Save Job
           </button>
           <div class="lj-deadline-note">
@@ -396,21 +409,68 @@
 
 @push('scripts')
 <script>
-function toggleSaveJob(btn) {
-  const ico = btn.querySelector('i');
-  if (ico.classList.contains('fa-regular')) {
-    ico.classList.replace('fa-regular','fa-solid');
-    btn.style.borderColor = 'var(--blue)';
-    btn.style.color = 'var(--blue)';
-    btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
-  } else {
-    ico.classList.replace('fa-solid','fa-regular');
-    btn.style.borderColor = '';
-    btn.style.color = '';
-    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save Job';
-  }
-}
+   $(document).ready(function() {
+    $.ajax({
+        url: "{{ route('jobseeker.jobs.getSaved') }}", // Endpoint that returns saved jobs IDs
+        type: "GET",
+        success: function(response) {
+            // response.savedJobs should be an array of saved job IDs
+            response.savedJobs.forEach(jobId => {
+                const btn = document.querySelector(`button[data-jobid='${jobId}']`);
+                if(btn){
+                    const ico = btn.querySelector('i');
+                    ico.classList.replace('fa-regular', 'fa-solid');
+                    btn.style.borderColor = 'var(--blue)';
+                    btn.style.color = 'var(--blue)';
+                    btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
+                }
+            });
+        },
+        error: function() {
+            console.log('Failed to load saved jobs');
+        }
+    });
+  });
+function toggleSaveJob(btn, jobId) {
+    const ico = btn.querySelector('i');
+    
+    $.ajax({
+        url: "{{ route('jobseeker.jobs.toggleSave') }}", // Route to save/unsave job
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            job_id: jobId
+        },
+        success: function(response) {
+            if(response.savestatus == 1){ // Job is now saved
+                ico.classList.replace('fa-regular', 'fa-solid');
+                btn.style.borderColor = 'var(--blue)';
+                btn.style.color = 'var(--blue)';
+                btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
+            } else { // Job is now unsaved
+                ico.classList.replace('fa-solid', 'fa-regular');
+                btn.style.borderColor = '';
+                btn.style.color = '';
+                btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save Job';
+            }
 
+            // Optional: show a toast message instead of alert
+            if(response.message){
+                showToast(response.message);
+            }
+        },
+        error: function() {
+            console.log('Something went wrong. Please try again.');
+        }
+    });
+}
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 function copyLink() {
   navigator.clipboard.writeText(window.location.href);
   const btn = event.currentTarget;

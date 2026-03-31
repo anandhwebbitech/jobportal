@@ -357,20 +357,13 @@
 
 @section('content')
 @php
-$candidates = [
-  ['name'=>'Arun Kumar',   'init'=>'AK','av'=>0,'job'=>'Senior React Developer', 'skills'=>['React','Node.js','TypeScript'],'exp'=>'4 Years','edu'=>'B.Tech CSE','loc'=>'Chennai','date'=>'14 Mar 2025','status'=>'Shortlisted','match'=>88],
-  ['name'=>'Priya Devi',   'init'=>'PD','av'=>1,'job'=>'UI/UX Designer',         'skills'=>['Figma','Adobe XD','CSS'],       'exp'=>'3 Years','edu'=>'B.Des',    'loc'=>'Madurai',   'date'=>'12 Mar 2025','status'=>'New','match'=>72],
-  ['name'=>'Murugan S',    'init'=>'MS','av'=>2,'job'=>'Sales Executive',        'skills'=>['B2B Sales','CRM','Negotiation'],'exp'=>'5 Years','edu'=>'MBA',      'loc'=>'Trichy',    'date'=>'13 Mar 2025','status'=>'Interview','match'=>81],
-  ['name'=>'Divya R',      'init'=>'DR','av'=>3,'job'=>'HR Executive',           'skills'=>['Recruitment','Payroll','HRMS'], 'exp'=>'2 Years','edu'=>'MBA HR',   'loc'=>'Chennai',   'date'=>'11 Mar 2025','status'=>'Rejected','match'=>54],
-  ['name'=>'Vijay Anand',  'init'=>'VA','av'=>4,'job'=>'Senior React Developer', 'skills'=>['React','Redux','AWS'],          'exp'=>'6 Years','edu'=>'MCA',      'loc'=>'Bangalore', 'date'=>'10 Mar 2025','status'=>'New','match'=>76],
-  ['name'=>'Kavitha M',    'init'=>'KM','av'=>5,'job'=>'Operations Manager',     'skills'=>['Supply Chain','ERP','Logistics'],'exp'=>'8 Years','edu'=>'MBA Ops', 'loc'=>'Coimbatore','date'=>'09 Mar 2025','status'=>'Shortlisted','match'=>91],
-];
-$total      = count($candidates);
-$new        = count(array_filter($candidates,fn($c)=>$c['status']==='New'));
-$shortlisted= count(array_filter($candidates,fn($c)=>$c['status']==='Shortlisted'));
-$interview  = count(array_filter($candidates,fn($c)=>$c['status']==='Interview'));
-$rejected   = count(array_filter($candidates,fn($c)=>$c['status']==='Rejected'));
-$offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
+// dd($candidates);
+$total = $candidates->count();
+$new = $candidates->where('status','New')->count();
+$shortlisted = $candidates->where('status','Shortlisted')->count();
+$interview = $candidates->where('status','Interview')->count();
+$rejected = $candidates->where('status','Rejected')->count();
+$offered = $candidates->where('status','Offered')->count();
 @endphp
 
 <div class="cd-root">
@@ -488,23 +481,23 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
     $matchColor = $c['match'] >= 80 ? 'var(--g600)' : ($c['match'] >= 60 ? 'var(--a600)' : 'var(--r600)');
   @endphp
   <div class="cd-card"
-       data-name="{{ strtolower($c['name']) }}"
+       data-name="{{ strtolower($c['applicant_name']) }}"
        data-status="{{ $c['status'] }}"
-       data-job="{{ $c['job'] }}"
+       data-job="{{ $c['job_id'] }}"
        data-match="{{ $c['match'] }}"
        data-date="{{ $i }}"
        onclick="cdOpenModal({{ $i }})">
     <div class="cd-av av-{{ $c['av'] }}">{{ $c['init'] }}</div>
     <div class="cd-info">
       <div class="cd-name-row">
-        <div class="cd-name">{{ $c['name'] }}</div>
+        <div class="cd-name">{{ $c['applicant_name'] }}</div>
         <span class="cd-badge {{ $statusCls }}">{{ $c['status'] }}</span>
         {{-- Match score --}}
         <span style="margin-left:auto;display:flex;align-items:center;gap:5px;font-family:var(--fh);font-size:.69rem;font-weight:800;color:{{ $matchColor }};">
           <i class="fas fa-bullseye" style="font-size:.62rem;"></i> {{ $c['match'] }}% match
         </span>
       </div>
-      <div class="cd-job"><i class="fas fa-briefcase"></i> {{ $c['job'] }}</div>
+      <div class="cd-job"><i class="fas fa-briefcase"></i> {{ $c['job_id'] }}</div>
       <div class="cd-meta">
         <div class="cd-meta-i"><i class="fas fa-clock"></i> {{ $c['exp'] }}</div>
         <div class="cd-meta-i"><i class="fas fa-graduation-cap"></i> {{ $c['edu'] }}</div>
@@ -525,9 +518,9 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
       <div class="cd-btn-row">
         <button class="cd-ibtn" title="Download Resume"><i class="fas fa-download"></i></button>
         <button class="cd-ibtn" title="Screening Answers"><i class="fas fa-clipboard-list"></i></button>
-        <button class="cd-ibtn sl" title="Shortlist" onclick="cdSetStatus({{ $i }},'Shortlisted')"><i class="fas fa-star"></i></button>
-        <button class="cd-ibtn iv" title="Mark Interview" onclick="cdSetStatus({{ $i }},'Interview')"><i class="fas fa-calendar-check"></i></button>
-        <button class="cd-ibtn rj" title="Reject" onclick="cdSetStatus({{ $i }},'Rejected')"><i class="fas fa-circle-xmark"></i></button>
+        <button class="cd-ibtn sl" title="Shortlist" onclick="updateStatus(5)"><i class="fas fa-star"></i></button>
+        <button class="cd-ibtn iv" title="Mark Interview" onclick="updateStatus(6)"><i class="fas fa-calendar-check"></i></button>
+        <button class="cd-ibtn rj" title="Reject" onclick="updateStatus(4)"><i class="fas fa-circle-xmark"></i></button>
       </div>
     </div>
   </div>
@@ -547,9 +540,9 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
     $matchColor = $c['match'] >= 80 ? 'var(--g600)' : ($c['match'] >= 60 ? 'var(--a600)' : 'var(--r600)');
   @endphp
   <div class="cd-grid-card"
-       data-name="{{ strtolower($c['name']) }}"
+       data-name="{{ strtolower($c['applicant_name']) }}"
        data-status="{{ $c['status'] }}"
-       data-job="{{ $c['job'] }}"
+       data-job="{{ $c['job_id'] }}"
        data-match="{{ $c['match'] }}"
        data-date="{{ $i }}"
        onclick="cdOpenModal({{ $i }})">
@@ -557,8 +550,8 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
       <div class="cd-av av-{{ $c['av'] }}">{{ $c['init'] }}</div>
       <span class="cd-badge {{ $statusCls }}">{{ $c['status'] }}</span>
     </div>
-    <div class="cd-name">{{ $c['name'] }}</div>
-    <div class="cd-job" style="margin-top:3px;"><i class="fas fa-briefcase"></i> {{ $c['job'] }}</div>
+    <div class="cd-name">{{ $c['applicant_name'] }}</div>
+    <div class="cd-job" style="margin-top:3px;"><i class="fas fa-briefcase"></i> {{ $c['job_id'] }}</div>
     <div class="cd-meta" style="margin-top:8px;margin-bottom:8px;">
       <div class="cd-meta-i"><i class="fas fa-clock"></i> {{ $c['exp'] }}</div>
       <div class="cd-meta-i"><i class="fas fa-location-dot"></i> {{ $c['loc'] }}</div>
@@ -656,7 +649,7 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
 
       {{-- Actions --}}
       <div class="cd-mo-actions">
-        <button class="cd-mo-btn primary"><i class="fas fa-download"></i> Resume</button>
+        <button class="cd-mo-btn primary" id="downloadResume"><i class="fas fa-download" ></i> Resume</button>
         <button class="cd-mo-btn ghost"><i class="fas fa-clipboard-list"></i> Screening</button>
         <button class="cd-mo-btn green" id="moBtnSL"><i class="fas fa-star"></i> Shortlist</button>
         <button class="cd-mo-btn amber" id="moBtnIV"><i class="fas fa-calendar-check"></i> Interview</button>
@@ -670,170 +663,276 @@ $offered    = count(array_filter($candidates,fn($c)=>$c['status']==='Offered'));
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-(function(){
 'use strict';
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true
+});
+/* ===============================
+   GLOBALS
+================================ */
+let DATA = @json($candidates);
+let currentCandidateId = null;
+let currentModalIdx = -1;
 
-/* ── Data ── */
-var DATA = @json($candidates);
-var currentView = 'list';
-var activeStatus = '';
-var activeSearch = '';
-var activeJob    = '';
+let downloadBaseUrl = "{{ route('employer.candidateresume.download', ':id') }}";
 
-/* ── Helpers ── */
-function allCards(){
-  return document.querySelectorAll('#cdListView .cd-card, #cdGridView .cd-grid-card');
-}
-function updateCount(){
-  var vis = 0;
-  allCards().forEach(function(c){ if(c.style.display !== 'none') vis++; });
-  var el = document.getElementById('cdCount');
-  if(el) el.textContent = vis;
-  var em = document.getElementById('cdEmpty');
-  if(em) em.style.display = vis === 0 ? 'block' : 'none';
-}
-function applyFilters(){
-  allCards().forEach(function(c){
-    var nm  = (c.getAttribute('data-name') || '').toLowerCase();
-    var st  = c.getAttribute('data-status') || '';
-    var job = c.getAttribute('data-job') || '';
-    var ok =
-      (activeSearch === '' || nm.includes(activeSearch)) &&
-      (activeStatus === '' || st === activeStatus) &&
-      (activeJob    === '' || job === activeJob);
-    c.style.display = ok ? '' : 'none';
-  });
-  updateCount();
-}
-
-/* ── Search ── */
-window.cdSearch = function(q){
-  activeSearch = q.trim().toLowerCase();
-  applyFilters();
-};
-
-/* ── Tab filter ── */
-window.cdTab = function(status, btn){
-  document.querySelectorAll('.cd-tab-btn').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  activeStatus = status;
-  applyFilters();
-};
-
-/* ── Job filter ── */
-window.cdFilterJob = function(job){
-  activeJob = job;
-  applyFilters();
-};
-
-/* ── Sort ── */
-window.cdSort = function(val){
-  var lv = document.getElementById('cdListView');
-  var cards = Array.from(lv.querySelectorAll('.cd-card'));
-  cards.sort(function(a, b){
-    if(val === 'match')  return parseInt(b.getAttribute('data-match')) - parseInt(a.getAttribute('data-match'));
-    if(val === 'oldest') return parseInt(a.getAttribute('data-date'))  - parseInt(b.getAttribute('data-date'));
-    if(val === 'name')   return (a.getAttribute('data-name')||'').localeCompare(b.getAttribute('data-name')||'');
-    return parseInt(b.getAttribute('data-date')) - parseInt(a.getAttribute('data-date'));
-  });
-  cards.forEach(function(c){ lv.appendChild(c); });
-};
-
-/* ── View toggle ── */
-window.cdSetView = function(v){
-  currentView = v;
-  document.getElementById('cdListView').style.display = v === 'list' ? 'block' : 'none';
-  document.getElementById('cdGridView').style.display = v === 'grid' ? 'block' : 'none';
-  document.getElementById('viewList').classList.toggle('on', v === 'list');
-  document.getElementById('viewGrid').classList.toggle('on', v === 'grid');
-  applyFilters();
-};
-
-/* ── Set status action ── */
-window.cdSetStatus = function(idx, status){
-  // In production: send PATCH via fetch to update route
-  // For now show a visual confirmation:
-  var toasts = {'Shortlisted':'⭐ Shortlisted!','Interview':'📅 Marked for Interview!','Rejected':'✗ Marked as Rejected'};
-  if(window.confirm('Set ' + DATA[idx].name + ' as "' + status + '"?')){
-    DATA[idx].status = status;
-    // Update badge on list card
-    document.querySelectorAll('.cd-card, .cd-grid-card').forEach(function(c, i){
-      if(i === idx || parseInt(c.getAttribute('data-date')) === idx){
-        c.setAttribute('data-status', status);
-        var b = c.querySelector('.cd-badge');
-        if(b){
-          var cls = {New:'cb-new',Shortlisted:'cb-sl',Interview:'cb-iv',Rejected:'cb-rj',Offered:'cb-of'};
-          b.className = 'cd-badge ' + (cls[status] || 'cb-new');
-          b.textContent = status;
-        }
-      }
-    });
-  }
-};
-
-/* ── Modal ── */
-var AV_GRADIENTS = [
-  'linear-gradient(135deg,#2563eb,#60a5fa)',
-  'linear-gradient(135deg,#7c3aed,#a78bfa)',
-  'linear-gradient(135deg,#059669,#34d399)',
-  'linear-gradient(135deg,#d97706,#fbbf24)',
-  'linear-gradient(135deg,#dc2626,#f87171)',
-  'linear-gradient(135deg,#0891b2,#22d3ee)',
-];
-var currentModalIdx = -1;
-
+/* ===============================
+   OPEN MODAL
+================================ */
 window.cdOpenModal = function(idx){
-  var c = DATA[idx];
-  currentModalIdx = idx;
+    let c = DATA[idx];
 
-  // Avatar
-  var av = document.getElementById('moAv');
-  if(av){ av.textContent = c.init; av.style.background = AV_GRADIENTS[c.av] || AV_GRADIENTS[0]; }
+    currentCandidateId = c.id;
+    currentModalIdx = idx;
 
-  document.getElementById('moName').textContent = c.name;
-  document.getElementById('moJob').textContent  = c.job;
-  document.getElementById('moStatus').textContent = c.status;
-  document.getElementById('moExp').textContent  = c.exp;
-  document.getElementById('moEdu').textContent  = c.edu;
-  document.getElementById('moLoc').textContent  = c.loc;
-  document.getElementById('moDate').textContent = c.date;
+    // Avatar
+    document.getElementById('moAv').textContent = c.init;
 
-  // Match
-  var pct = document.getElementById('moMatchPct');
-  var bar = document.getElementById('moMatchBar');
-  if(pct) pct.textContent = c.match + '%';
-  if(bar){ bar.style.width = '0%'; setTimeout(function(){ bar.style.width = c.match + '%'; }, 120); }
-  if(pct){
-    pct.style.color = c.match >= 80 ? 'var(--g600)' : c.match >= 60 ? 'var(--a600)' : 'var(--r600)';
-  }
+    // Basic info
+    document.getElementById('moName').textContent = c.name;
+    document.getElementById('moJob').textContent  = c.job;
+    document.getElementById('moStatus').textContent = c.status;
 
-  // Skills
-  var sc = document.getElementById('moSkills');
-  if(sc) sc.innerHTML = c.skills.map(function(s){ return '<span class="cd-tag" style="font-size:.8rem;padding:4px 12px;">' + s + '</span>'; }).join('');
+    document.getElementById('moExp').textContent  = c.exp;
+    document.getElementById('moEdu').textContent  = c.edu;
+    document.getElementById('moLoc').textContent  = c.loc;
+    document.getElementById('moDate').textContent = c.date;
 
-  // Action buttons wire
-  var btnSL = document.getElementById('moBtnSL');
-  var btnIV = document.getElementById('moBtnIV');
-  var btnRJ = document.getElementById('moBtnRJ');
-  if(btnSL) btnSL.onclick = function(){ cdSetStatus(idx,'Shortlisted'); };
-  if(btnIV) btnIV.onclick = function(){ cdSetStatus(idx,'Interview'); };
-  if(btnRJ) btnRJ.onclick = function(){ cdSetStatus(idx,'Rejected'); };
+    // Skills
+    document.getElementById('moSkills').innerHTML =
+        c.skills.map(s => `<span class="cd-tag">${s}</span>`).join('');
 
-  document.getElementById('cdModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+    // Match
+    document.getElementById('moMatchPct').textContent = c.match + '%';
+    let bar = document.getElementById('moMatchBar');
+    bar.style.width = '0%';
+    setTimeout(() => bar.style.width = c.match + '%', 100);
+
+    // Button actions
+    document.getElementById('downloadResume').onclick = downloadResume;
+    document.getElementById('downloadResume').onclick = downloadResume;
+    document.getElementById('moBtnSL').onclick = () => updateStatus(5);
+    document.getElementById('moBtnIV').onclick = () => updateStatus(6);
+    document.getElementById('moBtnRJ').onclick = () => updateStatus(4);
+
+    // Open modal
+    document.getElementById('cdModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
 };
 
+/* ===============================
+   CLOSE MODAL
+================================ */
 window.cdCloseModal = function(){
-  document.getElementById('cdModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+    document.getElementById('cdModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
 };
 
-// Close on Escape
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape') cdCloseModal();
+    if(e.key === 'Escape') cdCloseModal();
 });
 
-})();
+/* ===============================
+   DOWNLOAD RESUME
+================================ */
+function downloadResume(){
+    if (!currentCandidateId) {
+        alert('No candidate selected');
+        return;
+    }
+
+    let url = downloadBaseUrl.replace(':id', currentCandidateId);
+    window.open(url, '_blank');
+}
+
+/* ===============================
+   UPDATE STATUS (AJAX)
+================================ */
+function updateStatus(status){
+
+    if (!currentCandidateId) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'No candidate selected'
+        });
+        return;
+    }
+
+    let confirmMsg = {
+        5: "Shortlist this candidate?",
+        6: "Mark for interview?",
+        4: "Reject this candidate?"
+    };
+
+    let successMsg = {
+        5: "Candidate shortlisted",
+        6: "Marked for interview",
+        4: "Candidate rejected"
+    };
+
+    Swal.fire({
+        title: confirmMsg[status],
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#2563eb'
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        Swal.fire({
+            title: 'Processing...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        fetch("{{ route('employer.candidate.update.status') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                id: currentCandidateId,
+                status: status
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            Swal.close();
+
+            if (!data.success) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Update failed'
+                });
+                return;
+            }
+
+            Toast.fire({
+                icon: 'success',
+                title: successMsg[status]
+            });
+
+            // 🔥 RELOAD PAGE AFTER SUCCESS
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+
+        })
+        .catch(() => {
+            Swal.close();
+
+            Toast.fire({
+                icon: 'error',
+                title: 'Something went wrong'
+            });
+        });
+
+    });
+}
+
+/* ===============================
+   FILTER / SEARCH / SORT
+================================ */
+let activeSearch = '';
+let activeStatus = '';
+let activeJob = '';
+
+function allCards(){
+    return document.querySelectorAll('#cdListView .cd-card, #cdGridView .cd-grid-card');
+}
+
+function updateCount(){
+    let visible = 0;
+
+    allCards().forEach(c => {
+        if(c.style.display !== 'none') visible++;
+    });
+
+    document.getElementById('cdCount').textContent = visible;
+    document.getElementById('cdEmpty').style.display = visible ? 'none' : 'block';
+}
+
+function applyFilters(){
+    allCards().forEach(c => {
+
+        let name = (c.dataset.name || '').toLowerCase();
+        let status = c.dataset.status || '';
+        let job = c.dataset.job || '';
+
+        let ok =
+            (!activeSearch || name.includes(activeSearch)) &&
+            (!activeStatus || status === activeStatus) &&
+            (!activeJob || job === activeJob);
+
+        c.style.display = ok ? '' : 'none';
+    });
+
+    updateCount();
+}
+
+window.cdSearch = function(q){
+    activeSearch = q.toLowerCase();
+    applyFilters();
+};
+
+window.cdTab = function(status, btn){
+    document.querySelectorAll('.cd-tab-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+
+    activeStatus = status;
+    applyFilters();
+};
+
+window.cdFilterJob = function(job){
+    activeJob = job;
+    applyFilters();
+};
+
+window.cdSort = function(val){
+
+    let list = document.getElementById('cdListView');
+    let cards = Array.from(list.querySelectorAll('.cd-card'));
+
+    cards.sort((a, b) => {
+
+        if(val === 'match')
+            return b.dataset.match - a.dataset.match;
+
+        if(val === 'oldest')
+            return a.dataset.date - b.dataset.date;
+
+        if(val === 'name')
+            return a.dataset.name.localeCompare(b.dataset.name);
+
+        return b.dataset.date - a.dataset.date;
+    });
+
+    cards.forEach(c => list.appendChild(c));
+};
+
+/* ===============================
+   VIEW TOGGLE
+================================ */
+window.cdSetView = function(v){
+    document.getElementById('cdListView').style.display = v === 'list' ? 'block' : 'none';
+    document.getElementById('cdGridView').style.display = v === 'grid' ? 'block' : 'none';
+
+    document.getElementById('viewList').classList.toggle('on', v === 'list');
+    document.getElementById('viewGrid').classList.toggle('on', v === 'grid');
+
+    applyFilters();
+};
+
 </script>
 @endpush

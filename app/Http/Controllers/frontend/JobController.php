@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Job;
+use App\Models\JobApplication;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+
 
 class JobController extends Controller
 {
@@ -83,5 +86,70 @@ class JobController extends Controller
 
         return view('frontend.jobs.job-apply', compact('job'));
     }
+    public function applyJob(Request $request,$id){
+         $request->validate([
+            'applicant_name' => 'required|string|max:255',
+            'applicant_email' => 'required|email|max:255',
+            'applicant_mobile' => 'required|string|max:15',
+            'current_location' => 'required|string|max:255',
+            'highest_qualification' => 'required|string',
+            'experience_level' => 'required|string',
+            'notice_period' => 'required|string',
 
+            'resume' => 'required|mimes:pdf,doc,docx|max:5120',
+            'profile_photo' => 'nullable|image|max:2048',
+        ]);
+
+        try {
+
+            // ✅ Upload Resume
+            $resumePath = null;
+            if ($request->hasFile('resume')) {
+                $resumePath = $request->file('resume')->store('resumes', 'public');
+            }
+
+            // ✅ Upload Photo
+            $photoPath = null;
+            if ($request->hasFile('profile_photo')) {
+                $photoPath = $request->file('profile_photo')->store('photos', 'public');
+            }
+
+            // ✅ Save to DB
+            JobApplication::create([
+                'job_id' => $id,
+                'user_id' => Auth::id(),
+
+                'applicant_name' => $request->applicant_name,
+                'applicant_email' => $request->applicant_email,
+                'applicant_mobile' => $request->applicant_mobile,
+                'current_location' => $request->current_location,
+                'highest_qualification' => $request->highest_qualification,
+
+                'experience_level' => $request->experience_level,
+                'years_experience' => $request->years_experience,
+                'previous_company' => $request->previous_company,
+                'previous_designation' => $request->previous_designation,
+
+                'cover_letter' => $request->cover_letter,
+                'expected_salary' => $request->expected_salary,
+                'notice_period' => $request->notice_period,
+
+                'resume' => $resumePath,
+                'profile_photo' => $photoPath,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Application submitted successfully!',
+                'redirect' => url('/jobs/' . $id)
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong!'
+            ], 500);
+        }
+    }
 }

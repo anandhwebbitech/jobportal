@@ -15,22 +15,21 @@
 </div>
 
 {{-- Status filter chips --}}
-<div style="display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;">
+<div  class="status-filters" style="display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;">
   <span class="chip {{ !request('status') ? 'active' : '' }}"
-    onclick="window.location='{{ route('jobseeker.applied.index') }}'">
-    All ({{ $totalCount ?? 0 }})
+        onclick="window.location='{{ route('jobseeker.applied.index') }}'">
+      All ({{ $totalCount ?? 0 }})
   </span>
-  @foreach(['applied'=>'Applied','shortlisted'=>'Shortlisted','interview'=>'Interview','hired'=>'Hired','rejected'=>'Rejected'] as $val => $label)
-    <span class="chip {{ request('status') == $val ? 'active' : '' }}"
-      onclick="window.location='{{ route('jobseeker.applied.index') }}?status={{ $val }}'">
-      {{ $label }} ({{ $statusCounts[$val] ?? 0 }})
-    </span>
-  @endforeach
+  @foreach($statusLabels as $key => $label)
+      <span class="chip {{ request('status') == $key ? 'active' : '' }}"
+            onclick="window.location='{{ route('jobseeker.applied.index') }}?status={{ $key }}'">
+          {{ $label }} ({{ $statusCounts[$key] ?? 0 }})
+      </span>
+    @endforeach
 </div>
 
 <div class="lj-card">
   @if(($applications ?? collect())->count() > 0)
-
     <div class="lj-table-scroll">
       <table class="lj-table">
         <thead>
@@ -55,21 +54,40 @@
                   </div>
                   <div>
                     <div class="lj-table-title">{{ $app->job->title ?? '—' }}</div>
-                    <div class="lj-table-sub">{{ $app->job->company->name ?? $app->job->company_name ?? '—' }} · {{ $app->job->district ?? '' }}</div>
+                    <div class="lj-table-sub">{{ $app->job->company_name ?? $app->job->company_name ?? '—' }} · {{ $app->job->district ?? '' }}</div>
                   </div>
                 </div>
               </td>
               <td>
-                <div style="font-size:.82rem;color:var(--n800);font-weight:500;">{{ $app->created_at->format('d M Y') }}</div>
-                <div style="font-size:.7rem;color:var(--n400);margin-top:2px;">{{ $app->created_at->diffForHumans() }}</div>
+                <div style="font-size:.82rem;color:var(--n800);font-weight:500;">{{ $app->job->created_at->format('d M Y') }}</div>
+                <div style="font-size:.7rem;color:var(--n400);margin-top:2px;">{{ $app->job->created_at->diffForHumans() }}</div>
               </td>
               <td>
-                <span class="lj-status-badge {{ $app->status }}">{{ ucfirst($app->status) }}</span>
-                @if($app->status === 'interview' && $app->interview_date)
-                  <div style="font-size:.7rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px;">
-                    <i class="fa-solid fa-calendar"></i>
-                    {{ \Carbon\Carbon::parse($app->interview_date)->format('d M, h:i A') }}
-                  </div>
+                @php
+                    $statusLabels = [
+                        1 => 'Pending',
+                        2 => 'Approved',
+                        3 => 'Rejected',
+                        4 => 'Waiting',
+                    ];
+                    $statusClass = [
+                        1 => 'pending',
+                        2 => 'approved',
+                        3 => 'rejected',
+                        4 => 'waiting',
+                    ];
+                    $currentStatus = $app->application_status;
+                @endphp
+
+                <span class="lj-status-badge {{ $statusClass[$currentStatus] ?? 'pending' }}">
+                    {{ $statusLabels[$currentStatus] ?? 'Unknown' }}
+                </span>
+
+                @if($currentStatus == 4 && $app->interview_date) {{-- Waiting for interview --}}
+                    <div style="font-size:.7rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px;">
+                        <i class="fa-solid fa-calendar"></i>
+                        {{ \Carbon\Carbon::parse($app->interview_date)->format('d M, h:i A') }}
+                    </div>
                 @endif
               </td>
               <td>
@@ -77,9 +95,9 @@
                   <a href="{{ route('jobs.show', $app->job_id) }}" class="lj-btn lj-btn-outline lj-btn-sm">
                     <i class="fa-solid fa-eye"></i> View
                   </a>
-                  <a href="{{ route('jobseeker.dashboard.application', $app->id) }}" class="lj-btn lj-btn-ghost lj-btn-sm">
+                  {{-- <a href="{{ route('jobseeker.applied.application', $app->id) }}" class="lj-btn lj-btn-ghost lj-btn-sm">
                     <i class="fa-solid fa-file-lines"></i> Details
-                  </a>
+                  </a> --}}
                 </div>
               </td>
             </tr>
@@ -88,7 +106,7 @@
       </table>
     </div>
 
-    @if($applications->hasPages())
+    {{-- @if($applications->hasPages())
       <div style="padding:14px 20px;border-top:1px solid var(--n100);display:flex;justify-content:center;align-items:center;gap:8px;">
         @if(!$applications->onFirstPage())
           <a href="{{ $applications->previousPageUrl() }}" class="lj-btn lj-btn-outline lj-btn-sm">
@@ -110,7 +128,7 @@
           </button>
         @endif
       </div>
-    @endif
+    @endif --}}
 
   @else
     @if(($applications ?? null) === null)

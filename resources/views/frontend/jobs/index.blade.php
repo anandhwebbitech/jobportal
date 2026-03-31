@@ -1181,7 +1181,7 @@
                             <a href="#" class="lj-apply-btn" id="prevApplyBtn">
                                 <i class="fa-solid fa-paper-plane"></i> Apply Now
                             </a>
-                            <button class="lj-save-btn" onclick="toggleSavePreview(this)">
+                            <button class="lj-save-btn" onclick="toggleSavePreview(this, {{ $job->id }})" data-jobid="{{ $job->id }}">
                                 <i class="fa-regular fa-bookmark"></i> Save
                             </button>
                             <a href="#" class="lj-save-btn" id="prevDetailsLink" target="_blank">
@@ -1236,6 +1236,28 @@
 
 @push('scripts')
     <script>
+
+        $(document).ready(function() {
+            $.ajax({
+                url: "{{ route('jobseeker.jobs.getSaved') }}", // New route to get saved jobs
+                type: "GET",
+                success: function(response) {
+                    // response should be an array of saved job IDs
+                    response.savedJobs.forEach(jobId => {
+                        const btn = document.querySelector(`button[data-jobid='${jobId}']`);
+                        if(btn){
+                            const ico = btn.querySelector('i');
+                            ico.classList.replace('fa-regular', 'fa-solid');
+                            btn.style.borderColor = 'var(--blue)';
+                            btn.style.color = 'var(--blue)';
+                        }
+                    });
+                },
+                error: function() {
+                    console.log('Failed to load saved jobs');
+                }
+            });
+        });
         // ── FILTER CHIPS ────────────────────────────────────
         function setFilter(name, value, el) {
             document.querySelectorAll(`[onclick*="setFilter('${name}'"]`).forEach(c => c.classList.remove('active'));
@@ -1268,17 +1290,32 @@
             }
         }
 
-        function toggleSavePreview(btn) {
+        function toggleSavePreview(btn,jobId) {
+            
             const ico = btn.querySelector('i');
-            if (ico.classList.contains('fa-regular')) {
-                ico.classList.replace('fa-regular', 'fa-solid');
-                btn.style.borderColor = 'var(--blue)';
-                btn.style.color = 'var(--blue)';
-            } else {
-                ico.classList.replace('fa-solid', 'fa-regular');
-                btn.style.borderColor = '';
-                btn.style.color = '';
-            }
+            $.ajax({
+                url: "{{ route('jobseeker.jobs.toggleSave') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    job_id: jobId
+                },
+                success: function(response) {
+                    if(response.savestatus == 1){
+                        ico.classList.replace('fa-regular', 'fa-solid');
+                        btn.style.borderColor = 'var(--blue)';
+                        btn.style.color = 'var(--blue)';
+                    } else {
+                        ico.classList.replace('fa-solid', 'fa-regular');
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }
+                    alert(response.message); // optional toaster
+                },
+                error: function() {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
         }
 
         // ── LOAD PREVIEW ─────────────────────────────────────
@@ -1333,7 +1370,9 @@
 
             // Apply & details links (dynamic)
             const applyUrl = "{{ route('jobs.apply', ':id') }}".replace(':id', job.id);
-            const detailUrl = `/jobs/${job.id}`;
+            // const detailUrl = `/jobs/${job.id}`;
+            // const detailUrl = "{{ route('jobs.show', ':id') }}".replace(':id', job.id);
+            const detailUrl = "{{ url('/jobs/:id') }}".replace(':id', job.id);  
             document.getElementById('prevApplyBtn').href = applyUrl;
             document.getElementById('prevApplyBtnBottom').href = applyUrl;
             document.getElementById('prevDetailsLink').href = detailUrl;

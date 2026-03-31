@@ -10,8 +10,7 @@ use App\Models\JobApplication;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
-
+use Illuminate\Container\Attributes\Auth;
 
 class DashboardController extends Controller
 {
@@ -381,18 +380,150 @@ class DashboardController extends Controller
 
     public function candidates()
     {
-        $applications = JobApplication::latest()->get();
+        $employer_id = auth()->id();
 
-        return view('frontend.employer.candidates', compact('applications'));
+        $jobs = Job::where('create_user_id', $employer_id)
+            ->where('admin_status', 1)
+            ->pluck('id');
+
+        $applications = JobApplication::with(['user','job'])
+            ->whereIn('job_id', $jobs)
+            ->latest()
+            ->get();
+
+        $candidates = $applications->map(function ($app, $i) {
+
+            $name = $app->user->name ?? 'Unknown';
+            // dd($app->job->education);
+            // dd($app->job->skills);
+            $skills = [];
+
+            if (is_array($app->job->skills)) {
+                $skills = collect($app->job->skills)
+                    ->map(fn($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            } elseif (is_string($app->job->skills)) {
+                $skills = collect(explode(',', $app->job->skills))
+                    ->map(fn($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            }
+            $statusMap = [
+                1 => 'Pending',
+                2 => 'Waiting',
+                3 => 'Approved',
+                4 => 'Rejected',
+                5 => 'Shortlisted',
+                6 => 'Interview',
+            ];
+            return [
+                'id' => $app->id,
+                'name' => $name,
+                'applicant_name' => $name,
+                'init' => strtoupper(substr($name, 0, 1)),
+                'av' => $i % 6,
+
+                'job' => $app->job->title ?? 'N/A',
+                'job_id' => $app->job_id,
+
+                'status' => $statusMap[$app->application_status] ?? 'New',
+
+                'match' => rand(60, 95), // temporary (you can replace with real logic)
+
+                'years_experience' => $app->experience ?? '0 yrs',
+                'exp' => $app->job->experience ?? '0 yrs',
+
+                'edu' => $app->job->education ?? 'Not specified',
+                'loc' => $app->current_location ?? 'Tamil Nadu',
+
+                'date' => $app->created_at->format('d M Y'),
+               
+               'skills' => !empty($skills) ? $skills : ['Communication','Teamwork'],
+            ];
+             
+        });
+        return view('frontend.employer.candidates', compact('candidates'));
+
     }
 
     public function resume()
-{
-    // Example: show a list of resumes or redirect to candidates page
-    $applications = JobApplication::latest()->get();
+    {
+        // Example: show a list of resumes or redirect to candidates page
+        // $resumes = JobApplication::latest()->get();
+        $employer_id = auth()->id();
 
-    return view('frontend.employer.resume', compact('applications'));
-}
+        $jobs = Job::where('create_user_id', $employer_id)
+            ->where('admin_status', 1)
+            ->pluck('id');
+
+        $applications = JobApplication::with(['user','job'])
+            ->whereIn('job_id', $jobs)
+            ->latest()
+            ->get();
+
+        $resumes = $applications->map(function ($app, $i) {
+
+            $name = $app->user->name ?? 'Unknown';
+            // dd($app->job->education);
+            // dd($app->job->skills);
+            $skills = [];
+
+            if (!empty($app->job->skills)) {
+
+                // if JSON string → decode
+                if (is_string($app->job->skills)) {
+                    $decoded = json_decode($app->job->skills, true);
+
+                    $skills = is_array($decoded)
+                        ? $decoded
+                        : explode(',', $app->job->skills);
+                }
+
+                // if already array
+                elseif (is_array($app->job->skills)) {
+                    $skills = $app->job->skills;
+                }
+            }
+
+            // clean values
+            $skills = collect($skills)
+                ->map(fn($s) => trim($s, '[]" '))
+                ->filter()
+                ->values()
+                ->toArray();
+            return [
+                'id' => $app->id,
+                'name' => $name,
+                'applicant_name' => $name,
+                'init' => strtoupper(substr($name, 0, 1)),
+                'av' => $i % 6,
+
+                'job' => $app->job->title ?? 'N/A',
+                'job_id' => $app->job_id,
+
+                'status' => $statusMap[$app->application_status] ?? 'New',
+
+                'match' => rand(60, 95), // temporary (you can replace with real logic)
+
+                'years_experience' => $app->experience ?? '0 yrs',
+                'exp' => $app->job->experience ?? '0 yrs',
+
+                'edu' => $app->job->education ?? 'Not specified',
+                'loc' => $app->current_location ?? 'Tamil Nadu',
+
+                'date' => $app->created_at->format('d M Y'),
+                'industry' => $app->job->industry ?? '-',
+               
+               'skills' => !empty($skills) ? $skills : ['Communication','Teamwork'],
+            ];
+             
+        });
+
+        return view('frontend.employer.resume', compact('resumes'));
+    }
 
     /* ==============================
        ADVERTISEMENTS
@@ -433,5 +564,49 @@ class DashboardController extends Controller
     // Load the settings view
     return view('frontend.employer.settings');
 }
+    public function downloadResume($id)
+    {
+        $app = JobApplication::findOrFail($id);
 
+        if (!$app->resume) {
+            return back()->with('error', 'Resume not found');
+        }
+        $path = public_path('storage/' . $app->resume);
+        // dd($app,$path);
+
+        if (!file_exists($path)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->download($path);
+    }
+    public function viewResume($id)
+    {
+        $app = JobApplication::findOrFail($id);
+
+        if (!$app->resume) {
+            abort(404, 'Resume not found');
+        }
+
+        $path = storage_path('app/public/' . $app->resume);
+
+        return response()->file($path); // 👁 view in browser
+    }
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:job_applications,id',
+            'status' => 'required|in:4,5,6', // Reject, Shortlist, Interview
+        ]);
+
+        $app = JobApplication::findOrFail($request->id);
+
+        $app->application_status = $request->status;
+        $app->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully'
+        ]);
+    }
 }
