@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\EmployerMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // YOUR CUSTOM
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'frontend' => \App\Http\Middleware\FrontendMiddleware::class,
-            'employer' => \App\Http\Middleware\EmployerMiddleware::class,
+            'employer' => EmployerMiddleware::class,
         ]);
 
     })

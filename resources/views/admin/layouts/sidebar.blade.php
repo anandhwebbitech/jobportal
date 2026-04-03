@@ -111,7 +111,21 @@
             </a>
 
         </div>
+        {{-- Plan --}}
+        <a onclick="toggleSubmenu(this)"
+           class="has-submenu {{ request()->is(['admin/plans*']) ? 'open' : '' }}">
+            <i class="fa-solid fa-screwdriver-wrench"></i> Plans
+            <i class="fa fa-chevron-down submenu-arrow ms-auto"></i>
+        </a>
 
+        <div class="submenu {{ request()->is(['admin/plans*']) ? 'open' : '' }}"
+             id="plans-submenu">
+
+            <a href="{{ route('admin.plans.index')}}"
+               class="{{ request()->is('admin/plans*') ? 'active' : '' }}">
+                <i class="fa fa-lightbulb"></i> Plans
+            </a>
+        </div>
 
         <!-- Settings -->
         <a href="{{ route('admin.settings.index','general')}}" class="{{ request()->is('admin/settings/*') ? 'active' : '' }}">

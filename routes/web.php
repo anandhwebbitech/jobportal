@@ -34,6 +34,9 @@ use App\Http\Controllers\JobSeeker\SettingsController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EmployerController;
 use App\Http\Controllers\Admin\JobController;
+use App\Http\Controllers\Admin\JobPlanController;
+
+
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('userlogin');
@@ -49,13 +52,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('educations', EducationController::class);
         Route::resource('employers', EmployerController::class);
         Route::resource('jobseekers', JobSeekerController::class);
-        Route::resource('jobs',JobController::class);
+        Route::resource('jobs', JobController::class);
         Route::resource('users', CustomerController::class);
         Route::get('settings/index/{type?}', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         Route::post('/admin/employers/approve/{id}', [EmployerController::class, 'approve'])->name('employers.approve');
         Route::post('/admin/jobs/approve/{id}', [JobController::class, 'approve'])->name('jobs.approve');
+
+        Route::resource('plans', JobPlanController::class);
+        Route::get('/admin/plans/{id}/edit', [JobPlanController::class, 'edit'])->name('admin.plans.edit');
+        Route::post('/admin/plans/{id}/update', [JobPlanController::class, 'update'])->name('admin.plans.update');
     });
     Route::post('jobseekers/{id}/approve', [JobSeekerController::class, 'Approve'])->name('jobseekers.approve');
 });
@@ -89,7 +96,6 @@ Route::controller(FrontendJobController::class)->group(function () {
 
     // JOB DETAILS (KEEP LAST)
     Route::get('/jobs/{slug}', action: 'show')->name('jobs.show');
-
 });
 Route::post('/jobs/apply/{id}', [FrontendJobController::class, 'applyJob'])->name('jobs.apply.submit');
 
@@ -99,10 +105,10 @@ Route::middleware(['frontend'])->group(function () {
     Route::post('/jobs/{id}/apply', [JobApiController::class, 'apply']); // Apply to job
     Route::post('/jobs/{slug}/apply', [FrontendController::class, 'jobApplySubmit'])
         ->name('jobs.apply.submit');
-        
 });
 Route::post('/jobseeker-register-store', [AuthController::class, 'jobseekerRegisterSubmit'])->name('jobseeker_register.store');
 Route::post('/employer-register-store', [AuthController::class, 'employerRegisterSubmit'])->name('employer_register.store');
+
 Route::controller(AuthController::class)->group(callback: function () {
 
     // Job Seeker
@@ -128,17 +134,14 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/reset-password', 'resetPasswordSubmit')->name('reset.password.submit');
 
     Route::get('/jobs-preview/{id}', [AuthController::class, 'preview'])
-    ->name('jobs.preview');
+        ->name('jobs.preview');
 
     Route::post('/logout', 'logout')->name('logout');
-
 });
 
 
-// ═══════════════════════════════════════════════
-// EMPLOYER DASHBOARD ROUTES
-// ═══════════════════════════════════════════════
-Route::prefix('employer')->name('employer.')->middleware('employer')->group(function () {
+   
+Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [EmployerDashboardController::class, 'index'])->name('dashboard');
@@ -168,14 +171,14 @@ Route::prefix('employer')->name('employer.')->middleware('employer')->group(func
     Route::get('/candidates/{id}', [EmployerDashboardController::class, 'candidatesShow'])->name('candidates.show');
     Route::patch('/candidates/{id}/status', [EmployerDashboardController::class, 'candidatesStatus'])->name('candidates.status');
     Route::get('/candidates/{id}/resume', [EmployerDashboardController::class, 'candidatesResume'])->name('candidates.resume');
-    
+
     Route::post('/employer/candidate/update-status', [EmployerDashboardController::class, 'updateStatus'])
-    ->name('candidate.update.status');
+        ->name('candidate.update.status');
 
     Route::get('/employer/candidate/download-resume/{id}', [EmployerDashboardController::class, 'downloadResume'])
-    ->name('candidateresume.download');
+        ->name('candidateresume.download');
     Route::get('/employer/resume/view/{id}', [EmployerDashboardController::class, 'viewResume'])
-    ->name('resume.view');
+        ->name('resume.view');
     // Resume Database
     Route::get('/resume', [EmployerDashboardController::class, 'resume'])->name('resume');
     Route::get('/resume/{id}/view', [EmployerDashboardController::class, 'resumeView'])->name('resume.view');
@@ -197,7 +200,6 @@ Route::prefix('employer')->name('employer.')->middleware('employer')->group(func
     Route::patch('/settings/password', [EmployerDashboardController::class, 'settingsPassword'])->name('settings.password');
     Route::patch('/settings/notifications', [EmployerDashboardController::class, 'settingsNotifications'])->name('settings.notifications');
     Route::delete('/settings/delete', [EmployerDashboardController::class, 'settingsDelete'])->name('settings.delete');
-
 });
 
 // ═════════════════════════════════════
@@ -208,81 +210,75 @@ Route::prefix('jobseeker')
     ->name('jobseeker.')
     ->group(function () {
 
-    // DASHBOARD
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        // DASHBOARD
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // PROFILE
-    Route::prefix('profile')->name('profile.')->group(function () {
+        // PROFILE
+        Route::prefix('profile')->name('profile.')->group(function () {
 
-        Route::get('/', [JobSeekerProfileController::class, 'index'])->name('index');
-        Route::put('/', [JobSeekerProfileController::class, 'update'])->name('update');
-        Route::put('/education', [JobSeekerProfileController::class, 'education'])->name('education');
-        Route::put('/experience', [JobSeekerProfileController::class, 'experience'])->name('experience');
-        Route::put('/skills', [JobSeekerProfileController::class, 'skills'])->name('skills');
+            Route::get('/', [JobSeekerProfileController::class, 'index'])->name('index');
+            Route::put('/', [JobSeekerProfileController::class, 'update'])->name('update');
+            Route::put('/education', [JobSeekerProfileController::class, 'education'])->name('education');
+            Route::put('/experience', [JobSeekerProfileController::class, 'experience'])->name('experience');
+            Route::put('/skills', [JobSeekerProfileController::class, 'skills'])->name('skills');
+        });
 
+        // RESUME
+        Route::prefix('resume')->name('resume.')->group(function () {
+
+            Route::get('/', [ResumeController::class, 'index'])->name('index');
+            Route::post('/upload', [ResumeController::class, 'upload'])->name('upload');
+            Route::delete('/delete', [ResumeController::class, 'delete'])->name('delete');
+            Route::put('/visibility', [ResumeController::class, 'visibility'])->name('visibility');
+        });
+
+        // APPLIED JOBS
+        Route::prefix('applied')->name('applied.')->group(function () {
+
+            Route::get('/', [ApplicationController::class, 'index'])->name('index');
+            Route::get('/{id}', [ApplicationController::class, 'show'])->name('show');
+            Route::get('/application/{id}', [ApplicationController::class, 'detail'])->name('application');
+        });
+
+        // SAVED JOBS
+        Route::prefix('saved')->name('saved.')->group(function () {
+
+            Route::get('/', [SavedJobController::class, 'index'])->name('index');
+            Route::post('/{jobId}', [SavedJobController::class, 'save'])->name('save');
+            Route::delete('/{id}', [SavedJobController::class, 'remove'])->name('remove');
+        });
+        Route::post('/jobs/toggle-save', [SavedJobController::class, 'toggleSave'])->name('jobs.toggleSave');
+        Route::get('/jobs/get-saved', [SavedJobController::class, 'getSavedJobs'])->name('jobs.getSaved');
+        Route::delete('/jobseeker/saved/{id}', [SavedJobController::class, 'destroy'])->name('saved.destroy');
+        // JOB ALERTS
+        Route::prefix('alerts')->name('alerts.')->group(function () {
+
+            Route::get('/', [AlertController::class, 'index'])->name('index');
+            Route::post('/', [AlertController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [AlertController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [AlertController::class, 'update'])->name('update');
+            Route::put('/{id}/toggle', [AlertController::class, 'toggle'])->name('toggle');
+            Route::delete('/{id}', [AlertController::class, 'destroy'])->name('delete');
+        });
+
+        // NOTIFICATIONS
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+
+            Route::get('/', [NotificationController::class, 'index'])->name('index');
+            Route::put('/{id}/read', [NotificationController::class, 'markRead'])->name('read');
+            Route::put('/read-all', [NotificationController::class, 'readAll'])->name('readAll');
+            Route::delete('/clear', [NotificationController::class, 'clearAll'])->name('clearAll');
+        });
+
+        // SETTINGS
+        Route::prefix('settings')->name('settings.')->group(function () {
+
+            Route::get('/', [SettingsController::class, 'index'])->name('index');
+            Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password');
+            Route::put('/notifications', [SettingsController::class, 'updateNotifs'])->name('notifications');
+            Route::put('/privacy', [SettingsController::class, 'updatePrivacy'])->name('privacy');
+            Route::delete('/account', [SettingsController::class, 'deleteAccount'])->name('delete');
+        });
     });
 
-    // RESUME
-    Route::prefix('resume')->name('resume.')->group(function () {
-
-        Route::get('/', [ResumeController::class, 'index'])->name('index');
-        Route::post('/upload', [ResumeController::class, 'upload'])->name('upload');
-        Route::delete('/delete', [ResumeController::class, 'delete'])->name('delete');
-        Route::put('/visibility', [ResumeController::class, 'visibility'])->name('visibility');
-
-    });
-
-    // APPLIED JOBS
-    Route::prefix('applied')->name('applied.')->group(function () {
-
-        Route::get('/', [ApplicationController::class, 'index'])->name('index');
-        Route::get('/{id}', [ApplicationController::class, 'show'])->name('show');
-        Route::get('/application/{id}', [ApplicationController::class, 'detail'])->name('application');
-
-    });
-
-    // SAVED JOBS
-    Route::prefix('saved')->name('saved.')->group(function () {
-
-        Route::get('/', [SavedJobController::class, 'index'])->name('index');
-        Route::post('/{jobId}', [SavedJobController::class, 'save'])->name('save');
-        Route::delete('/{id}', [SavedJobController::class, 'remove'])->name('remove');
-
-    });
-    Route::post('/jobs/toggle-save', [SavedJobController::class, 'toggleSave'])->name('jobs.toggleSave');
-    Route::get('/jobs/get-saved', [SavedJobController::class, 'getSavedJobs'])->name('jobs.getSaved');
-    Route::delete('/jobseeker/saved/{id}', [SavedJobController::class, 'destroy'])->name('saved.destroy');
-    // JOB ALERTS
-    Route::prefix('alerts')->name('alerts.')->group(function () {
-
-        Route::get('/', [AlertController::class, 'index'])->name('index');
-        Route::post('/', [AlertController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [AlertController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [AlertController::class, 'update'])->name('update');
-        Route::put('/{id}/toggle', [AlertController::class, 'toggle'])->name('toggle');
-        Route::delete('/{id}', [AlertController::class, 'destroy'])->name('delete');
-
-    });
-
-    // NOTIFICATIONS
-    Route::prefix('notifications')->name('notifications.')->group(function () {
-
-        Route::get('/', [NotificationController::class, 'index'])->name('index');
-        Route::put('/{id}/read', [NotificationController::class, 'markRead'])->name('read');
-        Route::put('/read-all', [NotificationController::class, 'readAll'])->name('readAll');
-        Route::delete('/clear', [NotificationController::class, 'clearAll'])->name('clearAll');
-
-    });
-
-    // SETTINGS
-    Route::prefix('settings')->name('settings.')->group(function () {
-
-        Route::get('/', [SettingsController::class, 'index'])->name('index');
-        Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password');
-        Route::put('/notifications', [SettingsController::class, 'updateNotifs'])->name('notifications');
-        Route::put('/privacy', [SettingsController::class, 'updatePrivacy'])->name('privacy');
-        Route::delete('/account', [SettingsController::class, 'deleteAccount'])->name('delete');
-
-    });
-
-});
+Route::post('/job-plans/store', [JobPlanController::class, 'store'])->name('job-plans.store');

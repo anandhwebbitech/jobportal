@@ -15,6 +15,14 @@ class EmployerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        // Assuming you have role column
+        if (auth()->user()->role !== 'employer') {
+            abort(403, 'Unauthorized');
+        }
         return $next($request);
     }
 }

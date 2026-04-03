@@ -15,9 +15,9 @@ class ApplicationController extends Controller
          // Map of status labels
         $statusLabels = [
             1 => 'Pending',
-            2 => 'Approved',
-            3 => 'Rejected',
-            4 => 'Waiting',
+            3 => 'Approved',
+            4 => 'Rejected',
+            6 => 'Waiting',
         ];
 
         // Get the requested status from query string (optional)

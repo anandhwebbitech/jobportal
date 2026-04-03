@@ -152,6 +152,7 @@ class AuthController extends Controller
                 'email'     => $request->email,
                 'password'  => Hash::make($request->password),
                 'is_active' => 0,
+                'role'      => 'user',
             ]);
 
             // ✅ Upload Files

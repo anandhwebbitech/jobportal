@@ -397,6 +397,7 @@ class DashboardController extends Controller
             // dd($app->job->education);
             // dd($app->job->skills);
             $skills = [];
+            $candidateSkills = [];
 
             if (is_array($app->job->skills)) {
                 $skills = collect($app->job->skills)
@@ -411,6 +412,22 @@ class DashboardController extends Controller
                     ->values()
                     ->toArray();
             }
+            // Candidate skills (IMPORTANT)
+            if (is_array($app->user->userdetails->skills ?? null)) {
+                $candidateSkills = collect($app->user->userdetails->skills)->map(fn($s) => strtolower(trim($s)))->toArray();
+            } elseif (is_string($app->user->userdetails->skills ?? null)) {
+                $candidateSkills = collect(explode(',', $app->user->userdetails->skills))
+                    ->map(fn($s) => strtolower(trim($s)))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            }
+            
+            $matchedSkills = array_intersect($skills, $candidateSkills);
+            $totalJobSkills = count($skills);
+            $matchPercentage = $totalJobSkills > 0
+                ? round((count($matchedSkills) / $totalJobSkills) * 100)
+                : 50;
             $statusMap = [
                 1 => 'Pending',
                 2 => 'Waiting',
@@ -431,7 +448,7 @@ class DashboardController extends Controller
 
                 'status' => $statusMap[$app->application_status] ?? 'New',
 
-                'match' => rand(60, 95), // temporary (you can replace with real logic)
+                'match' => $matchPercentage, // temporary (you can replace with real logic)
 
                 'years_experience' => $app->experience ?? '0 yrs',
                 'exp' => $app->job->experience ?? '0 yrs',

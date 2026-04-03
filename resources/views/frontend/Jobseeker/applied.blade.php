@@ -66,15 +66,19 @@
                 @php
                     $statusLabels = [
                         1 => 'Pending',
-                        2 => 'Approved',
-                        3 => 'Rejected',
-                        4 => 'Waiting',
+                        2 => 'Waiting',
+                        3 => 'Approved',
+                        4 => 'Rejected',
+                        5 => 'Shortlisted',
+                        6 => 'Interview',
                     ];
                     $statusClass = [
-                        1 => 'pending',
-                        2 => 'approved',
-                        3 => 'rejected',
-                        4 => 'waiting',
+                      1 => 'Pending',
+                      2 => 'Waiting',
+                      3 => 'Approved',
+                      4 => 'Rejected',
+                      5 => 'Shortlisted',
+                      6 => 'Interview',
                     ];
                     $currentStatus = $app->application_status;
                 @endphp
