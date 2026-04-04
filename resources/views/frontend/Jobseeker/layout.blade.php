@@ -1093,6 +1093,56 @@ textarea.lj-input { resize: vertical; min-height: 96px; padding-top: 10px; }
      SIDEBAR TOGGLE SCRIPT
      Single source of truth — no duplicate functions.
 ════════════════════════════════════════════════════ --}}
+{{-- ================= SCRIPTS ================= --}}
+<!-- Pusher -->
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+<!-- Echo -->
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
+<!-- ✅ jQuery FIRST -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!-- ✅ Then Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+@if(auth()->check())
+<script>
+    // Assign Pusher globally
+    window.Pusher = Pusher;
+
+    // ✅ Correct Echo Setup for REVERB
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: 'aowhx4hxmw1xn7xbli5r',
+        wsHost: window.location.hostname,
+        wsPort: 8080,
+        forceTLS: false,
+        disableStats: true,
+        enabledTransports: ['ws'],
+    });
+
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: 4000
+    };
+
+    let userId = "{{ auth()->id() }}";
+
+    console.log("Listening to:", 'user-' + userId);
+
+    // ✅ Listen for notifications
+    window.Echo.channel('user-' + userId)
+        .listen('.UserNotification', (e) => {
+            console.log("EVENT RECEIVED:", e);
+
+            if (e.notification) {
+                toastr.success(e.notification.message);
+            }
+        });
+</script>
+@endif
 <script>
 (function () {
   var sidebar  = document.getElementById('ljSidebar');
@@ -1157,7 +1207,7 @@ document.addEventListener('click', function (e) {
 });
 </script>
 
-<script src="{{ asset('frontend/js/lj-global.js') }}"></script>
+
 @stack('scripts')
 </body>
 </html>

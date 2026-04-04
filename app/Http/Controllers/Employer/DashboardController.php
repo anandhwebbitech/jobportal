@@ -11,7 +11,8 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
-
+use App\Models\Notification;
+use App\Events\UserNotification;
 class DashboardController extends Controller
 {
 
@@ -619,11 +620,31 @@ class DashboardController extends Controller
         $app = JobApplication::findOrFail($request->id);
 
         $app->application_status = $request->status;
-        $app->save();
 
+        $app->save();
+        $statusMessages = [
+            1 => 'Your job is pending approval',
+            2 => 'Your job is waiting for review',
+            3 => 'Your job has been approved',
+            4 => 'Your job was rejected: ',
+            5 => 'Your job has been shortlisted',
+            6 => 'Interview scheduled for your job',
+        ];
+
+        $message = $statusMessages[$app->application_status] ?? 'Unknown status';
+        $notification = Notification::create([
+            'user_id' => $app->user_id,
+            'title'   => 'Application  Status',
+            'message' => $message,
+            'type'      => Notification::TYPE_JOB_APPLICATION,
+            'send_from' => auth()->id(), // admin/employer
+            'send_to'   => $app->user_id,
+        ]);
+        event(new UserNotification($notification));
+        \Log::info('Notification fired');
         return response()->json([
             'success' => true,
             'message' => 'Status updated successfully'
         ]);
     }
-}
+}   

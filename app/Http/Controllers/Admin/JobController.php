@@ -10,7 +10,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\Notification;
+use App\Events\UserNotification;
 
 class JobController extends Controller
 {
@@ -75,7 +76,6 @@ class JobController extends Controller
     public function approve(Request $request, $id)
     {
         $job = Job::find($id);
-
         if (!$job) {
             return response()->json([
                 'status' => false,
@@ -84,7 +84,6 @@ class JobController extends Controller
         }
 
         $job->admin_status = $request->status;
-
         if ($request->admin_status == 3) {
             $job->old = $request->reject_message;
         }
@@ -92,6 +91,19 @@ class JobController extends Controller
         $job->save();
         $job->refresh();
 
+        $message = $job->admin_status == 1 
+            ? 'job has been approved'
+            : 'Your job was rejected: '.$job->old;
+        $notification = Notification::create([
+            'user_id' => $job->create_user_id,
+            'title'   => 'Job Status',
+            'message' => $message,
+            'type'      => Notification::TYPE_JOB,
+            'send_from' => auth()->id(), // admin/employer
+            'send_to'   => $job->create_user_id,
+        ]);
+        event(new UserNotification($notification));
+        \Log::info('Notification fired');
         $this->JobStatusMail($job);
         return response()->json([
             'status' => true,

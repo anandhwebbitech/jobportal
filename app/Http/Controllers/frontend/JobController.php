@@ -8,7 +8,8 @@ use App\Models\Job;
 use App\Models\JobApplication;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
+use App\Events\UserNotification;
 
 class JobController extends Controller
 {
@@ -113,7 +114,7 @@ class JobController extends Controller
             if ($request->hasFile('profile_photo')) {
                 $photoPath = $request->file('profile_photo')->store('photos', 'public');
             }
-
+           
             // ✅ Save to DB
             JobApplication::create([
                 'job_id' => $id,
@@ -137,6 +138,22 @@ class JobController extends Controller
                 'resume' => $resumePath,
                 'profile_photo' => $photoPath,
             ]);
+            $job = Job::findOrFail($id);
+            if($job){
+
+                $message = 'New Application Received';
+                $notification = Notification::create([
+                    'user_id'   => $job->create_user_id,
+                    'job_id'    => $id,
+                    'title'     => 'Job Status',
+                    'message'   => $message,
+                    'type'      => Notification::TYPE_JOB,
+                    'send_from' => Auth::id(), // admin/employer
+                    'send_to'   => $job->create_user_id,
+                ]);
+                event(new UserNotification($notification));
+                \Log::info('Notification fired');
+            }
 
             return response()->json([
                 'success' => true,

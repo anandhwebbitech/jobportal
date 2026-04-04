@@ -90,13 +90,26 @@
     </div>
 
   </div>
-  <script>
-    // ✅ ADD HERE (GLOBAL CONFIG)
-    toastr.options = {
-        closeButton: true,
-        progressBar: true,
-        positionClass: "toast-top-right",
-        timeOut: 4000
-    };
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pusher-js@8.2.0/dist/web/pusher.min.js"></script>
+
+@if(auth()->check())
+<script>
+window.Echo = new Echo({
+    broadcaster: 'reverb',
+    key: 'localkey',
+    wsHost: window.location.hostname,
+    wsPort: 8080,
+    forceTLS: false,
+    disableStats: true,
+});
+
+let userId = "{{ auth()->id() }}";
+
+window.Echo.channel('user-' + userId)
+    .listen('.UserNotification', (e) => {
+        toastr.success(e.notification.message);
+    });
 </script>
+@endif
 </footer>

@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\Notification;
+use App\Events\UserNotification;
 class JobSeekerController extends Controller
 {
     //
@@ -90,6 +91,7 @@ class JobSeekerController extends Controller
             $user->reject_message = $request->reject_message;
         }
         if ($user->save()) {
+            
             try {
                 $this->RegisterMail($user->is_active, $user->id);
 
