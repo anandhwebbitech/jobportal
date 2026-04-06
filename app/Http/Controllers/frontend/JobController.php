@@ -145,9 +145,9 @@ class JobController extends Controller
                 $notification = Notification::create([
                     'user_id'   => $job->create_user_id,
                     'job_id'    => $id,
-                    'title'     => 'Job Status',
+                    'title'     => 'Application',
                     'message'   => $message,
-                    'type'      => Notification::TYPE_JOB,
+                    'type'      => Notification::TYPE_JOB_APPLICATION,
                     'send_from' => Auth::id(), // admin/employer
                     'send_to'   => $job->create_user_id,
                 ]);

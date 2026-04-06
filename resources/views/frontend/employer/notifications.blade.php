@@ -293,49 +293,9 @@
 
 @section('content')
 @php
-$notifs = [
-  ['id'=>1,'type'=>'application','ico'=>'fas fa-file-user','icls'=>'ni-app','tcls'=>'nc-app','tlbl'=>'Application',
-   'title'=>'New Application Received',
-   'msg'=>'Arun Kumar applied for Senior React Developer. 4 years experience · B.Tech CSE · Chennai. Click to review their profile and resume.',
-   'date'=>'Today, 10:42 AM','group'=>'today','read'=>false,
-   'actions'=>[['lbl'=>'View Profile','cls'=>'primary','ico'=>'fas fa-eye'],['lbl'=>'Shortlist','cls'=>'green','ico'=>'fas fa-star'],['lbl'=>'Reject','cls'=>'red','ico'=>'fas fa-circle-xmark']]],
 
-  ['id'=>5,'type'=>'application','ico'=>'fas fa-file-user','icls'=>'ni-app','tcls'=>'nc-app','tlbl'=>'Application',
-   'title'=>'New Application Received',
-   'msg'=>'Priya Devi applied for UI/UX Designer. 3 years experience · B.Des · Madurai. Resume attached.',
-   'date'=>'Today, 09:18 AM','group'=>'today','read'=>false,
-   'actions'=>[['lbl'=>'View Profile','cls'=>'primary','ico'=>'fas fa-eye'],['lbl'=>'Shortlist','cls'=>'green','ico'=>'fas fa-star'],['lbl'=>'Reject','cls'=>'red','ico'=>'fas fa-circle-xmark']]],
 
-  ['id'=>2,'type'=>'alert','ico'=>'fas fa-triangle-exclamation','icls'=>'ni-alert','tcls'=>'nc-alert','tlbl'=>'Alert',
-   'title'=>'Plan Expiry Alert — 7 Days Left',
-   'msg'=>'Your 30-day Starter Plan expires on 10 Apr 2025. Renew now to keep your active jobs visible and prevent auto-deactivation.',
-   'date'=>'Yesterday, 09:00 AM','group'=>'yesterday','read'=>false,
-   'actions'=>[['lbl'=>'Renew Plan','cls'=>'primary','ico'=>'fas fa-credit-card'],['lbl'=>'View Plans','cls'=>'ghost','ico'=>'fas fa-list']]],
-
-  ['id'=>3,'type'=>'shortlist','ico'=>'fas fa-star','icls'=>'ni-sl','tcls'=>'nc-sl','tlbl'=>'Shortlisted',
-   'title'=>'Candidate Shortlisted',
-   'msg'=>'Kavitha M has been shortlisted for Operations Manager by your hiring team. 8 years experience · MBA Ops · Coimbatore.',
-   'date'=>'12 Mar, 3:15 PM','group'=>'older','read'=>true,
-   'actions'=>[['lbl'=>'View Candidate','cls'=>'primary','ico'=>'fas fa-eye'],['lbl'=>'Schedule Interview','cls'=>'green','ico'=>'fas fa-calendar-check']]],
-
-  ['id'=>4,'type'=>'admin','ico'=>'fas fa-shield-check','icls'=>'ni-admin','tcls'=>'nc-admin','tlbl'=>'Admin',
-   'title'=>'Company Verification Approved',
-   'msg'=>'Congratulations! TechBridge Solutions Pvt. Ltd. has been successfully verified by the LinearJobs admin team. Your company badge is now active.',
-   'date'=>'10 Mar, 11:00 AM','group'=>'older','read'=>true,
-   'actions'=>[['lbl'=>'View Company Profile','cls'=>'primary','ico'=>'fas fa-building'],['lbl'=>'Share Badge','cls'=>'ghost','ico'=>'fas fa-share-nodes']]],
-
-  ['id'=>6,'type'=>'system','ico'=>'fas fa-gears','icls'=>'ni-sys','tcls'=>'nc-sys','tlbl'=>'System',
-   'title'=>'Job Listing Auto-Renewed',
-   'msg'=>'Your job listing "PHP Laravel Developer" has been automatically renewed and will remain active until 15 Apr 2025.',
-   'date'=>'09 Mar, 08:30 AM','group'=>'older','read'=>true,
-   'actions'=>[['lbl'=>'View Job','cls'=>'ghost','ico'=>'fas fa-briefcase']]],
-];
-
-$total    = count($notifs);
-$unread   = count(array_filter($notifs, fn($n) => !$n['read']));
-$apps     = count(array_filter($notifs, fn($n) => $n['type']==='application'));
-$alerts   = count(array_filter($notifs, fn($n) => $n['type']==='alert'));
-$admins   = count(array_filter($notifs, fn($n) => $n['type']==='admin'));
+$alerts   = 1;
 
 $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
 @endphp
@@ -356,7 +316,7 @@ $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
         <div class="nf-hero-stats">
           <div class="nf-hstat">
             <div class="nf-hstat-ico"><i class="fas fa-bell"></i></div>
-            <div><div class="nf-hstat-n">{{ $total }}</div><div class="nf-hstat-l">Total</div></div>
+            <div><div class="nf-hstat-n">{{ $all }}</div><div class="nf-hstat-l">Total</div></div>
           </div>
           <div class="nf-hstat">
             <div class="nf-hstat-ico"><i class="fas fa-circle-dot"></i></div>
@@ -364,7 +324,7 @@ $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
           </div>
           <div class="nf-hstat">
             <div class="nf-hstat-ico"><i class="fas fa-file-user"></i></div>
-            <div><div class="nf-hstat-n">{{ $apps }}</div><div class="nf-hstat-l">Applications</div></div>
+            <div><div class="nf-hstat-n">{{ $application }}</div><div class="nf-hstat-l">Applications</div></div>
           </div>
           <div class="nf-hstat">
             <div class="nf-hstat-ico"><i class="fas fa-triangle-exclamation"></i></div>
@@ -401,7 +361,7 @@ $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
   <div class="nf-tabs">
     <button class="nf-tab t-all on" onclick="nfTab('all',this)">
       <i class="fas fa-bell"></i> All
-      <span class="nf-tab-badge">{{ $total }}</span>
+      <span class="nf-tab-badge">{{ $all }}</span>
     </button>
     <button class="nf-tab t-unread" onclick="nfTab('unread',this)">
       <i class="fas fa-circle-dot"></i> Unread
@@ -409,25 +369,25 @@ $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
     </button>
     <button class="nf-tab t-app" onclick="nfTab('application',this)">
       <i class="fas fa-file-user"></i> Applications
-      <span class="nf-tab-badge">{{ $apps }}</span>
+      <span class="nf-tab-badge">{{ $application }}</span>
     </button>
     <button class="nf-tab t-alert" onclick="nfTab('alert',this)">
       <i class="fas fa-triangle-exclamation"></i> Alerts
       <span class="nf-tab-badge">{{ $alerts }}</span>
     </button>
-    <button class="nf-tab t-plan" onclick="nfTab('shortlist',this)">
+    {{-- <button class="nf-tab t-plan" onclick="nfTab('shortlist',this)">
       <i class="fas fa-star"></i> Shortlisted
-    </button>
+    </button> --}}
     <button class="nf-tab t-admin" onclick="nfTab('admin',this)">
       <i class="fas fa-shield-check"></i> Admin
-      <span class="nf-tab-badge">{{ $admins }}</span>
+      <span class="nf-tab-badge">{{ $admin }}</span>
     </button>
   </div>
 
   {{-- ══ RESULTS BAR ══ --}}
   <div class="nf-results-bar">
     <div class="nf-results-txt">
-      Showing <strong id="nfCount">{{ $total }}</strong> notifications
+      Showing <strong id="nfCount">{{ $all }}</strong> notifications
       &nbsp;·&nbsp; <span style="color:var(--r600);font-weight:700;">{{ $unread }} unread</span>
     </div>
     <button class="nf-mark-all" onclick="nfMarkAll()">
@@ -437,83 +397,9 @@ $groups = ['today'=>'Today','yesterday'=>'Yesterday','older'=>'Earlier'];
 
   {{-- ══ NOTIFICATION LIST ══ --}}
   <div id="nfList">
-  @foreach($groups as $gKey => $gLabel)
-    @php $grpItems = array_filter($notifs, fn($n) => $n['group'] === $gKey); @endphp
-    @if(count($grpItems))
-    <div class="nf-date-grp" data-group="{{ $gKey }}">
-      <div class="nf-date-grp-line"></div>
-      <div class="nf-date-grp-lbl">
-        <i class="fas fa-calendar-day" style="color:var(--p500);"></i>
-        {{ $gLabel }}
-      </div>
-      <div class="nf-date-grp-line"></div>
-    </div>
-    @foreach($grpItems as $n)
-    <div class="nf-card {{ !$n['read'] ? 'unread' : '' }} type-{{ $n['type'] }}"
-         id="nf_{{ $n['id'] }}"
-         data-type="{{ $n['type'] }}"
-         data-read="{{ $n['read'] ? '1' : '0' }}"
-         data-group="{{ $n['group'] }}"
-         data-search="{{ strtolower($n['title'].' '.$n['msg']) }}"
-         onclick="nfMarkRead({{ $n['id'] }})">
+    
 
-      {{-- Colored left bar --}}
-      <div class="nf-card-bar"></div>
 
-      {{-- Main content --}}
-      <div class="nf-card-inner">
-
-        {{-- Type icon --}}
-        <div class="nf-ico {{ $n['icls'] }}">
-          <i class="{{ $n['ico'] }}"></i>
-        </div>
-
-        {{-- Body --}}
-        <div class="nf-body">
-
-          {{-- Head row --}}
-          <div class="nf-head">
-            <div class="nf-title-wrap">
-              @if(!$n['read'])
-              <span class="nf-unread-dot"></span>
-              @endif
-              <div class="nf-title">{{ $n['title'] }}</div>
-              <span class="nf-type-chip {{ $n['tcls'] }}">
-                <i class="{{ $n['ico'] }}" style="font-size:.58rem;"></i>
-                {{ $n['tlbl'] }}
-              </span>
-            </div>
-            <div class="nf-time"><i class="fas fa-clock"></i> {{ $n['date'] }}</div>
-          </div>
-
-          {{-- Message --}}
-          <div class="nf-msg">{{ $n['msg'] }}</div>
-
-          {{-- Footer --}}
-          <div class="nf-foot" onclick="event.stopPropagation()">
-            <div class="nf-act-row">
-              @foreach($n['actions'] as $act)
-              <button class="nf-act {{ $act['cls'] }}">
-                <i class="{{ $act['ico'] }}"></i> {{ $act['lbl'] }}
-              </button>
-              @endforeach
-              @if(!$n['read'])
-              <button class="nf-act ghost" onclick="nfMarkRead({{ $n['id'] }})">
-                <i class="fas fa-check"></i> Mark Read
-              </button>
-              @endif
-            </div>
-            <button class="nf-del" onclick="nfDelete({{ $n['id'] }})" title="Delete notification">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-
-        </div>{{-- /nf-body --}}
-      </div>{{-- /nf-card-inner --}}
-    </div>{{-- /nf-card --}}
-    @endforeach
-    @endif
-  @endforeach
   </div>{{-- /nfList --}}
 
   {{-- ══ EMPTY STATE ══ --}}
@@ -584,73 +470,268 @@ window.nfSearch = function(q){
   applyFilters();
 };
 
-/* ── Mark Read ── */
-window.nfMarkRead = function(id){
-  var card = document.getElementById('nf_' + id);
-  if(!card || card.getAttribute('data-read') === '1') return;
-  card.setAttribute('data-read', '1');
-  card.classList.remove('unread');
-  // Remove unread dot
-  var dot = card.querySelector('.nf-unread-dot');
-  if(dot) dot.remove();
-  // Remove "Mark Read" button
-  card.querySelectorAll('.nf-act.ghost').forEach(function(b){
-    if(b.textContent.trim().includes('Mark Read')) b.remove();
-  });
-  // Update unread count in results bar
-  var unreadEl = document.querySelector('.nf-results-bar span[style*="r600"]');
-  if(unreadEl){
-    var cnt = document.querySelectorAll('.nf-card[data-read="0"]').length;
-    unreadEl.textContent = cnt + ' unread';
-  }
-};
-
-/* ── Mark All Read ── */
-window.nfMarkAll = function(){
-  allCards().forEach(function(c){
-    var id = c.id.replace('nf_','');
-    nfMarkRead(parseInt(id));
-  });
-  // Update tab badge
-  var unreadBadge = document.querySelector('.nf-tab.t-unread .nf-tab-badge');
-  if(unreadBadge) unreadBadge.textContent = '0';
-};
-
-/* ── Delete ── */
-window.nfDelete = function(id){
-  var card = document.getElementById('nf_' + id);
-  if(!card) return;
-  card.style.opacity = '0';
-  card.style.transform = 'translateX(20px)';
-  card.style.maxHeight = card.offsetHeight + 'px';
-  card.style.transition = 'opacity .22s, transform .22s, max-height .3s .15s, margin .3s .15s, padding .3s .15s';
-  setTimeout(function(){
-    card.style.maxHeight = '0';
-    card.style.marginBottom = '0';
-    card.style.paddingTop = '0';
-    card.style.paddingBottom = '0';
-  }, 200);
-  setTimeout(function(){
-    card.remove();
-    applyFilters();
-  }, 500);
-};
-
 /* ── Clear All ── */
-window.nfClearAll = function(){
-  if(!confirm('Clear all notifications? This cannot be undone.')) return;
-  allCards().forEach(function(c){
-    c.style.opacity = '0';
-    c.style.transform = 'translateX(24px)';
-    c.style.transition = 'all .2s';
-  });
-  setTimeout(function(){
-    var list = document.getElementById('nfList');
-    if(list) list.innerHTML = '';
-    applyFilters();
-  }, 250);
-};
+
 
 })();
+
+function loadNotifications() {
+    $.ajax({
+        url: "{{ route('notifications.list') }}",
+        type: "GET",
+        success: function (res) {
+            if (res.status) {
+              renderNotifications(res.data); 
+            }
+        }
+    });
+}
+
+$(document).ready(function () {
+    loadNotifications();
+});
+function renderNotifications(notifs) {
+    let container = $("#nfList");
+    container.html("");
+
+    let groups = {
+        today: "Today",
+        older: "Earlier"
+    };
+
+    Object.keys(groups).forEach(gKey => {
+
+        let grpItems = notifs.filter(n => n.group === gKey);
+
+        if (grpItems.length > 0) {
+
+            // Group Header
+            container.append(`
+                <div class="nf-date-grp" data-group="${gKey}">
+                    <div class="nf-date-grp-line"></div>
+                    <div class="nf-date-grp-lbl">
+                        <i class="fas fa-calendar-day"></i>
+                        ${groups[gKey]}
+                    </div>
+                    <div class="nf-date-grp-line"></div>
+                </div>
+            `);
+
+            grpItems.forEach(n => {
+
+                let actionsHtml = "";
+
+              n.actions.forEach((act, idx) => {
+                  actionsHtml += `
+                      <button class="nf-act ${act.cls}" onclick="handleActionClick(${n.type_id})">
+                          <i class="${act.ico}"></i> ${act.lbl}
+                      </button>
+                  `;  
+              });
+                
+                if (n.read != 1) {
+                    actionsHtml += `
+                        <button class="nf-act ghost" onclick="nfMarkRead(${n.id})">
+                            <i class="fas fa-check"></i> Mark Read
+                        </button>
+                    `;
+                }else{
+                  actionsHtml += `<button class="nf-act ghost" >
+                            <i class="fas fa-check"></i> Readed
+                        </button>`;
+                }
+                let readClass = n.read == 1 ? 'read' : 'unread';
+
+                container.append(`
+                    <div class="nf-card ${readClass}  type-${n.type}"
+                        id="nf_${n.id}"
+                        data-type="${n.type}"
+                        data-read="${n.read ? 1 : 0}"
+                        data-group="${n.group}"
+                        data-search="${(n.title + ' ' + n.msg).toLowerCase()}"
+                        onclick="nfMarkRead(${n.id})">
+
+                        <div class="nf-card-bar"></div>
+
+                        <div class="nf-card-inner">
+
+                            <div class="nf-ico ${n.icls}">
+                                <i class="${n.ico}"></i>
+                            </div>
+
+                            <div class="nf-body">
+
+                                <div class="nf-head">
+                                    <div class="nf-title-wrap">
+                                        ${!n.read ? '<span class="nf-unread-dot"></span>' : ''}
+                                        <div class="nf-title">${n.title}</div>
+                                        <span class="nf-type-chip ${n.tcls}">
+                                            <i class="${n.ico}" style="font-size:.58rem;"></i>
+                                            ${n.tlbl}
+                                        </span>
+                                    </div>
+                                    <div class="nf-time">
+                                        <i class="fas fa-clock"></i> ${n.date}
+                                    </div>
+                                </div>
+
+                                <div class="nf-msg">${n.msg}</div>
+
+                                <div class="nf-foot" onclick="event.stopPropagation()">
+                                    <div class="nf-act-row">
+                                        ${actionsHtml}
+                                    </div>
+                                    <button class="nf-del" onclick="nfDelete(${n.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+    });
+}
+
+const markReadUrl = "{{ route('notifications.markRead', ':id') }}";
+function nfMarkRead(notificationId) {
+    let url = markReadUrl.replace(':id', notificationId);
+    $.ajax({
+        url: url, // Laravel route
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}" // include CSRF token
+        },
+        success: function(res) {
+            if(res.status) {
+                // Update the card UI immediately
+                let card = $(`#nf_${notificationId}`);
+                card.removeClass('unread');
+                card.attr('data-read', 1);
+                card.find('.nf-unread-dot').remove();
+                
+                // Remove the "Mark Read" button
+                card.find('.nf-act.ghost').remove();
+
+                // Optionally update unread badge
+                let unreadCountElem = $('.t-unread .nf-tab-badge');
+                let unreadCount = parseInt(unreadCountElem.text());
+                unreadCountElem.text(unreadCount - 1 >= 0 ? unreadCount - 1 : 0);
+            } else {
+                alert('Failed to mark as read');
+            }
+        },
+        error: function(err) {
+            console.error(err);
+            alert('Error marking notification as read');
+        }
+    });
+}
+
+function nfDelete(notificationId) {
+    if(!confirm("Are you sure you want to delete this notification?")) return;
+
+    // Use Laravel route with placeholder
+    let url = "{{ route('notifications.delete', ':id') }}".replace(':id', notificationId);
+
+    $.ajax({
+        url: url,
+        type: "DELETE",
+        data: {
+            _token: "{{ csrf_token() }}" // CSRF token required for DELETE
+        },
+        success: function(res) {
+            if(res.status) {
+                // Remove the notification card from DOM
+                $(`#nf_${notificationId}`).remove();
+
+                // Optionally update badge counts
+                let totalElem = $('.t-all .nf-tab-badge');
+                let totalCount = parseInt(totalElem.text());
+                totalElem.text(totalCount - 1 >= 0 ? totalCount - 1 : 0);
+
+                let unreadElem = $('.t-unread .nf-tab-badge');
+                let isUnread = $(`#nf_${notificationId}`).attr('data-read') == 0;
+                if(isUnread) {
+                    let unreadCount = parseInt(unreadElem.text());
+                    unreadElem.text(unreadCount - 1 >= 0 ? unreadCount - 1 : 0);
+                }
+                location.reload();
+
+            } else {
+                alert('Failed to delete notification');
+            }
+        },
+        error: function(err) {
+            console.error(err);
+            alert('Error deleting notification');
+        }
+    });
+}
+function nfMarkAll() {
+
+    $.ajax({
+        url: "{{ route('notifications.markAllRead') }}", // Laravel named route
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}" // CSRF token
+        },
+        success: function(res) {
+            if(res.status) {
+                // Option 1: Reload the page to refresh all notifications and badges
+                location.reload();
+
+                // Option 2: Or update UI dynamically without reload
+                // $('.nf-card.unread').removeClass('unread').attr('data-read', 1);
+                // $('.nf-unread-dot').remove();
+                // $('.t-unread .nf-tab-badge').text(0);
+            } else {
+                alert('Failed to mark all notifications as read');
+            }
+        },
+        error: function(err) {
+            console.error(err);
+            alert('Error marking all notifications as read');
+        }
+    });
+}
+function nfClearAll() {
+
+    $.ajax({
+        url: "{{ route('notifications.clearAll') }}", // Laravel named route
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}" // CSRF token
+        },
+        success: function(res) {
+            if(res.status) {
+                // Option 1: Reload the page to refresh all notifications and badges
+                location.reload();
+
+                // Option 2: Or update UI dynamically without reload
+                // $('.nf-card.unread').removeClass('unread').attr('data-read', 1);
+                // $('.nf-unread-dot').remove();
+                // $('.t-unread .nf-tab-badge').text(0);
+            } else {
+                alert('Failed to mark all notifications as read');
+            }
+        },
+        error: function(err) {
+            console.error(err);
+            alert('Error marking all notifications as read');
+        }
+    });
+}
+function handleActionClick(type) {
+  // window.location.href = "{{ route('employer.candidates') }}";
+   if (type === 1) {
+        // Redirect to /jobs
+        window.location.href = "{{ route('employer.jobs.index') }}";
+    } else {
+        window.location.href = "{{ route('employer.candidates') }}";
+    }
+}
 </script>
 @endpush

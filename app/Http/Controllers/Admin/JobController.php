@@ -82,10 +82,11 @@ class JobController extends Controller
                 'message' => 'Job not found'
             ]);
         }
-
+        $noti_satatus = 'Job Approved';
         $job->admin_status = $request->status;
-        if ($request->admin_status == 3) {
+        if ($request->status == 3) {
             $job->old = $request->reject_message;
+            $noti_satatus = 'Job Rejected';
         }
 
         $job->save();
@@ -96,11 +97,12 @@ class JobController extends Controller
             : 'Your job was rejected: '.$job->old;
         $notification = Notification::create([
             'user_id' => $job->create_user_id,
-            'title'   => 'Job Status',
+            'title'   => $noti_satatus,
             'message' => $message,
             'type'      => Notification::TYPE_JOB,
             'send_from' => auth()->id(), // admin/employer
             'send_to'   => $job->create_user_id,
+            'is_admin'  => 1,
         ]);
         event(new UserNotification($notification));
         \Log::info('Notification fired');

@@ -199,7 +199,7 @@ Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->
     Route::get('/settings', [EmployerDashboardController::class, 'settings'])->name('settings');
     Route::patch('/settings/password', [EmployerDashboardController::class, 'settingsPassword'])->name('settings.password');
     Route::patch('/settings/notifications', [EmployerDashboardController::class, 'settingsNotifications'])->name('settings.notifications');
-    Route::delete('/settings/delete', [EmployerDashboardController::class, 'settingsDelete'])->name('settings.delete');
+    Route::delete('/settings/delete', [EmployerDashboardController::class, 'deleteAccount'])->name('settings.delete');
 });
 
 // ═════════════════════════════════════
@@ -267,8 +267,10 @@ Route::prefix('jobseeker')
             Route::get('/', [NotificationController::class, 'index'])->name('index');
             Route::put('/{id}/read', [NotificationController::class, 'markRead'])->name('read');
             Route::put('/read-all', [NotificationController::class, 'readAll'])->name('readAll');
-            Route::delete('/clear', [NotificationController::class, 'clearAll'])->name('clearAll');
+            
         });
+        Route::get('/jobseeker/notifications/list', [NotificationController::class, 'list'])->name('notifications.list');
+        Route::put('/jobseeker/notifications/read/{id}', [NotificationController::class, 'markRead'])->name('notifications.read');
 
         // SETTINGS
         Route::prefix('settings')->name('settings.')->group(function () {
@@ -282,3 +284,8 @@ Route::prefix('jobseeker')
     });
 
 Route::post('/job-plans/store', [JobPlanController::class, 'store'])->name('job-plans.store');
+Route::get('/notifications', [NotificationController::class, 'Notificationlist'])->name('notifications.list');
+Route::post('/notifications/mark-read/{id}', [NotificationController::class, 'markRead'])->name('notifications.markRead');
+Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.delete');
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+Route::post('/notifications/clear-all', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');

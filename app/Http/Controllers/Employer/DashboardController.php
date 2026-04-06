@@ -13,9 +13,15 @@ use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
 use App\Models\Notification;
 use App\Events\UserNotification;
+use App\Services\NotificationService;
+
 class DashboardController extends Controller
 {
-
+    protected $notificationService;
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /* ==============================
        DASHBOARD
     ============================== */
@@ -166,7 +172,22 @@ class DashboardController extends Controller
                 'admin_status'     => 0,
                 'is_new'           => 1,
                 'expiry_date'      => Carbon::now()->addDays(10),
+                'create_user_id'   => auth()->id(),
             ]);
+            if($job){
+                $message = 'New Application Received';
+                $notification = Notification::create([
+                    'user_id'   => 3,
+                    'job_id'    => $job->id,
+                    'title'     => 'New Job Post',
+                    'message'   => $message,
+                    'type'      => Notification::JOB_POST,
+                    'send_from' => auth()->id(), // admin/employer
+                    'send_to'   => 3,
+                ]);
+                event(new UserNotification($notification));
+                \Log::info('Notification fired');
+            }
 
             return redirect()
                 ->route('employer.jobs.show', $job->id)
@@ -574,14 +595,20 @@ class DashboardController extends Controller
 
     public function notifications()
     {
-        return view('frontend.employer.notifications');
+        $notificationQuery = Notification::where('send_to', auth()->id());
+        $all = (clone $notificationQuery)->count();
+        $unread = (clone $notificationQuery)->where('is_read', 0)->count();
+        $application = (clone $notificationQuery)->where('type', 2)->count();
+        $admin = (clone $notificationQuery)->where('is_admin', 1)->count();
+
+        return view('frontend.employer.notifications',compact('all','unread','application','admin'));
     }
 
     public function settings()
-{
-    // Load the settings view
-    return view('frontend.employer.settings');
-}
+    {
+        // Load the settings view
+        return view('frontend.employer.settings');
+    }
     public function downloadResume($id)
     {
         $app = JobApplication::findOrFail($id);
@@ -646,5 +673,31 @@ class DashboardController extends Controller
             'success' => true,
             'message' => 'Status updated successfully'
         ]);
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = auth()->user();
+
+        // Validate input
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        // Check password
+        if(!Hash::check($request->password, $user->password)) {
+            return response()->json(['status' => false, 'msg' => 'Incorrect password']);
+        }
+
+        // Soft delete user
+        $user->update([
+            'is_delete' => 1,
+            'd_message' => $request->d_message ?? 'Deleted by user'
+        ]);
+
+        // Optional: log the user out
+        auth()->logout();
+
+        return response()->json(['status' => true, 'msg' => 'Account deleted successfully']);
     }
 }   
