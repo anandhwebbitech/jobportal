@@ -24,8 +24,9 @@
       {{-- Avatar --}}
       <div class="lj-avatar-upload">
         <div class="lj-avatar-preview" id="avatarPreview">
-          @if(auth()->user()->profile_photo ?? false)
-            <img src="{{ asset('storage/'.auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" id="avatarImg"/>
+          {{-- @dd($user->details->profile_photo); --}}
+          @if($user->details->profile_photo ?? false)
+            <img src="{{ asset('public/uploads/photos/'.$user->details->profile_photo) }}" alt="{{ auth()->user()->name }}" id="avatarImg"/>
           @else
             @php $initials = strtoupper(substr(auth()->user()->name ?? 'U', 0, 1).substr(strrchr(auth()->user()->name ?? '', ' '), 1, 1)); @endphp
             <span id="avatarInitials">{{ $initials }}</span>

@@ -1046,9 +1046,9 @@ textarea.lj-input { resize: vertical; min-height: 96px; padding-top: 10px; }
 
   <a href="{{ route('jobseeker.notifications.index') }}"
      class="lj-nav-item {{ request()->routeIs('jobseeker.notifications.index') ? 'active' : '' }}">
-    <i class="fa-solid fa-inbox lj-nav-icon"></i> Notifications
-    @if(($unreadNotifications ?? 0) > 0)
-      <span class="lj-nav-badge">{{ $unreadNotifications }}</span>
+    <i class="fa-solid fa-inbox lj-nav-icon"></i> Notifications 
+    @if(($notificationcount ?? 0) > 0)
+      <span class="lj-nav-badge">{{ $notificationcount }}</span>
     @endif
   </a>
   <a href="{{ route('jobseeker.settings.index') }}"

@@ -6,8 +6,54 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* ══════════════════════════════════════════════════════
-       ROOT
-    ══════════════════════════════════════════════════════ */
+           ROOT
+        ══════════════════════════════════════════════════════ */
+        .error {
+            border: 1px solid red !important;
+        }
+        #skillsBox {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Container */
+        .skill-chip {
+            position: relative;
+        }
+
+        /* Hide checkbox */
+        .skill-chip input {
+            display: none;
+        }
+
+        /* Default pill style */
+        .skill-chip label {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            background-color: #f8fafc;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Hover */
+        .skill-chip label:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        /* Selected (IMPORTANT) */
+        .skill-chip input:checked+label {
+            background-color: #eef4ff;
+            border-color: #2563eb;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
         :root {
             --blue: #1a56db;
             --blue-d: #1e3a8a;
@@ -105,8 +151,8 @@
         }
 
         /* ══════════════════════════════════════════════════════
-       ANNOUNCE BAR
-    ══════════════════════════════════════════════════════ */
+           ANNOUNCE BAR
+        ══════════════════════════════════════════════════════ */
         .announce-bar {
             background: linear-gradient(90deg, var(--blue-d), var(--blue));
             color: rgba(255, 255, 255, .95);
@@ -150,8 +196,8 @@
         }
 
         /* ══════════════════════════════════════════════════════
-       HEADER
-    ══════════════════════════════════════════════════════ */
+           HEADER
+        ══════════════════════════════════════════════════════ */
         .header {
             position: sticky;
             top: 0;
@@ -457,8 +503,8 @@
         }
 
         /* ══════════════════════════════════════════════════════
-       MAIN — REGISTER SPLIT LAYOUT
-    ══════════════════════════════════════════════════════ */
+           MAIN — REGISTER SPLIT LAYOUT
+        ══════════════════════════════════════════════════════ */
         main {
             flex: 1;
             display: flex;
@@ -1580,8 +1626,8 @@
         }
 
         /* ══════════════════════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════════════════════ */
+           FOOTER
+        ══════════════════════════════════════════════════════ */
         footer {
             position: relative;
             z-index: 1;
@@ -1928,8 +1974,8 @@
     </div>
 
     <!-- ════════════════════════════════════
-         MAIN CONTENT
-    ════════════════════════════════════ -->
+             MAIN CONTENT
+        ════════════════════════════════════ -->
     <main>
         <div class="reg-split">
 
@@ -2029,7 +2075,8 @@
                 </div>
 
                 <!-- ════ JOB SEEKER FORM ════ -->
-                <form id="registrationForm" method="POST" action="{{ route('jobseeker_register.store') }}"   enctype="multipart/form-data">
+                <form id="registrationForm" method="POST" action="{{ route('jobseeker_register.store') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     <div id="jsForm">
                         <div class="lj-card">
@@ -2045,16 +2092,19 @@
                                 <!-- Panel 1 -->
                                 <div class="panel active" id="js-p1">
                                     <div class="step-alert" id="js-al1"><i
-                                            class="fa-solid fa-triangle-exclamation"></i><span id="js-al1-msg">Please fill in
+                                            class="fa-solid fa-triangle-exclamation"></i><span id="js-al1-msg">Please fill
+                                            in
                                             all required fields.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl" for="js_name">Full Name <span
                                                     class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                    id="full_name" name="full_name"class="finput fc-b" placeholder="Your full name" /></div>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
+                                                    type="text" id="full_name" name="full_name"class="finput fc-b"
+                                                    placeholder="Your full name" /></div>
                                             <div class="ferr-msg" id="e-js_name"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Full name required (min. 2
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Full name required
+                                                    (min. 2
                                                     chars).</span></div>
                                         </div>
                                         <div class="fgrp">
@@ -2071,8 +2121,9 @@
                                     <div class="fgrp">
                                         <label class="flbl" for="js_email">Email Address <span
                                                 class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
-                                                id="email" name="email" class="finput fc-b" placeholder="you@example.com" /></div>
+                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input
+                                                type="email" id="email" name="email" class="finput fc-b"
+                                                placeholder="you@example.com" /></div>
                                         <div class="ferr-msg" id="e-js_email"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
                                                 address.</span></div>
@@ -2087,8 +2138,9 @@
                                             <label class="flbl" for="js_pwd">Password <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                                <input type="password" id="password" name="password"class="finput pr fc-b"
-                                                    placeholder="Min. 8 characters" oninput="pwdStr(this.value,'js-pb')" />
+                                                <input type="password" id="password"
+                                                    name="password"class="finput pr fc-b" placeholder="Min. 8 characters"
+                                                    oninput="pwdStr(this.value,'js-pb')" />
                                                 <button type="button" class="fiw-r" onclick="togPwd('password',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                             </div>
@@ -2096,19 +2148,23 @@
                                                 <div class="pwd-bar" id="js-pb"></div>
                                             </div>
                                             <div class="ferr-msg" id="e-js_pwd"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at
+                                                    least
                                                     8 characters.</span></div>
-                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Use letters, numbers &
+                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Use letters,
+                                                numbers &
                                                 symbols</div>
                                         </div>
                                         <div class="fgrp">
                                             <label class="flbl" for="js_cpwd">Confirm Password <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                                <input type="password" id="confirm_password"  name="confirm_password"class="finput pr fc-b"
+                                                <input type="password" id="confirm_password"
+                                                    name="confirm_password"class="finput pr fc-b"
                                                     placeholder="Re-enter password" />
-                                                <button type="button" class="fiw-r" onclick="togPwd('confirm_password',this)"
-                                                    tabindex="-1"><i class="fa-solid fa-eye"></i></button>
+                                                <button type="button" class="fiw-r"
+                                                    onclick="togPwd('confirm_password',this)" tabindex="-1"><i
+                                                        class="fa-solid fa-eye"></i></button>
                                             </div>
                                             <div class="ferr-msg" id="e-js_cpwd"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
@@ -2124,7 +2180,8 @@
                                             fields.</span></div>
                                     <div class="frow3">
                                         <div class="fgrp">
-                                            <label class="flbl" for="js_state">State <span class="req">*</span></label>
+                                            <label class="flbl" for="js_state">State <span
+                                                    class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
                                                 <select id="state" name="state"class="finput fc-b">
                                                     <option value="" disabled selected>Select State</option>
@@ -2172,8 +2229,9 @@
                                         <div class="fgrp">
                                             <label class="flbl" for="js_city">City / Town <span
                                                     class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
-                                                    id="city" name="city" class="finput fc-b" placeholder="Your city" /></div>
+                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input
+                                                    type="text" id="city" name="city" class="finput fc-b"
+                                                    placeholder="Your city" /></div>
                                             <div class="ferr-msg" id="e-js_city"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Please enter your
                                                     city.</span></div>
@@ -2206,14 +2264,16 @@
                                     </div>
                                     <div class="fsec">
                                         <div class="fsec-line"></div>
-                                        <div class="fsec-lbl bi"><i class="fa-solid fa-briefcase"></i> Experience Level</div>
+                                        <div class="fsec-lbl bi"><i class="fa-solid fa-briefcase"></i> Experience Level
+                                        </div>
                                         <div class="fsec-line"></div>
                                     </div>
                                     <div class="fgrp">
                                         <div class="exp-row">
                                             <div class="exp-opt"><input type="radio" id="exp_f" name="exp"
-                                                    value="fresher" checked onchange="togExp(false)"><label for="exp_f"><i
-                                                        class="fa-solid fa-seedling"></i> Fresher</label></div>
+                                                    value="fresher" checked onchange="togExp(false)"><label
+                                                    for="exp_f"><i class="fa-solid fa-seedling"></i> Fresher</label>
+                                            </div>
                                             <div class="exp-opt"><input type="radio" id="exp_e" name="exp"
                                                     value="experienced" onchange="togExp(true)"><label for="exp_e"><i
                                                         class="fa-solid fa-briefcase"></i> Experienced</label></div>
@@ -2240,15 +2300,15 @@
                                             <div class="fgrp">
                                                 <label class="flbl" for="js_pco">Previous Company</label>
                                                 <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
-                                                        type="text" id="previous_company" name="previous_company" class="finput fc-b"
-                                                        placeholder="e.g. ABC Pvt Ltd" /></div>
+                                                        type="text" id="previous_company" name="previous_company"
+                                                        class="finput fc-b" placeholder="e.g. ABC Pvt Ltd" /></div>
                                             </div>
                                         </div>
                                         <div class="fgrp">
                                             <label class="flbl" for="js_prole">Previous Designation</label>
                                             <div class="fiw"><i class="fa-solid fa-id-badge fiw-l"></i><input
-                                                    type="text" id="previous_designation" name="previous_designation" class="finput fc-b"
-                                                    placeholder="e.g. Sales Executive" /></div>
+                                                    type="text" id="previous_designation" name="previous_designation"
+                                                    class="finput fc-b" placeholder="e.g. Sales Executive" /></div>
                                         </div>
                                     </div>
                                 </div>
@@ -2266,7 +2326,8 @@
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl">Upload Resume</label>
-                                            <div class="file-zone"><input type="file" name="resume" id="resume"accept=".pdf,.doc,.docx"
+                                            <div class="file-zone"><input type="file" name="resume"
+                                                    id="resume"accept=".pdf,.doc,.docx"
                                                     onchange="setFileLabel(this,'js-rl')">
                                                 <div class="fz-ico"><i class="fa-solid fa-file-pdf"
                                                         style="color:var(--blue);"></i></div>
@@ -2275,8 +2336,10 @@
                                             </div>
                                         </div>
                                         <div class="fgrp">
-                                            <label class="flbl">Profile Photo <span class="opt">Optional</span></label>
-                                            <div class="file-zone"><input type="file" name="profile_photo" id="profile_photo" accept="image/*"
+                                            <label class="flbl">Profile Photo <span
+                                                    class="opt">Optional</span></label>
+                                            <div class="file-zone"><input type="file" name="profile_photo"
+                                                    id="profile_photo" accept="image/*"
                                                     onchange="setFileLabel(this,'js-pl')">
                                                 <div class="fz-ico"><i class="fa-solid fa-image"
                                                         style="color:var(--blue);"></i></div>
@@ -2303,22 +2366,25 @@
                             </div>
 
                             <div class="card-foot">
-                                <div class="foot-info" id="jsFootInfo">Already have an account? <a href="#">Sign In</a>
+                                <div class="foot-info" id="jsFootInfo">Already have an account? <a href="#">Sign
+                                        In</a>
                                 </div>
                                 <div class="foot-btns">
-                                    <button type="button"  class="btn-prev" id="jsBtnPrev" onclick="jsNav(-1)" style="display:none;"><i
-                                            class="fa-solid fa-arrow-left"></i> Back</button>
-                                    <button type="button" class="btn-next blue-next" id="jsBtnNext" onclick="jsNav(1)">Next <i
-                                            class="fa-solid fa-arrow-right"></i></button>
-                                    <button type="submit"class="btn-submit blue-sub" id="jsBtnSub" style="display:none;"
-                                        ><i class="fa-solid fa-user-plus"></i> Create Account</button>
+                                    <button type="button" class="btn-prev" id="jsBtnPrev" onclick="jsNav(-1)"
+                                        style="display:none;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn-next blue-next" id="jsBtnNext"
+                                        onclick="jsNav(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
+                                    <button type="submit"class="btn-submit blue-sub" id="jsBtnSub"
+                                        style="display:none;"><i class="fa-solid fa-user-plus"></i> Create
+                                        Account</button>
                                 </div>
                             </div>
                         </div>
                     </div><!-- /jsForm -->
                 </form>
                 <!-- ════ EMPLOYER FORM ════ -->
-                <form id="employer_registrationForm" method="POST" action="{{ route('employer_register.store') }}"   enctype="multipart/form-data">
+                <form id="employer_registrationForm" method="POST" action="{{ route('employer_register.store') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     <div id="empForm" style="display:none;">
                         <div class="lj-card">
@@ -2326,7 +2392,8 @@
                                 <i class="fa-solid fa-building" id="empHeadIco"></i>
                                 <div>
                                     <div class="card-head-title" id="empHeadTitle">Company Information</div>
-                                    <div class="card-head-sub" id="empHeadSub">Step 1 of 5 — Tell us about your business</div>
+                                    <div class="card-head-sub" id="empHeadSub">Step 1 of 5 — Tell us about your business
+                                    </div>
                                 </div>
                             </div>
 
@@ -2339,8 +2406,8 @@
                                     <div class="fgrp">
                                         <label class="flbl" for="ec_name">Company Name <span
                                                 class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input type="text"
-                                                id="company_name" name="company_name" class="finput fc-g"
+                                        <div class="fiw"><i class="fa-solid fa-building fiw-l"></i><input
+                                                type="text" id="company_name" name="company_name" class="finput fc-g"
                                                 placeholder="e.g. ABC Industries Pvt Ltd" /></div>
                                         <div class="ferr-msg" id="e-ec_name"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Company name is
@@ -2350,7 +2417,8 @@
                                         <label class="flbl" for="ec_addr">Company Address <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-map-pin fiw-l t"></i>
-                                            <textarea id="company_address" name="company_address" class="finput fc-g" rows="3" placeholder="Full registered address"></textarea>
+                                            <textarea id="company_address" name="company_address" class="finput fc-g" rows="3"
+                                                placeholder="Full registered address"></textarea>
                                         </div>
                                         <div class="ferr-msg" id="e-ec_addr"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Please enter your company
@@ -2358,7 +2426,8 @@
                                     </div>
                                     <div class="frow3">
                                         <div class="fgrp">
-                                            <label class="flbl" for="ec_state">State <span class="req">*</span></label>
+                                            <label class="flbl" for="ec_state">State <span
+                                                    class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
                                                 <select id="c_state" name="c_state" class="finput fc-g">
                                                     <option value="" disabled selected>Select State</option>
@@ -2393,19 +2462,23 @@
                                                     district.</span></div>
                                         </div>
                                         <div class="fgrp">
-                                            <label class="flbl" for="ec_city">City <span class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input type="text"
-                                                    id="c_city" name="c_city" class="finput fc-g" placeholder="City" /></div>
+                                            <label class="flbl" for="ec_city">City <span
+                                                    class="req">*</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-city fiw-l"></i><input
+                                                    type="text" id="c_city" name="c_city" class="finput fc-g"
+                                                    placeholder="City" /></div>
                                             <div class="ferr-msg" id="e-ec_city"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Please enter the
                                                     city.</span></div>
                                         </div>
                                     </div>
                                     <div class="fgrp">
-                                        <label class="flbl" for="ec_pin">Pincode <span class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input type="text"
-                                                id="c_pincode" name="c_pincode"class="finput fc-g" placeholder="6-digit pincode"
-                                                maxlength="6" style="max-width:200px;" /></div>
+                                        <label class="flbl" for="ec_pin">Pincode <span
+                                                class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input
+                                                type="text" id="c_pincode" name="c_pincode"class="finput fc-g"
+                                                placeholder="6-digit pincode" maxlength="6" style="max-width:200px;" />
+                                        </div>
                                         <div class="ferr-msg" id="e-ec_pin"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit
                                                 pincode.</span></div>
@@ -2418,15 +2491,17 @@
                                             class="fa-solid fa-triangle-exclamation"></i><span>Please fill in all contact
                                             fields.</span></div>
                                     <div class="fsec" style="margin-top:0;">
-                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-tie"></i> Owner / Director</div>
+                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-tie"></i> Owner / Director
+                                        </div>
                                         <div class="fsec-line"></div>
                                     </div>
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl" for="eo_name">Owner Name <span
                                                     class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                    id="c_ownername" name="c_ownername"class="finput fc-g" placeholder="Full name" /></div>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
+                                                    type="text" id="c_ownername" name="c_ownername"class="finput fc-g"
+                                                    placeholder="Full name" /></div>
                                             <div class="ferr-msg" id="e-eo_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Owner name is
                                                     required.</span></div>
@@ -2443,17 +2518,20 @@
                                         </div>
                                     </div>
                                     <div class="fsec">
-                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-gear"></i> HR / Recruiter</div>
+                                        <div class="fsec-lbl gi"><i class="fa-solid fa-user-gear"></i> HR / Recruiter
+                                        </div>
                                         <div class="fsec-line"></div>
                                     </div>
-                                    <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't have
+                                    <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't
+                                            have
                                             a dedicated HR, enter the owner's details again below.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl" for="eh_name">HR Name <span
                                                     class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input type="text"
-                                                    id="c_hr_name"  name="c_hr_name"class="finput fc-g" placeholder="Full name" /></div>
+                                            <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
+                                                    type="text" id="c_hr_name" name="c_hr_name"class="finput fc-g"
+                                                    placeholder="Full name" /></div>
                                             <div class="ferr-msg" id="e-eh_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>HR name is
                                                     required.</span></div>
@@ -2462,8 +2540,9 @@
                                             <label class="flbl" for="eh_mob">HR Mobile <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                    type="tel" id="c_hr_mobile" name="c_hr_mobile" class="finput fc-g"
-                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                                    type="tel" id="c_hr_mobile" name="c_hr_mobile"
+                                                    class="finput fc-g" placeholder="+91 XXXXX XXXXX" maxlength="15" />
+                                            </div>
                                             <div class="ferr-msg" id="e-eh_mob"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
                                                     mobile number.</span></div>
@@ -2479,12 +2558,14 @@
                                     <div class="fgrp">
                                         <label class="flbl" for="e_email">Official Email Address <span
                                                 class="req">*</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input type="email"
-                                                id="c_email" name="c_email" class="finput fc-g" placeholder="company@example.com" /></div>
+                                        <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input
+                                                type="email" id="c_email" name="c_email" class="finput fc-g"
+                                                placeholder="company@example.com" /></div>
                                         <div class="ferr-msg" id="e-e_email"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
                                                 address.</span></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your login
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your
+                                            login
                                             email</div>
                                     </div>
                                     <div class="fsec">
@@ -2497,8 +2578,9 @@
                                             <label class="flbl" for="e_pwd">Password <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                                <input type="password" id="c_password" name="c_password" class="finput pr fc-g"
-                                                    placeholder="Min. 8 characters" oninput="pwdStr(this.value,'e-pb')" />
+                                                <input type="password" id="c_password" name="c_password"
+                                                    class="finput pr fc-g" placeholder="Min. 8 characters"
+                                                    oninput="pwdStr(this.value,'e-pb')" />
                                                 <button type="button" class="fiw-r" onclick="togPwd('e_pwd',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                             </div>
@@ -2506,15 +2588,16 @@
                                                 <div class="pwd-bar" id="e-pb"></div>
                                             </div>
                                             <div class="ferr-msg" id="e-e_pwd"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at least
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Password must be at
+                                                    least
                                                     8 characters.</span></div>
                                         </div>
                                         <div class="fgrp">
                                             <label class="flbl" for="e_cpwd">Confirm Password <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
-                                                <input type="password" id="c_confirm_password" name="c_confirm_password" class="finput pr fc-g"
-                                                    placeholder="Re-enter password" />
+                                                <input type="password" id="c_confirm_password" name="c_confirm_password"
+                                                    class="finput pr fc-g" placeholder="Re-enter password" />
                                                 <button type="button" class="fiw-r" onclick="togPwd('e_cpwd',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                             </div>
@@ -2528,10 +2611,13 @@
                                 <!-- Emp Panel 4 -->
                                 <div class="panel" id="emp-p4">
                                     <div class="step-alert" id="emp-al4"><i
-                                            class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and PAN
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and
+                                            PAN
                                             numbers.</span></div>
-                                    <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your business
-                                            details are encrypted and used only for verification. Only verified employers can
+                                    <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your
+                                            business
+                                            details are encrypted and used only for verification. Only verified employers
+                                            can
                                             post jobs.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
@@ -2542,7 +2628,8 @@
                                                     placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
                                                     oninput="this.value=this.value.toUpperCase()" /></div>
                                             <div class="ferr-msg" id="e-e_gst"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 15-character
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
+                                                    15-character
                                                     GST number.</span></div>
                                             <div class="fhint"><i class="fa-solid fa-circle-info"></i> 15-character
                                                 alphanumeric GST number</div>
@@ -2555,19 +2642,22 @@
                                                     placeholder="e.g. AABCU9603R" maxlength="10"
                                                     oninput="this.value=this.value.toUpperCase()" /></div>
                                             <div class="ferr-msg" id="e-e_pan"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-character
+                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
+                                                    10-character
                                                     PAN number.</span></div>
-                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company / Individual
+                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company /
+                                                Individual
                                                 PAN number</div>
                                         </div>
                                     </div>
                                     <div class="fgrp">
                                         <label class="flbl" for="e_msme">MSME Number <span
                                                 class="opt">Optional</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input type="text"
-                                                id="c_msme" name="c_msme" class="finput fc-g" placeholder="UDYAM-TN-01-0000000"
-                                                style="max-width:380px;" /></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration number
+                                        <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input
+                                                type="text" id="c_msme" name="c_msme" class="finput fc-g"
+                                                placeholder="UDYAM-TN-01-0000000" style="max-width:380px;" /></div>
+                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration
+                                            number
                                             — recommended for MSMEs</div>
                                     </div>
                                 </div>
@@ -2577,7 +2667,8 @@
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl">GST Certificate <span class="req">*</span></label>
-                                            <div class="file-zone"><input type="file" id="gst_certificate" name="gst_certificate" accept=".pdf,.jpg,.jpeg,.png"
+                                            <div class="file-zone"><input type="file" id="gst_certificate"
+                                                    name="gst_certificate" accept=".pdf,.jpg,.jpeg,.png"
                                                     onchange="setFileLabel(this,'eg-rl')">
                                                 <div class="fz-ico"><i class="fa-solid fa-file-invoice"
                                                         style="color:var(--green);"></i></div>
@@ -2590,7 +2681,8 @@
                                         </div>
                                         <div class="fgrp">
                                             <label class="flbl">PAN Document <span class="req">*</span></label>
-                                            <div class="file-zone"><input type="file" id="pan_document" name="pan_document" accept=".pdf,.jpg,.jpeg,.png"
+                                            <div class="file-zone"><input type="file" id="pan_document"
+                                                    name="pan_document" accept=".pdf,.jpg,.jpeg,.png"
                                                     onchange="setFileLabel(this,'ep-rl')">
                                                 <div class="fz-ico"><i class="fa-solid fa-id-card"
                                                         style="color:var(--green);"></i></div>
@@ -2603,8 +2695,10 @@
                                         </div>
                                     </div>
                                     <div class="fgrp">
-                                        <label class="flbl">MSME Certificate <span class="opt">Optional</span></label>
-                                        <div class="file-zone" style="max-width:380px;"><input type="file" id="msme_certificate" name="msme_certificate"
+                                        <label class="flbl">MSME Certificate <span
+                                                class="opt">Optional</span></label>
+                                        <div class="file-zone" style="max-width:380px;"><input type="file"
+                                                id="msme_certificate" name="msme_certificate"
                                                 accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
                                             <div class="fz-ico"><i class="fa-solid fa-industry"
                                                     style="color:var(--green);"></i></div>
@@ -2630,22 +2724,24 @@
                             </div>
 
                             <div class="card-foot">
-                                <div class="foot-info" id="empFootInfo">Already registered? <a href="#">Login here</a>
+                                <div class="foot-info" id="empFootInfo">Already registered? <a href="#">Login
+                                        here</a>
                                 </div>
                                 <div class="foot-btns">
-                                    <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)" style="display:none;"><i
-                                            class="fa-solid fa-arrow-left"></i> Back</button>
-                                    <button  type="button" class="btn-next green-next" id="empBtnNext" onclick="empNav(1)">Next <i
-                                            class="fa-solid fa-arrow-right"></i></button>
-                                    <button type="submit" class="btn-submit green-sub" id="employer_register" style="display:none;"
-                                        onclick="empSubmit()"><i class="fa-solid fa-building-flag"></i> Register
+                                    <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)"
+                                        style="display:none;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn-next green-next" id="empBtnNext"
+                                        onclick="empNav(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
+                                    <button type="submit" class="btn-submit green-sub" id="employer_register"
+                                        style="display:none;" onclick="empSubmit()"><i
+                                            class="fa-solid fa-building-flag"></i> Register
                                         Company</button>
                                 </div>
                             </div>
                         </div>
                     </div><!-- /empForm -->
                 </form>
-                
+
             </div><!-- /reg-right -->
         </div><!-- /reg-split -->
     </main>
@@ -2656,6 +2752,9 @@
 @endsection
 <!-- ════════ JAVASCRIPT ════════ -->
 @push('scripts')
+    <script>
+        const skillsData = @json($skills);
+    </script>
     <script>
         /* ── ANNOUNCE ── */
         function closeAnnounce() {
@@ -2691,7 +2790,9 @@
                 toTop.classList.toggle('visible', window.scrollY > 300);
             }
 
-        }, { passive: true });
+        }, {
+            passive: true
+        });
 
         /* ── MOBILE NAV ── */
         function toggleMobile() {
@@ -2923,85 +3024,69 @@
             return ok;
         }
 
-        function empValidate(s) {
-            let ok = true;
-            const al = document.getElementById('emp-al' + s);
-            if (al) al.classList.remove('show');
-            if (s === 1) {
-                vClr('company_name', 'company_address', 'c_state', 'c_district', 'c_city', 'c_pincode');
-                if (g('company_name').trim().length < 2) {
-                    vErr('company_name');
-                    ok = false;
-                }
-                if (g('company_address').trim().length < 10) {
-                    vErr('company_address');
-                    ok = false;
-                }
-                if (!g('c_state')) {
-                    vErr('c_state');
-                    ok = false;
-                }
-                if (!g('c_district')) {
-                    vErr('c_district');
-                    ok = false;
-                }
-                if (g('c_city').trim().length < 2) {
-                    vErr('c_city');
-                    ok = false;
-                }
-                if (!/^\d{6}$/.test(g('c_pincode').trim())) {
-                    vErr('c_pincode');
-                    ok = false;
+        function empValidate(step) {
+
+            let valid = true;
+            let firstError = null;
+
+            // clear old errors
+            document.querySelectorAll('.finput').forEach(el => el.classList.remove('error'));
+
+            function check(name, message) {
+                let field = document.querySelector(`[name="${name}"]`);
+                if (!field || !field.value.trim()) {
+                    valid = false;
+
+                    field.classList.add('error');
+
+                    if (!firstError) firstError = message;
                 }
             }
-            if (s === 2) {
-                vClr('c_ownername', 'c_mobile', 'c_hr_name', 'c_hr_mobile');
-                if (g('c_ownername').trim().length < 2) {
-                    vErr('c_ownername');
-                    ok = false;
-                }
-                if (g('c_mobile').replace(/\D/g, '').length < 10) {
-                    vErr('c_mobile');
-                    ok = false;
-                }
-                if (g('c_hr_name').trim().length < 2) {
-                    vErr('c_hr_name');
-                    ok = false;
-                }
-                if (g('c_hr_mobile').replace(/\D/g, '').length < 10) {
-                    vErr('c_hr_mobile');
-                    ok = false;
-                }
+
+            if (step === 1) {
+                check('company_name', 'Company name is required');
+                check('company_address', 'Company address is required');
+                check('c_state', 'State is required');
+                check('c_district', 'District is required');
+                check('c_city', 'City is required');
+                check('c_pincode', 'Pincode is required');
             }
-            if (s === 3) {
-                vClr('c_email', 'c_password', 'c_confirm_password');
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('c_email').trim())) {
-                    vErr('c_email');
-                    ok = false;
-                }
-                const pw = g('c_password');
-                if (pw.length < 8) {
-                    vErr('c_password');
-                    ok = false;
-                }
-                if (g('c_confirm_password') !== pw) {
-                    vErr('c_confirm_password');
-                    ok = false;
-                }
+
+            if (step === 2) {
+                check('c_ownername', 'Owner name is required');
+                check('c_mobile', 'Owner mobile is required');
+                check('c_hr_name', 'HR name is required');
+                check('c_hr_mobile', 'HR mobile is required');
             }
-            if (s === 4) {
-                vClr('c_gst', 'c_pan');
-                if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(g('c_gst').trim())) {
-                    vErr('c_gst');
-                    ok = false;
-                }
-                if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(g('c_pan').trim())) {
-                    vErr('c_pan');
-                    ok = false;
-                }
+
+            if (step === 3) {
+                check('c_email', 'Email is required');
+                check('c_password', 'Password is required');
+                check('c_confirm_password', 'Confirm password is required');
             }
-            if (!ok && al) al.classList.add('show');
-            return ok;
+
+            if (step === 4) {
+                check('c_gst', 'GST number is required');
+                check('c_pan', 'PAN number is required');
+            }
+
+            if (step === 5) {
+                check('gst_certificate', 'GST certificate is required');
+                check('pan_document', 'PAN document is required');
+            }
+
+            // ❗ Show toaster
+            if (!valid) {
+                toastr.error(firstError);
+
+                // scroll to first error
+                document.querySelector('.error')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+
+            return valid;
         }
 
         /* ── SUMMARIES ── */
@@ -3031,10 +3116,13 @@
 
         function empBuildSummary() {
             document.getElementById('es-co').textContent = g('company_name') || '—';
-            document.getElementById('es-lc').textContent = [g('c_city'), g('c_district'), g('c_state')].filter(Boolean).join(
-                ', ') || '—';
-            document.getElementById('es-ow').textContent = (g('c_ownername') || '—') + (g('c_mobile') ? ' · ' + g('c_mobile') : '');
-            document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g('c_hr_mobile') : '');
+            document.getElementById('es-lc').textContent = [g('c_city'), g('c_district'), g('c_state')].filter(Boolean)
+                .join(
+                    ', ') || '—';
+            document.getElementById('es-ow').textContent = (g('c_ownername') || '—') + (g('c_mobile') ? ' · ' + g(
+                'c_mobile') : '');
+            document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g(
+                'c_hr_mobile') : '');
             document.getElementById('es-em').textContent = g('c_email') || '—';
             document.getElementById('es-gs').textContent = g('c_gst') || '—';
             document.getElementById('es-pn').textContent = g('c_pan') || '—';
@@ -3047,7 +3135,7 @@
             b.disabled = true;
             b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...';
         }
-        document.getElementById('jsBtnSub').addEventListener('click', function (e) {
+        document.getElementById('jsBtnSub').addEventListener('click', function(e) {
             e.preventDefault();
 
             let form = document.getElementById('registrationForm');
@@ -3058,63 +3146,64 @@
             btn.innerHTML = 'Processing...';
 
             fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
 
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
 
-                if (data.status) {
-                    toastr.success(data.message);
-                    
-                    setTimeout(() => {
-                        form.reset();
-                        document.getElementById('ss-nm').innerText = '—';
-                        document.getElementById('ss-mb').innerText = '—';
-                        document.getElementById('ss-em').innerText = '—';
-                        document.getElementById('ss-lc').innerText = '—';
-                        document.getElementById('ss-ql').innerText = '—';
-                        document.getElementById('ss-xp').innerText = '—';
-                        document.getElementById('ss-sk').innerText = '—';
+                    if (data.status) {
+                        toastr.success(data.message);
 
-                        document.getElementById('js-rl').innerText = 'Click to upload resume';
-                        document.getElementById('js-pl').innerText = 'Click to upload photo';
+                        setTimeout(() => {
+                            form.reset();
+                            document.getElementById('ss-nm').innerText = '—';
+                            document.getElementById('ss-mb').innerText = '—';
+                            document.getElementById('ss-em').innerText = '—';
+                            document.getElementById('ss-lc').innerText = '—';
+                            document.getElementById('ss-ql').innerText = '—';
+                            document.getElementById('ss-xp').innerText = '—';
+                            document.getElementById('ss-sk').innerText = '—';
 
-                        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-                        document.getElementById('js-p1').classList.add('active');
+                            document.getElementById('js-rl').innerText = 'Click to upload resume';
+                            document.getElementById('js-pl').innerText = 'Click to upload photo';
 
-                        document.getElementById('jsBtnPrev').style.display = 'none';
-                        document.getElementById('jsBtnNext').style.display = 'inline-block';
-                        document.getElementById('jsBtnSub').style.display = 'none';
-                    }, 1500);
-                } else {
-                    toastr.error(data.message);
-                }
+                            document.querySelectorAll('.panel').forEach(p => p.classList.remove(
+                                'active'));
+                            document.getElementById('js-p1').classList.add('active');
 
-            })
-            .catch(error => {
+                            document.getElementById('jsBtnPrev').style.display = 'none';
+                            document.getElementById('jsBtnNext').style.display = 'inline-block';
+                            document.getElementById('jsBtnSub').style.display = 'none';
+                        }, 1500);
+                    } else {
+                        toastr.error(data.message);
+                    }
 
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+                })
+                .catch(error => {
 
-                if (error.errors) {
-                    Object.values(error.errors).forEach(err => {
-                        toastr.error(err[0]);
-                    });
-                } else {
-                    toastr.error('Something went wrong');
-                }
-            });
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+
+                    if (error.errors) {
+                        Object.values(error.errors).forEach(err => {
+                            toastr.error(err[0]);
+                        });
+                    } else {
+                        toastr.error('Something went wrong');
+                    }
+                });
         });
 
-        document.getElementById('employer_register').addEventListener('click', function (e) {
+        document.getElementById('employer_register').addEventListener('click', function(e) {
             e.preventDefault();
 
             let form = document.getElementById('employer_registrationForm');
@@ -3132,7 +3221,16 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
+            .then(async response => {
+                let data = await response.json();
+
+                // ❗ HANDLE VALIDATION ERROR (422)
+                if (!response.ok) {
+                    throw { status: response.status, data: data };
+                }
+
+                return data;
+            })
             .then(data => {
 
                 btn.disabled = false;
@@ -3140,9 +3238,11 @@
 
                 if (data.status) {
                     toastr.success(data.message);
-                    
+
                     setTimeout(() => {
                         form.reset();
+
+                        // reset summary
                         document.getElementById('es-co').innerText = '—';
                         document.getElementById('es-lc').innerText = '—';
                         document.getElementById('es-ow').innerText = '—';
@@ -3152,9 +3252,9 @@
                         document.getElementById('es-pn').innerText = '—';
                         document.getElementById('es-ms').innerText = '—';
 
-                        document.getElementById('eg-rl').innerText = 'Click to upload resume';
-                        document.getElementById('ep-rl').innerText = 'Click to upload photo';
-                        document.getElementById('em-rl').innerText = 'Click to upload photo';
+                        document.getElementById('eg-rl').innerText = 'Click to upload GST certificate';
+                        document.getElementById('ep-rl').innerText = 'Click to upload PAN document';
+                        document.getElementById('em-rl').innerText = 'Click to upload MSME certificate';
 
                         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                         document.getElementById('emp-p1').classList.add('active');
@@ -3162,22 +3262,34 @@
                         document.getElementById('empBtnPrev').style.display = 'none';
                         document.getElementById('empBtnNext').style.display = 'inline-block';
                         document.getElementById('employer_register').style.display = 'none';
+
                     }, 1500);
+
                 } else {
                     toastr.error(data.message);
                 }
-
             })
             .catch(error => {
 
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
 
-                if (error.errors) {
-                    Object.values(error.errors).forEach(err => {
+                // ✅ VALIDATION ERRORS (422)
+                if (error.status === 422) {
+                    let errors = error.data.errors;
+
+                    Object.values(errors).forEach(err => {
                         toastr.error(err[0]);
                     });
-                } else {
+                }
+
+                // ✅ SERVER ERROR
+                else if (error.status === 500) {
+                    toastr.error(error.data.message || 'Server error');
+                }
+
+                // ✅ OTHER
+                else {
                     toastr.error('Something went wrong');
                 }
             });
@@ -3236,40 +3348,20 @@
 
         /* ── BUILD SKILLS ── */
         (function() {
-            const data = {
-                'IT & Software': ['PHP Developer', 'Java Developer', 'Python Developer', 'React Developer',
-                    'Node.js Developer', 'WordPress Developer', 'UI/UX Designer', 'Network Engineer'
-                ],
-                'Technical & Trade': ['Electrician', 'Plumber', 'Welder', 'Machine Operator', 'CNC Operator',
-                    'Mechanic', 'HVAC Technician', 'Quality Inspector'
-                ],
-                'Sales & Marketing': ['Sales Executive', 'Field Sales', 'Tele-calling', 'Business Development',
-                    'Digital Marketing', 'SEO Specialist'
-                ],
-                'Office & Admin': ['Data Entry', 'HR Executive', 'Accountant', 'Office Admin', 'Receptionist',
-                    'Customer Support'
-                ],
-                'Driver & Logistics': ['Driver', 'Delivery Executive', 'Forklift Operator', 'Warehouse Staff'],
-            };
             const c = document.getElementById('skillsBox');
-            Object.entries(data).forEach(([cat, skills], i) => {
-                const sec = document.createElement('div');
-                sec.className = 'fsec';
-                sec.style.marginTop = i === 0 ? '0' : '14px';
-                sec.innerHTML =
-                    `<div class="fsec-lbl bi" style="font-size:.66rem;">${cat}</div><div class="fsec-line"></div>`;
-                c.appendChild(sec);
-                const w = document.createElement('div');
-                w.className = 'skill-wrap';
-                skills.forEach(sk => {
-                    const id = 'sk_' + sk.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                    const ch = document.createElement('div');
-                    ch.className = 'skill-chip';
-                    ch.innerHTML =
-                        `<input type="checkbox" id="${id}" value="${sk}"><label for="${id}">${sk}</label>`;
-                    w.appendChild(ch);
-                });
-                c.appendChild(w);
+
+            skillsData.forEach(skill => {
+                const id = 'sk_' + skill.id;
+
+                const ch = document.createElement('div');
+                ch.className = 'skill-chip';
+
+                ch.innerHTML = `
+                <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
+                <label for="${id}">${skill.skill_name}</label>
+            `;
+
+                c.appendChild(ch);
             });
         })();
 

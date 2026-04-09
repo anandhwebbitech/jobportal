@@ -65,7 +65,7 @@
           'route' => 'employer.notifications',
           'icon'  => 'fa-bell',
           'label' => 'Notifications',
-          'badge' => $unread
+          'badge' => $notificationcount
       ],
   ];
 @endphp

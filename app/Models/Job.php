@@ -45,7 +45,10 @@ class Job extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); // adjust if needed
     }
-
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class, 'job_id');
+    }
     
 
 }

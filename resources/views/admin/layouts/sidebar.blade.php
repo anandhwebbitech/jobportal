@@ -125,6 +125,14 @@
                class="{{ request()->is('admin/plans*') ? 'active' : '' }}">
                 <i class="fa fa-lightbulb"></i> Plans
             </a>
+            <a href="{{ route('admin.resumeplans.index')}}"
+               class="{{ request()->is('admin/plans*') ? 'active' : '' }}">
+                <i class="fa fa-lightbulb"></i> Resume Plans
+            </a>
+            <a href="{{ route('admin.bannerplans.index')}}"
+               class="{{ request()->is('admin/plans*') ? 'active' : '' }}">
+                <i class="fa fa-lightbulb"></i> Resume Plans
+            </a>
         </div>
 
         <!-- Settings -->

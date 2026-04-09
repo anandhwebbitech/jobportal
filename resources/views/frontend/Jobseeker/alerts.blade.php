@@ -1,7 +1,8 @@
 {{-- alerts.blade.php --}}
 @extends('frontend.jobseeker.layout')
 @section('title', 'Job Alerts')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @section('content')
 
 <div class="lj-page-header">
@@ -19,14 +20,14 @@
       <div class="lj-card-title"><i class="fa-solid fa-bell"></i> Active Alerts</div>
       <span style="font-size:.74rem;color:var(--n500);font-weight:500;">{{ ($alerts ?? collect())->count() }} alert(s)</span>
     </div>
-    <div style="padding:0 20px;">
-      @forelse($alerts ?? [] as $alert)
+    <div style="padding:0 20px;" id="alertsList">
+      {{-- @forelse($alerts ?? [] as $alert)
         <div class="lj-alert-item">
           <div class="lj-alert-icon" style="background:{{ $alert->is_active ? 'var(--blue-light)' : 'var(--n100)' }};color:{{ $alert->is_active ? 'var(--blue)' : 'var(--n400)' }};">
             <i class="fa-solid fa-code"></i>
           </div>
           <div style="flex:1;min-width:0;">
-            <div class="lj-alert-name">{{ $alert->keyword }}</div>
+            <div class="lj-alert-name">{{ $alert->keywords }}</div>
             <div class="lj-alert-meta">
               {{ $alert->location ?: 'All Locations' }} · {{ ucfirst($alert->frequency ?? 'Daily') }}
               @if($alert->new_matches ?? 0 > 0)
@@ -74,7 +75,7 @@
             </div>
           </div>
         @endforeach
-      @endforelse
+      @endforelse --}}
     </div>
   </div>
 
@@ -83,7 +84,7 @@
     <div class="lj-card-head">
       <div class="lj-card-title"><i class="fa-solid fa-plus-circle"></i> Create New Alert</div>
     </div>
-    <form method="POST" action="{{ route('jobseeker.alerts.store') }}">
+    <form  id="jobAlertForm">
       @csrf
       <div class="lj-card-body">
 
@@ -182,13 +183,198 @@
 @endif
 
 @endsection
+<@push('scripts')
 
-@push('scripts')
+<!-- ✅ jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- ✅ Toastr -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-top-right",
+    timeOut: "3000"
+};
+</script>
+
+<script>
+$(document).ready(function () {
+
+    console.log("JS Loaded ✅"); // debug
+
+    $('#jobAlertForm').on('submit', function (e) {
+        e.preventDefault(); // ✅ VERY IMPORTANT
+
+        let formData = $(this).serialize();
+
+        $.ajax({
+            url: "{{ route('jobseeker.alerts.store') }}",
+            type: "POST",
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                'Accept': 'application/json'
+            },
+
+            success: function (res) {
+
+                if (res.status) {
+                    toastr.success(res.message);
+
+                    $('#jobAlertForm')[0].reset();
+
+                    // reset chips
+                    $('.chip').removeClass('active');
+                    $('.chip:first').addClass('active');
+
+                } else {
+                    toastr.error(res.message || 'Something went wrong');
+                }
+            },
+
+            error: function (xhr) {
+
+                console.log(xhr.responseText); // 🔥 debug
+
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (key, val) {
+                        toastr.error(val[0]);
+                    });
+                }
+                else if (xhr.status === 500) {
+                    toastr.error(xhr.responseJSON.message || 'Server error');
+                }
+                else {
+                    toastr.error('Unexpected error occurred');
+                }
+            }
+        });
+    });
+
+});
+
+// ✅ Frequency selector
 function setFreq(val, el) {
-  document.getElementById('freqChips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('freqInput').value = val;
+    $('#freqInput').val(val);
+
+    $('#freqChips .chip').removeClass('active');
+    $(el).addClass('active');
+}
+function renderAlerts(alerts) {
+
+    let container = document.getElementById('alertsList');
+    let html = '';
+
+    if (!alerts || alerts.length === 0) {
+        html = `<p style="padding:20px;">No alerts found</p>`;
+        container.innerHTML = html;
+        return;
+    }
+
+    alerts.forEach(alert => {
+
+        let isActive = alert.is_active == 1;
+
+        html += `
+        <div class="lj-alert-item">
+
+            <div class="lj-alert-icon" style="
+                background:${isActive ? 'var(--blue-light)' : 'var(--n100)'};
+                color:${isActive ? 'var(--blue)' : 'var(--n400)'};
+            ">
+               <i class="fa-solid fa-bell" style="color: rgb(255, 0, 0);"></i>
+            </div>
+
+            <div style="flex:1;min-width:0;">
+                <div class="lj-alert-name">${alert.keywords}</div>
+
+                <div class="lj-alert-meta">
+                    ${alert.location ? alert.location : 'All Locations'} · 
+                    ${capitalize(alert.frequency || 'daily')}
+                    
+                    ${alert.new_matches > 0 ? 
+                        `· <span style="color:var(--blue);font-weight:600;">${alert.new_matches} new</span>` 
+                        : ''
+                    }
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+
+                <button onclick="toggleAlert(${alert.id})"
+                    class="lj-toggle ${isActive ? 'on' : ''}">
+                </button>
+
+                <button onclick="deleteAlert(${alert.id})"
+                    class="lj-btn lj-btn-ghost lj-btn-sm"
+                    style="color:var(--red);">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+function capitalize(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+function loadAlerts() {
+
+    $.ajax({
+        url: "{{ route('jobseeker.alerts.list') }}",
+        type: "GET",
+        success: function (res) {
+            if (res.status) {
+                renderAlerts(res.data);
+            }
+        }
+    });
+}
+$(document).ready(function () {
+    loadAlerts();
+});
+function toggleAlert(id) {
+
+    $.ajax({
+        url: "{{ route('jobseeker.alerts.toggle', ':id') }}".replace(':id', id),
+        type: "PUT",
+        data: {_token: "{{ csrf_token() }}"},
+        success: function () {
+            loadAlerts();
+        }
+    });
+}
+function deleteAlert(id) {
+
+    if (!confirm('Delete this alert?')) return;
+
+    let url = "{{ route('jobseeker.alerts.delete', ':id') }}".replace(':id', id);
+
+    $.ajax({
+        url: url,
+        type: "DELETE",
+        data: {
+            _token: "{{ csrf_token() }}"
+        },
+        success: function (res) {
+            toastr.success(res.message || 'Deleted');
+            loadAlerts();
+        }
+    });
+}
+function editAlert(id) {
+   let url = "{{ route('jobseeker.alerts.edit', ':id') }}";
+    window.location.href = url.replace(':id', id);
 }
 </script>
+
 @endpush

@@ -63,7 +63,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('plans', JobPlanController::class);
         Route::get('/admin/plans/{id}/edit', [JobPlanController::class, 'edit'])->name('admin.plans.edit');
         Route::post('/admin/plans/{id}/update', [JobPlanController::class, 'update'])->name('admin.plans.update');
-    });
+
+        Route::get('resume-plans', [JobPlanController::class, 'resumeindex'])->name('resumeplans.index');
+        Route::post('resume-plans', [JobPlanController::class, 'Resumestore'])->name('resumeplans.store');
+        Route::get('resume-plans/{id}/edit', [JobPlanController::class, 'Resumeedit'])->name('resumeplans.edit');
+        Route::post('resume-plans/{id}', [JobPlanController::class, 'Resumeupdate'])->name('resumeplans.update');
+        Route::delete('resume-plans/{id}', [JobPlanController::class, 'destroy'])->name('resumeplans.destroy');
+
+
+        Route::get('banner-plans', [JobPlanController::class, 'BannerAdindex'])->name('bannerplans.index');
+        Route::post('banner-plans', [JobPlanController::class, 'BannerAdstore'])->name('bannerplans.store');
+        Route::get('banner-plans/{id}/edit', [JobPlanController::class, 'BannerAdedit'])->name('bannerplans.edit');
+        Route::post('banner-plans/{id}', [JobPlanController::class, 'BannerAdupdate'])->name('bannerplans.update');
+        Route::delete('banner-plans/{id}', [JobPlanController::class, 'BannerAddestroy'])->name('bannerplans.destroy');
+
+        });
     Route::post('jobseekers/{id}/approve', [JobSeekerController::class, 'Approve'])->name('jobseekers.approve');
 });
 
@@ -206,9 +220,7 @@ Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->
 // JOB SEEKER DASHBOARD ROUTES
 // ═════════════════════════════════════
 
-Route::prefix('jobseeker')
-    ->name('jobseeker.')
-    ->group(function () {
+Route::prefix('jobseeker')->name('jobseeker.')->group(function () {
 
         // DASHBOARD
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -254,7 +266,8 @@ Route::prefix('jobseeker')
         Route::prefix('alerts')->name('alerts.')->group(function () {
 
             Route::get('/', [AlertController::class, 'index'])->name('index');
-            Route::post('/', [AlertController::class, 'store'])->name('store');
+            Route::post('alertstore', [AlertController::class, 'store'])->name('store');
+            Route::get('/alerts/list', [AlertController::class, 'list'])->name('list');
             Route::get('/{id}/edit', [AlertController::class, 'edit'])->name('edit');
             Route::put('/{id}', [AlertController::class, 'update'])->name('update');
             Route::put('/{id}/toggle', [AlertController::class, 'toggle'])->name('toggle');
@@ -269,7 +282,7 @@ Route::prefix('jobseeker')
             Route::put('/read-all', [NotificationController::class, 'readAll'])->name('readAll');
             
         });
-        Route::get('/jobseeker/notifications/list', [NotificationController::class, 'list'])->name('notifications.list');
+        Route::get('/notificationslist', [NotificationController::class, 'Notificationlist'])->name('notifications.ajax');
         Route::put('/jobseeker/notifications/read/{id}', [NotificationController::class, 'markRead'])->name('notifications.read');
 
         // SETTINGS

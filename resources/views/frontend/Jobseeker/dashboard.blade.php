@@ -56,29 +56,29 @@
 <div class="lj-stat-grid">
   <div class="lj-stat-card blue">
     <div class="lj-stat-icon blue"><i class="fa-solid fa-paper-plane"></i></div>
-    <div class="lj-stat-val">{{ $appliedCount ?? 0 }}</div>
+    <div class="lj-stat-val">{{ $jobseeker_applied_job_count ?? 0 }}</div>
     <div class="lj-stat-label">Jobs Applied</div>
     <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i> +{{ $appliedThisWeek ?? 0 }} this week</div>
   </div>
   <div class="lj-stat-card green">
     <div class="lj-stat-icon green"><i class="fa-solid fa-bookmark"></i></div>
-    <div class="lj-stat-val">{{ $savedCount ?? 0 }}</div>
+    <div class="lj-stat-val">{{ $jobseeker_saved_job_count ?? 0 }}</div>
     <div class="lj-stat-label">Saved Jobs</div>
     <div class="lj-stat-delta neutral"><i class="fa-solid fa-minus"></i> Browse to save more</div>
   </div>
   <div class="lj-stat-card orange">
     <div class="lj-stat-icon orange"><i class="fa-solid fa-calendar-check"></i></div>
-    <div class="lj-stat-val">{{ $interviewCount ?? 0 }}</div>
+    <div class="lj-stat-val">{{ $jobseeker_interview_sechudle_count ?? 0 }}</div>
     <div class="lj-stat-label">Interviews</div>
     <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i>
-      {{ ($interviewCount ?? 0) > 0 ? '+'.($interviewCount).' scheduled' : 'None yet' }}
+      {{ ($jobseeker_interview_sechudle_count ?? 0) > 0 ? '+'.($jobseeker_interview_sechudle_count).' scheduled' : 'None yet' }}
     </div>
   </div>
   <div class="lj-stat-card purple">
     <div class="lj-stat-icon purple"><i class="fa-solid fa-bell"></i></div>
-    <div class="lj-stat-val">{{ $alertsCount ?? 0 }}</div>
+    <div class="lj-stat-val">{{ $jobseeker_job_alert_count ?? 0 }}</div>
     <div class="lj-stat-label">Job Alerts</div>
-    <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i> {{ ($newAlertMatches ?? 0) }} new matches</div>
+    <div class="lj-stat-delta up"><i class="fa-solid fa-arrow-trend-up"></i> {{ ($jobseeker_job_alert_count ?? 0) }} new matches</div>
   </div>
 </div>
 
@@ -151,22 +151,18 @@
       <a href="{{ route('jobseeker.applied.index') }}" class="lj-btn lj-btn-ghost lj-btn-sm">View all</a>
     </div>
     <div style="padding:0 20px;">
-      @forelse($recentApplications ?? [] as $application)
+      @forelse($jobseeker_recentApplications ?? [] as $application)
         <div class="lj-app-row">
           <div class="lj-app-logo">
-            @if($application->job->company->logo ?? false)
-              <img src="{{ asset('storage/'.$application->job->company->logo) }}" alt="">
-            @else
               <i class="fa-solid fa-building"></i>
-            @endif
           </div>
           <div class="lj-app-info">
             <div class="lj-app-title">{{ $application->job->title ?? '—' }}</div>
             <div class="lj-app-company">{{ $application->job->company->name ?? $application->job->company_name ?? '—' }} · {{ $application->job->district ?? '' }}</div>
             <div class="lj-app-date">Applied {{ $application->created_at->diffForHumans() }}</div>
           </div>
-          <span class="lj-status-badge {{ $application->status ?? 'applied' }}">
-            {{ ucfirst($application->status ?? 'Applied') }}
+          <span class="lj-status-badge {{ $application->status ? 'Pending':'applied' }}">
+            {{ ucfirst($application->status ? 'Pending' : 'Applied') }}
           </span>
         </div>
       @empty

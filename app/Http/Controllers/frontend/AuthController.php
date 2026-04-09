@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\EmployerDetail;
 use App\Models\Job;
+use App\Models\Notification;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +15,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
 use Illuminate\Support\Facades\DB;
+use App\Events\UserNotification;
 
 
 class AuthController extends Controller
@@ -118,7 +121,8 @@ class AuthController extends Controller
 
     public function jobseekerRegister()
     {
-        return view('frontend.auth.register');
+        $skills = Skill::where('status', 1)->get();
+        return view('frontend.auth.register', compact('skills'));
     }
 
     public function jobseekerRegisterSubmit(Request $request)
@@ -174,23 +178,36 @@ class AuthController extends Controller
 
             // ✅ Skills
             $skills = $request->skills ? json_encode($request->skills) : null;
-
+            if($user){
+                UserDetail::create([
+                    'user_id' => $user->id,
+                    'mobile' => $request->mobile,
+                    'state' => $request->state,
+                    'district' => $request->district,
+                    'city' => $request->city,
+                    'qualification' => $request->qualification,
+                    'exp' => $request->exp,
+                    'ex_years' => $request->ex_years,
+                    'previous_company' => $request->previous_company,
+                    'previous_designation' => $request->previous_designation,
+                    'skills' => $skills,
+                    'resume' => $resumePath,
+                    'profile_photo' => $photoPath,
+                ]);
+                $admin = User::where('role','admin')->first();
+                $message = 'New User Register';
+                $notification = Notification::create([
+                    'user_id'   =>  $admin->id,
+                    'title'     => 'New User Register',
+                    'message'   => $message,
+                    'type'      => Notification::TYPE_NEW_USER_REGISTER,
+                    'send_from' => $user->id, // admin/employer
+                    'send_to'   => $admin->id,
+                ]);
+                event(new UserNotification($notification));
+                \Log::info('Notification fired');
+            }
             // ✅ Create User Details
-            UserDetail::create([
-                'user_id' => $user->id,
-                'mobile' => $request->mobile,
-                'state' => $request->state,
-                'district' => $request->district,
-                'city' => $request->city,
-                'qualification' => $request->qualification,
-                'exp' => $request->exp,
-                'ex_years' => $request->ex_years,
-                'previous_company' => $request->previous_company,
-                'previous_designation' => $request->previous_designation,
-                'skills' => $skills,
-                'resume' => $resumePath,
-                'profile_photo' => $photoPath,
-            ]);
 
             DB::commit();
 
@@ -249,7 +266,9 @@ class AuthController extends Controller
 
     public function employerRegister()
     {
-        return view('frontend.auth.register');
+        $skills = Skill::where('status', 1)->get();
+
+        return view('frontend.auth.register',compact('skills'));
     }
 
     public function employerRegisterSubmit(Request $request)
@@ -325,34 +344,48 @@ class AuthController extends Controller
                 $msmeFile = time().'_msme.'.$file->extension();
                 $file->move($uploadPath, $msmeFile);
             }
+            if($user){
 
-            // ✅ Save Employer Details
-            EmployerDetail::create([
-                'user_id' => $user->id,
-
-                'company_name' => $request->company_name,
-                'company_address' => $request->company_address,
-                'state' => $request->c_state,
-                'district' => $request->c_district,
-                'city' => $request->c_city,
-                'pincode' => $request->c_pincode,
-
-                'owner_name' => $request->c_ownername,
-                'owner_mobile' => $request->c_mobile,
-
-                'hr_name' => $request->c_hr_name,
-                'hr_mobile' => $request->c_hr_mobile,
-
-                'email' => $request->c_email,
-
-                'gst_number' => $request->c_gst,
-                'pan_number' => $request->c_pan,
-                'msme_number' => $request->c_msme,
-
-                'gst_certificate' => $gstFile,
-                'pan_document' => $panFile,
-                'msme_certificate' => $msmeFile,
-            ]);
+                // ✅ Save Employer Details
+                EmployerDetail::create([
+                    'user_id' => $user->id,
+    
+                    'company_name' => $request->company_name,
+                    'company_address' => $request->company_address,
+                    'state' => $request->c_state,
+                    'district' => $request->c_district,
+                    'city' => $request->c_city,
+                    'pincode' => $request->c_pincode,
+    
+                    'owner_name' => $request->c_ownername,
+                    'owner_mobile' => $request->c_mobile,
+    
+                    'hr_name' => $request->c_hr_name,
+                    'hr_mobile' => $request->c_hr_mobile,
+    
+                    'email' => $request->c_email,
+    
+                    'gst_number' => $request->c_gst,
+                    'pan_number' => $request->c_pan,
+                    'msme_number' => $request->c_msme,
+    
+                    'gst_certificate' => $gstFile,
+                    'pan_document' => $panFile,
+                    'msme_certificate' => $msmeFile,
+                ]);
+                $admin = User::where('role','admin')->first();
+                $message = 'New User Register';
+                $notification = Notification::create([
+                    'user_id'   =>  $admin->id,
+                    'title'     => 'New User Register',
+                    'message'   => $message,
+                    'type'      => Notification::TYPE_NEW_USER_REGISTER,
+                    'send_from' => $user->id, // admin/employer
+                    'send_to'   => $admin->id,
+                ]);
+                event(new UserNotification($notification));
+                \Log::info('Notification fired');
+            }
 
             DB::commit();
 

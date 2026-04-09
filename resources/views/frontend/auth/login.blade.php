@@ -1091,7 +1091,7 @@ resources/views/frontend/auth/employer-login.blade.php
               <i class="fa-solid fa-envelope fiw-ico"></i>
               <input type="email" id="f_email" name="email" class="finput blue-focus" id="emailInput"
                 placeholder="you@example.com" required autocomplete="email" />
-            </div>
+            </div> 
           </div>
 
           <div class="fgroup">

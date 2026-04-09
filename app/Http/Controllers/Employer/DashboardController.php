@@ -13,7 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
 use App\Models\Notification;
 use App\Events\UserNotification;
+use App\Models\JobPlan;
 use App\Services\NotificationService;
+
 
 class DashboardController extends Controller
 {
@@ -383,7 +385,11 @@ class DashboardController extends Controller
 
     public function billing()
     {
-        return view('frontend.employer.billing');
+         $jobPlans = JobPlan::where('is_active', 1)
+        ->where('status', 1)
+        ->orderBy('price')
+        ->get();
+        return view('frontend.employer.billing', compact('jobPlans'));
     }
 
     public function checkout(Request $request)

@@ -524,14 +524,14 @@
 {{-- ══ STAT CARDS ═══════════════════════════════════════ --}}
 @php
 $stats = [
-  ['label'=>'Total Jobs Posted',  'value'=>12,    'icon'=>'fa-briefcase',         'cls'=>'sc-blue',   'trend'=>'+2 this month',   'up'=>true,  'badge'=>'+2 new'],
-  ['label'=>'Active Jobs',        'value'=>7,     'icon'=>'fa-circle-check',      'cls'=>'sc-green',  'trend'=>'Live &amp; visible','up'=>true, 'badge'=>'Live'],
-  ['label'=>'Expired Jobs',       'value'=>3,     'icon'=>'fa-clock-rotate-left', 'cls'=>'sc-red',    'trend'=>'Needs renewal',   'up'=>false, 'badge'=>'Action'],
-  ['label'=>'Total Applications', 'value'=>148,   'icon'=>'fa-file-user',         'cls'=>'sc-purple', 'trend'=>'+24 this week',   'up'=>true,  'badge'=>'+24'],
-  ['label'=>'Shortlisted',        'value'=>24,    'icon'=>'fa-star',              'cls'=>'sc-amber',  'trend'=>'Ready to review', 'up'=>true,  'badge'=>'24'],
-  ['label'=>'Downloads Left',     'value'=>18,    'icon'=>'fa-download',          'cls'=>'sc-teal',   'trend'=>'of 30 total',     'up'=>true,  'badge'=>'60%'],
-  ['label'=>'Current Plan',       'value'=>'Pro', 'icon'=>'fa-crown',             'cls'=>'sc-indigo', 'trend'=>'30 Day Plan',     'up'=>true,  'badge'=>'Active'],
-  ['label'=>'Plan Expiry',        'value'=>'7d',  'icon'=>'fa-calendar-xmark',    'cls'=>'sc-rose',   'trend'=>'10 Apr 2025',     'up'=>false, 'badge'=>'Soon'],
+  ['label'=>'Total Jobs Posted', 'value'=>$employer_job_post_count, 'icon'=>'fa-briefcase','cls'=>'sc-blue','trend'=>'+2 this month','up'=>true,'badge'=>'+2'],
+  ['label'=>'Active Jobs', 'value'=>$employer_active_job_count,'icon'=>'fa-circle-check','cls'=>'sc-green','trend'=>'Live & visible','up'=>true,'badge'=>'Live'],
+  ['label'=>'Expired Jobs', 'value'=>$employer_expired_job_count,'icon'=>'fa-clock-rotate-left','cls'=>'sc-red','trend'=>'Needs renewal','up'=>false,'badge'=>'Action'],
+  ['label'=>'Total Applications', 'value'=>$employer_job_application_count,'icon'=>'fa-file-user','cls'=>'sc-purple','trend'=>'+24 this week','up'=>true,'badge'=>'+24'],
+  ['label'=>'Shortlisted', 'value'=>$employer_job_shortlist_count,'icon'=>'fa-star','cls'=>'sc-amber','trend'=>'Ready to review','up'=>true,'badge'=>'24'],
+  ['label'=>'Downloads Left', 'value'=>18,'icon'=>'fa-download','cls'=>'sc-teal','trend'=>'of 30 total','up'=>true,'badge'=>'60%'],
+  ['label'=>'Current Plan', 'value'=>'Pro','icon'=>'fa-crown','cls'=>'sc-indigo','trend'=>'30 Day Plan','up'=>true,'badge'=>'Active'],
+  ['label'=>'Plan Expiry', 'value'=>'7d','icon'=>'fa-calendar-xmark','cls'=>'sc-rose','trend'=>'10 Apr 2025','up'=>false,'badge'=>'Soon'],
 ];
 @endphp
 <div class="stat-grid">
@@ -577,14 +577,14 @@ $stats = [
         ['name'=>'Kavitha M',   'job'=>'Operations Manager',    'status'=>'Shortlisted','date'=>'09 Mar','cls'=>'badge-green','av'=>'av-teal'],
       ];
       @endphp
-      @foreach($apps as $a)
+      @foreach($employer_recentApplications as $app)
       <div class="app-item">
-        <div class="app-avatar {{ $a['av'] }}">{{ strtoupper(substr($a['name'],0,1).substr(strrchr($a['name'],' '),1,1)) }}</div>
+        <div class="app-avatar av-blue">{{ strtoupper(substr($app->user->name,0,1) . substr(strrchr($app->user->name,' '),1,1)) }}</div>
         <div class="app-info">
-          <div class="app-name">{{ $a['name'] }}</div>
-          <div class="app-meta"><i class="fas fa-briefcase" style="font-size:.58rem;margin-right:3px;"></i>{{ $a['job'] }} · {{ $a['date'] }}</div>
+          <div class="app-name">{{ $app->user->name }}</div>
+          <div class="app-meta"><i class="fas fa-briefcase" style="font-size:.58rem;margin-right:3px;"></i>{{ $app->job->title ?? 'N/A' }} · {{ $app->created_at->format('d M') }}</div>
         </div>
-        <span class="badge {{ $a['cls'] }}">{{ $a['status'] }}</span>
+        <span class="badge badge-blue">{{ $app->status == 1 ? 'New' : 'Updated' }}</span>
       </div>
       @endforeach
       <a href="{{ route('employer.candidates') }}" class="emp-link emp-link-blue">
@@ -612,16 +612,23 @@ $stats = [
         ['title'=>'UI/UX Designer',        'apps'=>45,'status'=>'Expired','cls'=>'badge-red',  'ico'=>'job-ico-expired','date'=>'20 Feb'],
       ];
       @endphp
-      @foreach($jobs as $j)
+      @foreach($employer_job_posted as $job)
+      @php
+        $isActive = $job->status == 1;
+
+        $statusText = $isActive ? 'Active' : 'Expired';
+        $badgeClass = $isActive ? 'badge-green' : 'badge-red';
+        $iconClass  = $isActive ? 'job-ico-active' : 'job-ico-expired';
+      @endphp
       <div class="job-item">
-        <div class="job-ico {{ $j['ico'] }}"><i class="fas fa-briefcase"></i></div>
+        <div class="job-ico {{ $iconClass }}"><i class="fas fa-briefcase"></i></div>
         <div class="job-info">
-          <div class="job-title-sm">{{ $j['title'] }}</div>
-          <div class="job-meta"><i class="fas fa-calendar-days" style="font-size:.58rem;margin-right:3px;"></i>{{ $j['date'] }}</div>
+          <div class="job-title-sm">{{ $job->title }}</div>
+          <div class="job-meta"><i class="fas fa-calendar-days" style="font-size:.58rem;margin-right:3px;"></i>{{ $job->created_at->format('d M') }}</div>
         </div>
         <div class="job-right">
-          <span class="badge {{ $j['cls'] }}">{{ $j['status'] }}</span>
-          <span class="job-apps-pill"><i class="fas fa-user" style="font-size:.55rem;"></i>{{ $j['apps'] }}</span>
+          <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
+          <span class="job-apps-pill"><i class="fas fa-user" style="font-size:.55rem;"></i>{{ $job->job_applications_count }}</span>
         </div>
       </div>
       @endforeach
@@ -649,15 +656,30 @@ $stats = [
         ['type'=>'ok',    'ico'=>'fa-circle-check',         'title'=>'Verification Approved', 'msg'=>'TechBridge Solutions verified successfully.',         'date'=>'10 Mar · 11:00 am','unread'=>false],
       ];
       @endphp
-      @foreach($notifs as $n)
+      @foreach($dashboardnotification as $n)
+      @php
+        // Map type → icon + class
+        $type = $n->type ?? 'alert';
+
+        $map = [
+          'Job Application'   => ['ico' => 'fa-file-user',            'cls' => 'app'],
+          'alert' => ['ico' => 'fa-triangle-exclamation', 'cls' => 'alert'],
+          'Job'    => ['ico' => 'fa-circle-check',         'cls' => 'ok'],
+        ];
+
+        $ico = $map[$type]['ico'] ?? 'fa-bell';
+        $cls = $map[$type]['cls'] ?? 'app';
+      @endphp
       <div class="notif-item">
-        <div class="notif-ico {{ $n['type'] }}"><i class="fas {{ $n['ico'] }}"></i></div>
+        <div class="notif-ico {{ $cls }}"><i class="fas {{ $ico }}"></i></div>
         <div class="notif-body">
-          <div class="notif-title">{{ $n['title'] }}</div>
-          <div class="notif-msg">{{ $n['msg'] }}</div>
-          <div class="notif-date"><i class="fas fa-clock" style="font-size:.6rem;"></i>{{ $n['date'] }}</div>
+          <div class="notif-title">{{ $n->title ?? 'Notification' }}</div>
+          <div class="notif-msg">{{ $n->message ?? 'No message available' }}</div>
+          <div class="notif-date"><i class="fas fa-clock" style="font-size:.6rem;"></i>{{ $n->created_at->format('d M · h:i a') }}</div>
         </div>
-        @if($n['unread'])<div class="notif-dot"></div>@endif
+        @if($n->is_read == 0)
+          <div class="notif-dot"></div>
+        @endif
       </div>
       @endforeach
       <a href="{{ route('employer.notifications') }}" class="emp-link emp-link-amber">

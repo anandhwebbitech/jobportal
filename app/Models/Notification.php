@@ -14,6 +14,8 @@ class Notification extends Model
     const TYPE_JOB_APPLICATION_INTERVIEW = 3;
     const JOB_POST = 4;
 
+    const TYPE_NEW_USER_REGISTER = 5;
+
     // ✅ Optional: Get type label
     public function getTypeLabelAttribute()
     {
@@ -22,6 +24,7 @@ class Notification extends Model
             self::TYPE_JOB_APPLICATION => 'Job Application',
             self::TYPE_JOB_APPLICATION_INTERVIEW => 'Interview',
             self::JOB_POST => 'New Job Post',
+            self::TYPE_NEW_USER_REGISTER => 'New user register',
             default => 'Other',
         };
     }
@@ -32,6 +35,7 @@ class Notification extends Model
             self::TYPE_JOB_APPLICATION => 'Job Application',
             self::TYPE_JOB_APPLICATION_INTERVIEW => 'Interview',
             self::JOB_POST => 'New Job Post',
+            self::TYPE_NEW_USER_REGISTER => 'New user register',
             default => 'Other',
         };
     }

@@ -49,6 +49,7 @@
 
   {{-- Global JS --}}
   <script src="{{ asset('frontend/js/lj-global.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   {{-- Page-specific JS --}}
   @stack('scripts')
