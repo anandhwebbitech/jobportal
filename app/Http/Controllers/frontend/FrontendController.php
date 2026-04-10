@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\BannerPlan;
 use Illuminate\Http\Request;
 use App\Models\Job;
+use App\Models\JobPlan;
+use App\Models\ResumePlan;
+
+
+
 
 class FrontendController extends Controller
 {
@@ -49,7 +55,11 @@ class FrontendController extends Controller
     // Pricing Page
     public function pricing()
     {
-        return view('frontend.pricing');
+        $plans = JobPlan::where('is_active', 1)->orderBy('id')->get();
+        $resumePlans = ResumePlan::where('is_active', 1)->orderBy('price')->get();
+        $bannerPlans = BannerPlan::where('is_active', 1)->get();
+
+        return view('frontend.pricing', compact('plans','resumePlans','bannerPlans'));
     }
 
     // Contact Page
