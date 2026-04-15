@@ -39,4 +39,9 @@ class Notification extends Model
             default => 'Other',
         };
     }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'send_from');
+    }
 }

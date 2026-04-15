@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Notification;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use PHPUnit\Framework\TestStatus\Notice;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function login()
@@ -93,5 +96,44 @@ class AdminController extends Controller
         return redirect()
             ->route('admin.login')
             ->with('success', 'Logout Successfully!');
+    }
+    public function AdminNotification(){
+        return view('admin.notification');
+    }
+    public function AdminNotificationData(Request $request){
+       $adminNotification = Notification::where('send_to', Auth::user()->id)
+        ->latest();
+
+        return DataTables::of($adminNotification)
+
+        ->addIndexColumn()
+
+        ->addColumn('type', function ($row) {
+            return $row->type_label; // ✅ TEXT instead of number
+        })
+
+        ->addColumn('message', function ($row) {
+            return $row->message ?? '-';
+        })
+
+        ->addColumn('send_from', function ($row) {
+            return $row->sender->name ?? 'System'; 
+            // assuming relation: sender()
+        })
+
+        ->addColumn('date', function ($row) {
+            return Carbon::parse($row->created_at)->format('d M Y, h:i A');
+        })
+
+        ->addColumn('action', function ($row) {
+            return '
+                <button class="btn btn-sm btn-primary viewBtn" data-id="'.$row->id.'">View</button>
+                ';
+                // <button class="btn btn-sm btn-danger deleteBtn" data-id="'.$row->id.'">Delete</button>
+        })
+
+        ->rawColumns(['action'])
+
+        ->make(true);
     }
 }

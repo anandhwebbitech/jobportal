@@ -13,10 +13,11 @@
     <div class="d-flex align-items-center gap-3">
 
         <!-- Notification -->
+        <a href="{{  route('admin.adminnotification') }}">
         <button class="icon-btn position-relative" aria-label="Notifications">
             <i class="fa fa-bell"></i>
             <span class="notify-dot"></span>
-        </button>
+        </button></a>
 
         <!-- Profile Dropdown -->
         <div class="dropdown">
