@@ -105,8 +105,8 @@
                 <i class="fa fa-graduation-cap"></i> Education
             </a>
 
-            <a href="#"
-               class="{{ request()->is('admin/location*') ? 'active' : '' }}">
+            <a href="{{ route('admin.locations.index')}}"
+               class="{{ request()->is('admin/locations*') ? 'active' : '' }}">
                 <i class="fa fa-location-dot"></i> Location
             </a>
 

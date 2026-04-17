@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\UserDetail;
 use Illuminate\Support\Facades\DB;
 use App\Events\UserNotification;
-
+use App\Models\Qualification;
 
 class AuthController extends Controller
 {
@@ -122,7 +122,8 @@ class AuthController extends Controller
     public function jobseekerRegister()
     {
         $skills = Skill::where('status', 1)->get();
-        return view('frontend.auth.register', compact('skills'));
+        $qualifications = Qualification::where('status',1)->get();
+        return view('frontend.auth.register', compact('skills','qualifications'));
     }
 
     public function jobseekerRegisterSubmit(Request $request)

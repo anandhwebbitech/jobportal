@@ -25,9 +25,12 @@
             <li class="{{ request()->routeIs('contact') ? 'lj-cur' : '' }}">
                 <a href="{{ route('contact') }}">Contact</a>
             </li>
-                 <li class="{{ request()->routeIs('jobseeker.dashboard') ? 'lj-cur' : '' }}">
-                <a href="{{ route('jobseeker.dashboard') }}">Dashboard</a>
-            </li>
+            @auth
+
+                <li class="{{ request()->routeIs('jobseeker.dashboard') ? 'lj-cur' : '' }}">
+                    <a href="{{ route('jobseeker.dashboard') }}">Dashboard</a>
+                </li>
+            @endauth
         </ul>
 
         {{-- Desktop Actions --}}

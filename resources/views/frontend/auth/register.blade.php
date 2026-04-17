@@ -2186,10 +2186,6 @@
                                                 <select id="state" name="state"class="finput fc-b">
                                                     <option value="" disabled selected>Select State</option>
                                                     <option>Tamil Nadu</option>
-                                                    <option>Kerala</option>
-                                                    <option>Karnataka</option>
-                                                    <option>Andhra Pradesh</option>
-                                                    <option>Telangana</option>
                                                     <option>Other</option>
                                                 </select>
                                             </div>
@@ -2203,23 +2199,7 @@
                                             <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
                                                 <select id="district" name="district" class="finput fc-b">
                                                     <option value="" disabled selected>Select District</option>
-                                                    <option>Chennai</option>
-                                                    <option>Coimbatore</option>
-                                                    <option>Madurai</option>
-                                                    <option>Tiruchirappalli</option>
-                                                    <option>Salem</option>
-                                                    <option>Tirunelveli</option>
-                                                    <option>Erode</option>
-                                                    <option>Vellore</option>
-                                                    <option>Thanjavur</option>
-                                                    <option>Dindigul</option>
-                                                    <option>Kanchipuram</option>
-                                                    <option>Tiruppur</option>
-                                                    <option>Nagercoil</option>
-                                                    <option>Cuddalore</option>
-                                                    <option>Sivakasi</option>
-                                                    <option>Karur</option>
-                                                    <option>Namakkal</option>
+                                                    
                                                 </select>
                                             </div>
                                             <div class="ferr-msg" id="e-js_dist"><i
@@ -2250,12 +2230,12 @@
                                         <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
                                             <select id="qualification"name="qualification" class="finput fc-b">
                                                 <option value="" disabled selected>Select Qualification</option>
-                                                <option value="10th">10th Pass (SSLC)</option>
-                                                <option value="12th">12th Pass (HSC)</option>
-                                                <option value="diploma">Diploma</option>
-                                                <option value="bachelor">Bachelor's Degree</option>
-                                                <option value="master">Master's Degree</option>
-                                                <option value="doctorate">Doctorate / PhD</option>
+
+                                                @foreach($qualifications as $item)
+                                                    <option value="{{ $item->qualification }}">
+                                                        {{ $item->qualification_label }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="ferr-msg" id="e-js_qual"><i
@@ -2432,8 +2412,6 @@
                                                 <select id="c_state" name="c_state" class="finput fc-g">
                                                     <option value="" disabled selected>Select State</option>
                                                     <option>Tamil Nadu</option>
-                                                    <option>Kerala</option>
-                                                    <option>Karnataka</option>
                                                     <option>Other</option>
                                                 </select>
                                             </div>
@@ -2446,15 +2424,7 @@
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
                                                 <select id="c_district" name="c_district" class="finput fc-g">
-                                                    <option value="" disabled selected>Select District</option>
-                                                    <option>Chennai</option>
-                                                    <option>Coimbatore</option>
-                                                    <option>Madurai</option>
-                                                    <option>Tiruchirappalli</option>
-                                                    <option>Salem</option>
-                                                    <option>Erode</option>
-                                                    <option>Vellore</option>
-                                                    <option>Tiruppur</option>
+                                                    
                                                 </select>
                                             </div>
                                             <div class="ferr-msg" id="e-ec_dist"><i
@@ -3376,5 +3346,66 @@
 
         /* ── INIT ── */
         switchType('jobseeker');
+
+        $('#state',).on('change', function () {
+
+            let state = $(this).val();
+
+            $('#district').html('<option value="">Loading...</option>');
+
+            if (state) {
+
+                let url = "{{ route('get.districts', ':state') }}";
+                url = url.replace(':state', state);
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+
+                        let options = '<option value="" disabled selected>Select District</option>';
+
+                        response.forEach(function (district) {
+                            options += `<option value="${district}">${district}</option>`;
+                        });
+
+                        $('#district').html(options);
+                    }
+                });
+
+            } else {
+                $('#district').html('<option value="" disabled selected>Select District</option>');
+            }
+        });
+        $('#c_state').on('change', function () {
+
+            let state = $(this).val();
+
+            $('#c_district').html('<option value="">Loading...</option>');
+
+            if (state) {
+
+                let url = "{{ route('get.districts', ':state') }}";
+                url = url.replace(':state', encodeURIComponent(state));
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+
+                        let options = '<option value="" disabled selected>Select District</option>';
+
+                        response.forEach(function (district) {
+                            options += `<option value="${district}">${district}</option>`;
+                        });
+
+                        $('#c_district').html(options);
+                    }
+                });
+
+            } else {
+                $('#c_district').html('<option value="" disabled selected>Select District</option>');
+            }
+        });
     </script>
 @endpush

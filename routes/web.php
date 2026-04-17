@@ -35,8 +35,7 @@ use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EmployerController;
 use App\Http\Controllers\Admin\JobController;
 use App\Http\Controllers\Admin\JobPlanController;
-
-
+use App\Http\Controllers\LocationController;
 
 Route::get('/', [AdminController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('userlogin');
@@ -50,6 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::resource('skills', SkillController::class);
         Route::resource('educations', EducationController::class);
+        Route::resource('locations', LocationController::class);
         Route::resource('employers', EmployerController::class);
         Route::resource('jobseekers', JobSeekerController::class);
         Route::resource('jobs', JobController::class);
@@ -94,7 +94,9 @@ Route::controller(FrontendController::class)->group(function () {
 
     Route::get('/post-job', 'postJob')->name('post-job');
     Route::post('/contact-submit', 'contactSubmit')->name('contact.submit');
+    
 });
+Route::get('/get-districts/{state}', [FrontendController::class, 'getDistricts'])->name('get.districts');
 
 Route::controller(FrontendJobController::class)->group(function () {
 

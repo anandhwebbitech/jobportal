@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\JobSeeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\Qualification;
+use App\Models\Skill;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
+
 
 
 class ProfileController extends Controller
@@ -13,8 +16,10 @@ class ProfileController extends Controller
     public function index()
     {
         $user = User::with('details')->find(auth()->id());
+        $qualifications = Qualification::where('status',1)->get();
+        $skills = Skill::where('status', 1)->get();
         // dd($user);
-        return view('frontend.jobseeker.profile', compact('user'));
+        return view('frontend.jobseeker.profile', compact('user','qualifications','skills'));
     }
 
     public function update(Request $request)

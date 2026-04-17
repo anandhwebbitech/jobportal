@@ -7,6 +7,7 @@ use App\Models\BannerPlan;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\JobPlan;
+use App\Models\Location;
 use App\Models\ResumePlan;
 
 
@@ -146,6 +147,10 @@ class FrontendController extends Controller
         // Save application later
 
         return back()->with('success', 'Application submitted successfully!');
+    }
+    public function getDistricts($state)
+    {
+        return Location::where('state', $state)->pluck('district');
     }
 
 }

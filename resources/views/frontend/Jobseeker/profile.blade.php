@@ -158,14 +158,18 @@
     <div class="lj-card-body">
       <div class="lj-form-grid">
         <div class="lj-fgroup">
-          <label class="lj-label">Education Level <span class="req">*</span></label>
-          <select class="lj-input" name="education_level" required>
-            <option value="">Select level</option>
-            @php $levels = ['10th Pass (SSLC)'=>'10th','12th Pass (HSC)'=>'12th','Diploma'=>'diploma','Bachelor\'s Degree'=>'bachelor','Master\'s Degree'=>'master','Doctorate / PhD'=>'doctorate']; @endphp
-            @foreach($levels as $label => $val)
-              <option value="{{ $val }}" {{ old('education_level', $user->details->qualification ?? '') == $val ? 'selected' : '' }}>{{ $label }}</option>
-            @endforeach
-          </select>
+            <label class="lj-label">Education Level <span class="req">*</span></label>
+            <select class="lj-input" name="education_level" required>
+              <option value="">Select level</option>
+
+              @foreach($qualifications as $qualification)
+                  <option value="{{ $qualification->id }}"
+                      {{ old('education_level', $user->details->qualification ?? '') == $qualification->id ? 'selected' : '' }}>
+                      
+                      {{ $qualification->qualification }}
+                  </option>
+              @endforeach
+            </select>
         </div>
         <div class="lj-fgroup">
           <label class="lj-label">Institution Name <span class="req">*</span></label>
@@ -315,32 +319,29 @@
 
       <div style="font-size:.78rem;font-weight:600;color:var(--n600);margin-bottom:9px;">Your Current Skills</div>
       <div class="lj-skill-cloud" style="margin-bottom:18px;" id="selectedSkillsCloud">
-        @php $userSkills = auth()->user()->skills ?? ['PHP','Laravel','MySQL','JavaScript','HTML/CSS','Git']; @endphp
-        @foreach(is_array($userSkills) ? $userSkills : json_decode($userSkills, true) ?? [] as $skill)
+        @php
+          $userSkills = !empty($user->details->skills)
+              ? explode(',', $user->details->skills)
+              : [];
+        @endphp
+        @foreach($userSkills as $skill)
           <span class="lj-skill-tag selected">
-            {{ $skill }}
-            <input type="hidden" name="skills[]" value="{{ $skill }}">
-            <span class="rm"><i class="fa-solid fa-xmark"></i></span>
+              {{ trim($skill) }}
+              <input type="hidden" name="skills[]" value="{{ trim($skill) }}">
+              <span class="rm"><i class="fa-solid fa-xmark"></i></span>
           </span>
         @endforeach
       </div>
 
       <div style="font-size:.78rem;font-weight:600;color:var(--n600);margin-bottom:9px;">Add More Skills</div>
       <div class="chip-select" id="suggestedSkills">
-        @if(!empty($user->details->skills))
-          @foreach(explode(',', $user->details->skills) as $skill)
-            <span style="
-              display:inline-block;
-              background:#eef3ff;
-              color:#0d6efd;
-              padding:5px 10px;
-              border-radius:20px;
-              margin:3px;
-              font-size:12px;">
-              {{ trim($skill) }}
+        @foreach($skills as $skill)
+            <span class="skill-chip"
+                  data-skill="{{ $skill->name }}"
+                  style="cursor:pointer; display:inline-block; background:#eef3ff; color:#0d6efd; padding:5px 10px; border-radius:20px; margin:3px; font-size:12px;">
+                {{ $skill->name }}
             </span>
-          @endforeach
-        @endif
+        @endforeach
       </div>
 
       <div style="display:flex;gap:8px;margin-top:13px;">
@@ -570,6 +571,28 @@ $(document).ready(function () {
         });
     });
 
+});
+// ADD skill
+$(document).on('click', '.skill-chip', function () {
+
+    let skill = $(this).data('skill');
+
+    // جلوگیری duplicate
+    if ($('#selectedSkillsCloud input[value="'+skill+'"]').length) return;
+
+    $('#selectedSkillsCloud').append(`
+        <span class="lj-skill-tag selected">
+            ${skill}
+            <input type="hidden" name="skills[]" value="${skill}">
+            <span class="rm"><i class="fa-solid fa-xmark"></i></span>
+        </span>
+    `);
+});
+
+
+// REMOVE skill
+$(document).on('click', '.lj-skill-tag .rm', function () {
+    $(this).closest('.lj-skill-tag').remove();
 });
 </script>
 @endpush

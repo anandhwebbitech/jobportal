@@ -10,7 +10,8 @@ class ResumeController extends Controller
 {
     public function index()
     {
-        return view('frontend.jobseeker.resume');
+        $resume = Resume::where('user_id',auth()->id())->where('is_default',1)->first();
+        return view('frontend.jobseeker.resume',compact('resume'));
     }
 
    public function upload(Request $request)
@@ -29,16 +30,16 @@ class ResumeController extends Controller
 
             $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
 
-            $path = $file->storeAs('resumes/' . $user->id, $filename, 'public');
-
+             $path = $file->storeAs('resumes', $filename, 'public');
+            // dd($filename);
             Resume::create([
                 'user_id'     => $user->id,
                 'file_path'   => $path,
-                'file_name'   => $file->getClientOriginalName(),
+                'file_name'   => $filename,
                 'title'       => $request->resume_title ?? $file->getClientOriginalName(),
                 'file_type'   => $file->getClientOriginalExtension(),
                 'file_size'   => $file->getSize(),
-                'is_default'  => $user->resumes()->count() == 0 ? 1 : 0,
+                'is_default'  => $user->resumes()->count() == 0 ? 1 : 1,
                 'uploaded_at' => now(),
             ]);
         }

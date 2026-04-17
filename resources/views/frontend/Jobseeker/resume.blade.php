@@ -155,8 +155,16 @@
       <div class="lj-card-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="text-align:center;background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:9px;padding:16px;">
-            <div style="font-family:var(--f-display);font-size:1.6rem;font-weight:800;color:var(--blue);">{{ $resumeViews ?? '—' }}</div>
-            <div style="font-size:.74rem;color:var(--n600);margin-top:3px;">Resume Views</div>
+            @if($resume)
+            <a href="{{ asset('public/uploads/' . $resume->file_path) }}" target="_blank" class="btn btn-primary">
+              <div style="font-family:var(--f-display);font-size:1.6rem;font-weight:800;color:var(--blue);">{{ $resume->file_name ?? '—' }}</div>
+              <div style="font-size:.74rem;color:var(--n600);margin-top:3px;">Resume Views</div>
+            </a>
+            @else
+
+                <p>No resume found</p>
+
+            @endif
           </div>
           <div style="text-align:center;background:var(--green-light);border:1.5px solid #86efac;border-radius:9px;padding:16px;">
             <div style="font-family:var(--f-display);font-size:1.6rem;font-weight:800;color:var(--green);">{{ $resumeDownloads ?? '—' }}</div>
