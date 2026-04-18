@@ -497,7 +497,7 @@ $offered = $candidates->where('status','Offered')->count();
           <i class="fas fa-bullseye" style="font-size:.62rem;"></i> {{ $c['match'] }}% match
         </span>
       </div>
-      <div class="cd-job"><i class="fas fa-briefcase"></i> {{ $c['job_id'] }}</div>
+      <div class="cd-job"><i class="fas fa-briefcase"></i> {{ $c['job'] }}</div>
       <div class="cd-meta">
         <div class="cd-meta-i"><i class="fas fa-clock"></i> {{ $c['exp'] }}</div>
         <div class="cd-meta-i"><i class="fas fa-graduation-cap"></i> {{ $c['edu'] }}</div>
@@ -516,8 +516,8 @@ $offered = $candidates->where('status','Offered')->count();
         <i class="fas fa-eye"></i> View
       </button>
       <div class="cd-btn-row">
-        <button class="cd-ibtn" title="Download Resume"><i class="fas fa-download"></i></button>
-        <button class="cd-ibtn" title="Screening Answers"><i class="fas fa-clipboard-list"></i></button>
+        {{-- <button class="cd-ibtn" title="Download Resume"><i class="fas fa-download"></i></button> --}}
+        {{-- <button class="cd-ibtn" title="Screening Answers"><i class="fas fa-clipboard-list"></i></button> --}}
         <button class="cd-ibtn sl" title="Shortlist" onclick="updateStatus(5)"><i class="fas fa-star"></i></button>
         <button class="cd-ibtn iv" title="Mark Interview" onclick="updateStatus(6)"><i class="fas fa-calendar-check"></i></button>
         <button class="cd-ibtn rj" title="Reject" onclick="updateStatus(4)"><i class="fas fa-circle-xmark"></i></button>

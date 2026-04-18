@@ -128,6 +128,7 @@ class FrontendController extends Controller
     // Submit Job Application
     public function jobApplySubmit(Request $request, $slug)
     {
+        dd(7);
         $job = Job::where('slug', $slug)->firstOrFail();
 
         $request->validate([

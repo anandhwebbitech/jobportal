@@ -4,6 +4,9 @@ namespace App\Http\Controllers\JobSeeker;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+
 
 class SettingsController extends Controller
 {
@@ -14,7 +17,24 @@ class SettingsController extends Controller
 
     public function updatePassword(Request $request)
     {
-        return back()->with('success','Password updated');
+         $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if (!Hash::check($request->current_password, auth()->user()->password)) {
+            return response()->json([
+                'message' => 'Current password is incorrect'
+            ], 422);
+        }
+
+        auth()->user()->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully'
+        ]);
     }
 
     public function updateNotifs(Request $request)

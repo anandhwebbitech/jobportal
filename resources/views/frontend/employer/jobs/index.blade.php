@@ -324,6 +324,10 @@ body{font-family:var(--fb);}
   .idx-select { width: 100%; }
   .idx-result-count { margin-left: 0; }
 }
+
+.idx-badge.pending { background: #fff3cd; color: #856404; }
+.idx-badge.active { background: #d4edda; color: #155724; }
+.idx-badge.rejected { background: #f8d7da; color: #721c24; }
 </style>
 @endpush
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -444,6 +448,7 @@ body{font-family:var(--fb);}
         <thead>
           <tr>
             <th>Job Title</th>
+            <th>Admin Status</th>
             <th>Status</th>
             <th>Applicants</th>
             <th>Posted</th>
@@ -491,12 +496,31 @@ body{font-family:var(--fb);}
 
             {{-- Status --}}
             <td>
+              @if($job->admin_status == 0)
+                  <span class="idx-badge pending">
+                      <span class="idx-badge-dot"></span>
+                      Waiting for Approval
+                  </span>
+              @elseif($job->admin_status == 1)
+                  <span class="idx-badge active">
+                      <span class="idx-badge-dot"></span>
+                      Approved
+                  </span>
+              @elseif($job->admin_status == 3)
+                  <span class="idx-badge rejected">
+                      <span class="idx-badge-dot"></span>
+                      Rejected
+                  </span>
+              @endif
+            </td>
+            <td>
               @php $st = strtolower($job->status == 1) ?'active': 'inactive'; @endphp
               <span class="idx-badge {{ $st }}">
                 <span class="idx-badge-dot"></span>
                 {{ ucfirst($st) }}
               </span>
             </td>
+            
 
             {{-- Applicants --}}
             <td>
@@ -538,9 +562,11 @@ body{font-family:var(--fb);}
                 <a href="{{ route('employer.jobs.edit', $job->id) }}" class="idx-btn edit" title="Edit Job">
                   <i class="fa-solid fa-pen"></i>
                 </a>
-                <a href="{{ route('employer.candidates', $job->id) }}" class="idx-btn apps" title="View Applicants">
+                @if($appCount > 0)
+                <a href="{{ route('employer.candidates.show', $job->id) }}" class="idx-btn apps" title="View Applicants">
                   <i class="fa-solid fa-users"></i>
                 </a>
+                @endif
              
                 <button 
                     class="idx-btn tog toggleJobBtn" 

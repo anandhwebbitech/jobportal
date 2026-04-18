@@ -14,7 +14,11 @@ use Illuminate\Container\Attributes\Auth;
 use App\Models\Notification;
 use App\Events\UserNotification;
 use App\Models\JobPlan;
+use App\Models\Qualification;
+use App\Models\Skill;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\Hash;
+
 
 
 class DashboardController extends Controller
@@ -86,19 +90,11 @@ class DashboardController extends Controller
 
     public function jobsCreate()
     {
-        $skills = [
-            'PHP Developer', 'Laravel Developer', 'Java Developer', 'Python Developer',
-            'React Developer', 'Vue.js Developer', 'Node.js Developer', 'MySQL / Database',
-            'WordPress Developer', 'UI/UX Designer', 'Network Engineer', 'Cyber Security',
-            'Electrician', 'Plumber', 'Welder', 'Machine Operator', 'CNC Operator',
-            'Lathe Operator', 'Mechanic', 'HVAC Technician', 'Quality Inspector',
-            'Sales Executive', 'Marketing Executive', 'Field Sales', 'Tele-calling',
-            'Data Entry', 'HR Executive', 'Accountant', 'Office Admin', 'Receptionist',
-            'Driver', 'Delivery Executive', 'Forklift Operator', 'Warehouse Staff',
-            'Customer Support', 'Teacher', 'Nurse', 'Pharmacist', 'Cook', 'Housekeeping',
-        ];
+        $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
 
-        return view('frontend.employer.jobs.create', compact('skills'));
+
+        return view('frontend.employer.jobs.create', compact('skills','qualifications'));
     }
 
 
@@ -177,13 +173,13 @@ class DashboardController extends Controller
                 'create_user_id'   => auth()->id(),
             ]);
             if($job){
-                $message = 'New Application Received';
+                $message = 'New Job recived for approval';
                 $notification = Notification::create([
                     'user_id'   => 3,
                     'job_id'    => $job->id,
-                    'title'     => 'New Job Post',
+                    'title'     => Notification::typeName(Notification::TYPE_JOB_POST),
                     'message'   => $message,
-                    'type'      => Notification::JOB_POST,
+                    'type'      => Notification::TYPE_JOB_POST,
                     'send_from' => auth()->id(), // admin/employer
                     'send_to'   => 3,
                 ]);
@@ -223,19 +219,10 @@ class DashboardController extends Controller
     {
         $job = Job::findOrFail($id);
 
-        $skills = [
-            'PHP Developer', 'Laravel Developer', 'Java Developer', 'Python Developer',
-            'React Developer', 'Vue.js Developer', 'Node.js Developer', 'MySQL / Database',
-            'WordPress Developer', 'UI/UX Designer', 'Network Engineer', 'Cyber Security',
-            'Electrician', 'Plumber', 'Welder', 'Machine Operator', 'CNC Operator',
-            'Lathe Operator', 'Mechanic', 'HVAC Technician', 'Quality Inspector',
-            'Sales Executive', 'Marketing Executive', 'Field Sales', 'Tele-calling',
-            'Data Entry', 'HR Executive', 'Accountant', 'Office Admin', 'Receptionist',
-            'Driver', 'Delivery Executive', 'Forklift Operator', 'Warehouse Staff',
-            'Customer Support', 'Teacher', 'Nurse', 'Pharmacist', 'Cook', 'Housekeeping',
-        ];
+        $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
 
-        return view('frontend.employer.jobs.edit', compact('job', 'skills'));
+        return view('frontend.employer.jobs.edit', compact('job', 'skills','qualifications'));
     }
 
 
@@ -265,20 +252,31 @@ class DashboardController extends Controller
                 'education'           => 'required|string|max:50',
                 'job_type'            => 'required|in:Full Time,Part Time,Contract',
                 'status'              => 'required|in:active,inactive',
-                'skills'              => 'required|string',
+                'skills'              => 'required|json', // ✅ FIX
             ]);
 
-            // ✅ responsibilities & benefits (clean)
+            // ✅ Decode skills
+            $skills = $request->skills;
 
-            // ✅ skills decode
-            $skills = json_decode($request->skills, true);
+            if (is_string($skills)) {
+                $decoded = json_decode($skills, true);
+
+                // if valid JSON → use it
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $skills = $decoded;
+                } else {
+                    // fallback (comma split)
+                    $skills = explode(',', $skills);
+                }
+            }
+
             if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
                 return back()->withInput()->withErrors([
                     'skills' => 'Invalid skills format'
                 ]);
             }
 
-            // ✅ salary split (same as store)
+            // ✅ Salary logic (same as store)
             $salaryMin = 0;
             $salaryMax = 0;
 
@@ -296,14 +294,20 @@ class DashboardController extends Controller
                 }
             }
 
+            // ✅ Company details
             $company = EmployerDetail::where('user_id', auth()->id())->first();
-            // ✅ UPDATE
+
+            // ✅ Slug update only if title changed
+            if ($job->title !== $request->job_title) {
+                $job->slug = Str::slug($request->job_title) . '-' . time();
+            }
+
+            // ✅ Update Job
             $job->update([
                 'company_name'     => $company->company_name ?? null,
                 'category'         => $request->job_category,
                 'industry'         => $request->industry_type,
                 'title'            => $request->job_title,
-                'slug'             => Str::slug($request->job_title) . '-' . time(),
                 'description'      => $request->description,
                 'responsibilities' => $request->responsibilities,
                 'benefits'         => $request->benefits,
@@ -318,7 +322,29 @@ class DashboardController extends Controller
                 'status'           => $request->status === 'active' ? 1 : 0,
                 'skills'           => json_encode($skills),
                 'num_vacancies'    => $request->vacancies,
+                // 🔥 Optional: re-approval after edit
+                'admin_status'     => 0,
             ]);
+
+            // ✅ Notify Admin (dynamic)
+            $admin = User::where('role', 'admin')->first();
+
+            if ($admin) {
+                $message = 'Job updated and waiting for approval';
+
+                $notification = Notification::create([
+                    'user_id'   => $admin->id,
+                    'job_id'    => $job->id,
+                    'title'     => Notification::typeName(Notification::TYPE_JOB_UPDATE),
+                    'message'   => $message,
+                    'type'      => Notification::TYPE_JOB_UPDATE,
+                    'send_from' => auth()->id(),
+                    'send_to'   => $admin->id,
+                ]);
+
+                event(new UserNotification($notification));
+                \Log::info('Update Notification fired');
+            }
 
             // ✅ Success
             return redirect()
@@ -326,6 +352,7 @@ class DashboardController extends Controller
                 ->with('success', 'Job "' . $job->title . '" updated successfully!');
 
         } catch (\Exception $e) {
+
             return back()
                 ->withInput()
                 ->with('error', $e->getMessage());
@@ -493,6 +520,86 @@ class DashboardController extends Controller
         return view('frontend.employer.candidates', compact('candidates'));
 
     }
+    public function candidatesShow($jobId)
+    {
+        $applications = JobApplication::with(['user','job'])
+        ->where('job_id', $jobId) 
+        ->latest()
+        ->get();
+
+        $candidates = $applications->map(function ($app, $i) {
+
+            $name = $app->user->name ?? 'Unknown';
+            // dd($app->job->education);
+            // dd($app->job->skills);
+            $skills = [];
+            $candidateSkills = [];
+
+            if (is_array($app->job->skills)) {
+                $skills = collect($app->job->skills)
+                    ->map(fn($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            } elseif (is_string($app->job->skills)) {
+                $skills = collect(explode(',', $app->job->skills))
+                    ->map(fn($s) => trim($s))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            }
+            // Candidate skills (IMPORTANT)
+            if (is_array($app->user->userdetails->skills ?? null)) {
+                $candidateSkills = collect($app->user->userdetails->skills)->map(fn($s) => strtolower(trim($s)))->toArray();
+            } elseif (is_string($app->user->userdetails->skills ?? null)) {
+                $candidateSkills = collect(explode(',', $app->user->userdetails->skills))
+                    ->map(fn($s) => strtolower(trim($s)))
+                    ->filter()
+                    ->values()
+                    ->toArray();
+            }
+            
+            $matchedSkills = array_intersect($skills, $candidateSkills);
+            $totalJobSkills = count($skills);
+            $matchPercentage = $totalJobSkills > 0
+                ? round((count($matchedSkills) / $totalJobSkills) * 100)
+                : 50;
+            $statusMap = [
+                1 => 'Pending',
+                2 => 'Waiting',
+                3 => 'Approved',
+                4 => 'Rejected',
+                5 => 'Shortlisted',
+                6 => 'Interview',
+            ];
+            return [
+                'id' => $app->id,
+                'name' => $name,
+                'applicant_name' => $name,
+                'init' => strtoupper(substr($name, 0, 1)),
+                'av' => $i % 6,
+
+                'job' => $app->job->title ?? 'N/A',
+                'job_id' => $app->job_id,
+
+                'status' => $statusMap[$app->application_status] ?? 'New',
+
+                'match' => $matchPercentage, // temporary (you can replace with real logic)
+
+                'years_experience' => $app->experience ?? '0 yrs',
+                'exp' => $app->job->experience ?? '0 yrs',
+
+                'edu' => $app->job->education ?? 'Not specified',
+                'loc' => $app->current_location ?? 'Tamil Nadu',
+
+                'date' => $app->created_at->format('d M Y'),
+               
+               'skills' => !empty($skills) ? $skills : ['Communication','Teamwork'],
+            ];
+             
+        });
+        return view('frontend.employer.candidates', compact('candidates'));
+    }
 
     public function resume()
     {
@@ -649,11 +756,10 @@ class DashboardController extends Controller
             'id' => 'required|exists:job_applications,id',
             'status' => 'required|in:4,5,6', // Reject, Shortlist, Interview
         ]);
-
+        // dd($request->all());
         $app = JobApplication::findOrFail($request->id);
 
         $app->application_status = $request->status;
-
         $app->save();
         $statusMessages = [
             1 => 'Your job is pending approval',
@@ -663,13 +769,25 @@ class DashboardController extends Controller
             5 => 'Your job has been shortlisted',
             6 => 'Interview scheduled for your job',
         ];
+        $type = Notification::TYPE_JOB_APPLICATION;
+         $statusMessages[$app->application_status] ?? 'Unknown status';
 
-        $message = $statusMessages[$app->application_status] ?? 'Unknown status';
-        $notification = Notification::create([
+        if($request->status == 5 ){
+            $type       = Notification::TYPE_JOB_APPLICATION_SHORTLIST;
+            $message    = Notification::typeName(Notification::TYPE_JOB_APPLICATION_SHORTLIST);
+        }elseif($request->status == 6){
+            $type = Notification::TYPE_JOB_APPLICATION_INTERVIEW;
+            $message    = Notification::typeName(Notification::TYPE_JOB_APPLICATION_INTERVIEW);
+        }elseif($request->status == 4){
+            $type = Notification::TYPE_JOB_APPLICATION_REJECT;
+            $message    = Notification::typeName(Notification::TYPE_JOB_APPLICATION_REJECT);
+        }
+
+        $notification = Notification::create([  
             'user_id' => $app->user_id,
-            'title'   => 'Application  Status',
+            'title'   => 'Application Status Updated',
             'message' => $message,
-            'type'      => Notification::TYPE_JOB_APPLICATION,
+            'type'      => $type,
             'send_from' => auth()->id(), // admin/employer
             'send_to'   => $app->user_id,
         ]);
@@ -705,5 +823,28 @@ class DashboardController extends Controller
         auth()->logout();
 
         return response()->json(['status' => true, 'msg' => 'Account deleted successfully']);
+    }
+
+    public function settingsPassword(Request $request){
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        // check current password
+        if (!Hash::check($request->current_password, auth()->user()->password)) {
+            return response()->json([
+                'message' => 'Current password is incorrect'
+            ], 422);
+        }
+
+        // update password
+        auth()->user()->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully'
+        ]);
     }
 }   

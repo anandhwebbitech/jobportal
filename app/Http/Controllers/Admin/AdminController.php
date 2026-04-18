@@ -100,40 +100,31 @@ class AdminController extends Controller
     public function AdminNotification(){
         return view('admin.notification');
     }
-    public function AdminNotificationData(Request $request){
-       $adminNotification = Notification::where('send_to', Auth::user()->id)
-        ->latest();
+    public function AdminNotificationData(Request $request)
+    {
+        $adminNotification = Notification::with('sender')
+            ->where('send_to', Auth::id())
+            ->latest();
 
         return DataTables::of($adminNotification)
 
-        ->addIndexColumn()
+            ->addIndexColumn()
 
-        ->addColumn('type', function ($row) {
-            return $row->type_label; // ✅ TEXT instead of number
-        })
+            ->addColumn('type', fn($row) => $row->type_label)
 
-        ->addColumn('message', function ($row) {
-            return $row->message ?? '-';
-        })
+            ->addColumn('message', fn($row) => $row->message ?? '-')
 
-        ->addColumn('send_from', function ($row) {
-            return $row->sender->name ?? 'System'; 
-            // assuming relation: sender()
-        })
+            ->addColumn('send_from', fn($row) => optional($row->sender)->name ?? 'System')
 
-        ->addColumn('date', function ($row) {
-            return Carbon::parse($row->created_at)->format('d M Y, h:i A');
-        })
+            ->addColumn('date', fn($row) => $row->created_at->format('d M Y, h:i A'))
 
-        ->addColumn('action', function ($row) {
-            return '
-                <button class="btn btn-sm btn-primary viewBtn" data-id="'.$row->id.'">View</button>
-                ';
-                // <button class="btn btn-sm btn-danger deleteBtn" data-id="'.$row->id.'">Delete</button>
-        })
+            ->addColumn('action', function ($row) {
+                 return '<button class="btn btn-sm btn-primary viewBtn" data-id="'.$row->id.'" title="View">
+                            <i class="fa fa-eye"></i>
+                        </button>';
+            })
 
-        ->rawColumns(['action'])
-
-        ->make(true);
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }

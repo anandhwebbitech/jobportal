@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Employer;
 use App\Models\EmployerDetail;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use App\Events\UserNotification;
 
 
 class EmployerController extends Controller
@@ -129,7 +131,6 @@ class EmployerController extends Controller
     public function approve(Request $request, $id)
     {
         $employer = User::find($id);
-
         if (!$employer) {
             return response()->json([
                 'status' => false,
@@ -138,13 +139,31 @@ class EmployerController extends Controller
         }
 
         $employer->is_active = $request->status;
+        $type = Notification::TYPE_EMPLOYER_APPROVED;
+        $message = Notification::typeName(Notification::TYPE_EMPLOYER_APPROVED);
+        if ($request->status == 3) {
+            $type = Notification::TYPE_EMPLOYER_REJECT;
+            $message = Notification::typeName(Notification::TYPE_EMPLOYER_REJECT);
 
-        if ($request->is_active == 3) {
             $employer->reject_message = $request->reject_message;
+        }elseif($request->status == 0){
+            // dd(6);
+            $type = Notification::TYPE_EMPLOYER_PENDING;
+            $message = Notification::typeName(Notification::TYPE_EMPLOYER_PENDING);
         }
 
         $employer->save();
-
+        $admin = User::where('role','admin')->first();
+        $notification = Notification::create([
+            'user_id'   => $employer->id,
+            'title'     => "Employer Status Changed",
+            'message'   => $message,
+            'type'      => $type,
+            'send_from' => $admin->id, // admin/employer
+            'send_to'   => $employer->id,
+        ]);
+        event(new UserNotification($notification));
+        \Log::info('Notification fired');
         return response()->json([
             'status' => true,
             'message' => 'Employer status updated successfully'

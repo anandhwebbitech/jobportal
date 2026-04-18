@@ -215,7 +215,7 @@ Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->
 
     // Settings
     Route::get('/settings', [EmployerDashboardController::class, 'settings'])->name('settings');
-    Route::patch('/settings/password', [EmployerDashboardController::class, 'settingsPassword'])->name('settings.password');
+    Route::post('/settings/password', [EmployerDashboardController::class, 'settingsPassword'])->name('settings.password');
     Route::patch('/settings/notifications', [EmployerDashboardController::class, 'settingsNotifications'])->name('settings.notifications');
     Route::delete('/settings/delete', [EmployerDashboardController::class, 'deleteAccount'])->name('settings.delete');
 });
@@ -293,7 +293,7 @@ Route::prefix('jobseeker')->name('jobseeker.')->group(function () {
         Route::prefix('settings')->name('settings.')->group(function () {
 
             Route::get('/', [SettingsController::class, 'index'])->name('index');
-            Route::put('/password', [SettingsController::class, 'updatePassword'])->name('password');
+            Route::post('/password', [SettingsController::class, 'updatePassword'])->name('password');
             Route::put('/notifications', [SettingsController::class, 'updateNotifs'])->name('notifications');
             Route::put('/privacy', [SettingsController::class, 'updatePrivacy'])->name('privacy');
             Route::delete('/account', [SettingsController::class, 'deleteAccount'])->name('delete');

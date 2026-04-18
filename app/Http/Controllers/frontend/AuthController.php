@@ -196,10 +196,10 @@ class AuthController extends Controller
                     'profile_photo' => $photoPath,
                 ]);
                 $admin = User::where('role','admin')->first();
-                $message = 'New User Register';
+                $message = Notification::typeName(Notification::TYPE_NEW_USER_REGISTER);
                 $notification = Notification::create([
                     'user_id'   =>  $admin->id,
-                    'title'     => 'New User Register',
+                    'title'     => Notification::typeName(Notification::TYPE_NEW_USER_REGISTER),
                     'message'   => $message,
                     'type'      => Notification::TYPE_NEW_USER_REGISTER,
                     'send_from' => $user->id, // admin/employer
@@ -274,6 +274,7 @@ class AuthController extends Controller
 
     public function employerRegisterSubmit(Request $request)
     {
+        // dd(7);
         try {
 
             $validator = Validator::make($request->all(), [
@@ -318,6 +319,7 @@ class AuthController extends Controller
                 'is_active' => 0,
             ]);
 
+                
             // ✅ Upload Files
             $uploadPath = public_path('uploads/employer');
 
@@ -375,12 +377,12 @@ class AuthController extends Controller
                     'msme_certificate' => $msmeFile,
                 ]);
                 $admin = User::where('role','admin')->first();
-                $message = 'New User Register';
+                $message = Notification::typeName(Notification::TYPE_NEW_COMPANY_REGISTER);
                 $notification = Notification::create([
                     'user_id'   =>  $admin->id,
-                    'title'     => 'New User Register',
+                    'title'     => Notification::typeName(Notification::TYPE_NEW_COMPANY_REGISTER),
                     'message'   => $message,
-                    'type'      => Notification::TYPE_NEW_USER_REGISTER,
+                    'type'      => Notification::TYPE_NEW_COMPANY_REGISTER,
                     'send_from' => $user->id, // admin/employer
                     'send_to'   => $admin->id,
                 ]);

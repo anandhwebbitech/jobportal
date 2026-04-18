@@ -19,7 +19,7 @@
       <div class="lj-card-title"><i class="fa-solid fa-lock"></i> Change Password</div>
     </div>
     <form method="POST" action="{{ route('jobseeker.settings.password') }}" id="passwordForm">
-      @csrf @method('PUT')
+      @csrf 
       <div class="lj-card-body">
 
         <div class="lj-fgroup" style="margin-bottom:14px;">
@@ -235,7 +235,8 @@
 </div>
 
 @endsection
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @push('scripts')
 <script>
 function checkPasswordStrength(val) {
@@ -285,6 +286,51 @@ function closeDeleteModal() {
 }
 document.getElementById('deleteAccountModal').addEventListener('click', function(e) {
   if (e.target === this) closeDeleteModal();
+});
+$(document).ready(function () {
+console.log('JS working');
+    $('#passwordForm').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let btn = form.find('button[type="submit"]');
+
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Updating...');
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message
+                });
+
+                form.trigger("reset");
+                resetPasswordForm();
+            },
+            error: function(xhr) {
+
+                console.log(xhr); // 🔥 debug
+
+                let msg = xhr.responseJSON?.message || 'Something went wrong';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: msg
+                });
+            },
+            complete: function() {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-check"></i> Update Password');
+            }
+        });
+
+    });
+
 });
 </script>
 @endpush

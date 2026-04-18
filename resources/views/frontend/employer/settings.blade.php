@@ -188,8 +188,8 @@
                         </div>
                     </div>
                     <div class="emp-card-body" style="max-width:460px;">
-                        <form method="POST" action="{{ route('employer.settings.password') }}" id="pwdForm" novalidate>
-                            @csrf @method('PUT')
+                        <form method="POST" action="{{ route('employer.settings.password') }}" id="pwdForm" >
+                            @csrf 
 
                             @if (session('password_updated'))
                                 <div class="emp-notice success" style="margin-bottom:16px;"><i
@@ -388,7 +388,8 @@
     </div>
 
 @endsection
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -496,5 +497,70 @@
             document.getElementById('deleteAccountBtn').disabled =
                 val.trim().toUpperCase() !== 'DELETE';
         }
+
+        $(document).ready(function () {
+
+            $('#pwdForm').on('submit', function(e) {
+                e.preventDefault();
+
+                let form = $(this);
+                let btn = form.find('button[type="submit"]');
+
+                btn.prop('disabled', true)
+                .html('<i class="fa fa-spinner fa-spin"></i> Updating...');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST', // 🔥 important
+                    data: form.serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(res) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: res.message
+                        });
+
+                        form.trigger('reset');
+
+                        // optional reset UI
+                        $('#pwdBar').css('width','0%');
+                        $('#pwdHint').text('Enter a password to check strength');
+
+                    },
+                    error: function(xhr) {
+
+                        console.log(xhr); // debug
+
+                        let msg = 'Something went wrong!';
+
+                        if (xhr.status === 422) {
+                            if (xhr.responseJSON.errors) {
+                                msg = Object.values(xhr.responseJSON.errors)
+                                        .map(e => e[0])
+                                        .join('\n');
+                            } else {
+                                msg = xhr.responseJSON.message;
+                            }
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: msg
+                        });
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false)
+                        .html('<i class="fas fa-lock"></i> Update Password');
+                    }
+                });
+
+            });
+
+        });
     </script>
 @endpush

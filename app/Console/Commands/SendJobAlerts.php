@@ -15,6 +15,7 @@ class SendJobAlerts extends Command
      */
     protected $signature = 'job-alerts:send';
 
+    
     /**
      * The console command description.
      *

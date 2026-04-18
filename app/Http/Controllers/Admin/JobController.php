@@ -82,11 +82,14 @@ class JobController extends Controller
                 'message' => 'Job not found'
             ]);
         }
-        $noti_satatus = 'Job Approved';
+        $noti_satatus = Notification::typeName(Notification::TYPE_JOB_APPROVE);
         $job->admin_status = $request->status;
+        $type = Notification::TYPE_JOB_APPROVE;
         if ($request->status == 3) {
             $job->old = $request->reject_message;
-            $noti_satatus = 'Job Rejected';
+            $noti_satatus = Notification::typeName(Notification::TYPE_JOB_REJECT);
+            $type = Notification::TYPE_JOB_REJECT;
+
         }
 
         $job->save();
@@ -99,7 +102,7 @@ class JobController extends Controller
             'user_id' => $job->create_user_id,
             'title'   => $noti_satatus,
             'message' => $message,
-            'type'      => Notification::TYPE_JOB,
+            'type'      => $type,
             'send_from' => auth()->id(), // admin/employer
             'send_to'   => $job->create_user_id,
             'is_admin'  => 1,

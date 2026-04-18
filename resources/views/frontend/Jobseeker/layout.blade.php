@@ -945,8 +945,8 @@ textarea.lj-input { resize: vertical; min-height: 96px; padding-top: 10px; }
   <div class="lj-topbar-right">
     {{-- Search --}}
     <div class="lj-topbar-search">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="Search jobs, companies..."/>
+      {{-- <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search jobs, companies..."/> --}}
     </div>
 
     {{-- Action icons --}}

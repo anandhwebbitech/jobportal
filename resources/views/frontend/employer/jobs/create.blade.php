@@ -2020,13 +2020,9 @@
                                         <div class="pj-iw-prefix"><i class="fa-solid fa-map"></i></div>
                                         <select id="state" name="state"
                                             class="pj-input @error('state') err @enderror">
-                                            <option value="" disabled {{ old('state') ? '' : 'selected' }}>Select
-                                                State</option>
-                                            @foreach (['Tamil Nadu', 'Kerala', 'Karnataka', 'Andhra Pradesh', 'Telangana'] as $st)
-                                                <option value="{{ $st }}"
-                                                    {{ old('state', 'Tamil Nadu') === $st ? 'selected' : '' }}>
-                                                    {{ $st }}</option>
-                                            @endforeach
+                                            <option value="" disabled selected>Select State</option>
+                                                    <option>Tamil Nadu</option>
+                                                    <option>Other</option>
                                         </select>
                                     </div>
                                     <div class="pj-ferr @error('state') show @enderror" id="err-state">
@@ -2042,14 +2038,7 @@
                                         <div class="pj-iw-prefix"><i class="fa-solid fa-location-dot"></i></div>
                                         <select id="district" name="district"
                                             class="pj-input @error('district') err @enderror">
-                                            <option value="" disabled {{ old('district') ? '' : 'selected' }}>Select
-                                                District</option>
-                                            @php $dists=['Chennai','Coimbatore','Madurai','Tiruchirappalli','Salem','Tirunelveli','Erode','Vellore','Thanjavur','Dindigul','Kanchipuram','Tiruppur','Nagercoil','Cuddalore','Sivakasi','Pollachi','Hosur','Ooty','Karur','Namakkal']; @endphp
-                                            @foreach ($dists as $d)
-                                                <option value="{{ $d }}"
-                                                    {{ old('district') === $d ? 'selected' : '' }}>{{ $d }}
-                                                </option>
-                                            @endforeach
+                                            
                                         </select>
                                     </div>
                                     <div class="pj-ferr @error('district') show @enderror" id="err-district">
@@ -2207,9 +2196,9 @@
                                         class="pj-input @error('education') err @enderror">
                                         <option value="" disabled {{ old('education') ? '' : 'selected' }}>Select
                                             Education Requirement</option>
-                                        @foreach (['None (No Requirement)' => 'None', '10th Pass (SSLC)' => '10th', '12th Pass (HSC / +2)' => '12th', 'Diploma' => 'Diploma', "Bachelor's Degree (UG)" => 'Bachelor', "Master's Degree (PG)" => 'Master', 'Doctorate / PhD' => 'Doctorate'] as $lbl => $val)
-                                            <option value="{{ $val }}"
-                                                {{ old('education') === $val ? 'selected' : '' }}>{{ $lbl }}
+                                       @foreach($qualifications as $item)
+                                            <option value="{{ $item->qualification }}">
+                                                {{ $item->qualification_label }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -2293,8 +2282,8 @@
                                     </div>
                                     <div class="pj-skills-dd" id="skillsDD"></div>
                                 </div>
-                                <input type="hidden" name="skills" id="skillsHidden"
-                                    value="{{ old('skills', '') }}" />
+                               
+                                <input type="hidden" name="skills" id="skillsHidden" value='@json(old("skills", []))' />
                                 <div class="pj-ferr" id="err-skills"><i
                                         class="fa-solid fa-circle-exclamation"></i><span>Please add at least one required
                                         skill.</span></div>
@@ -2306,9 +2295,9 @@
                                 <div class="pj-sug-label"><i class="fa-solid fa-fire" style="color:var(--amber);"></i>
                                     Popular Suggestions</div>
                                 <div class="pj-sug-grid">
-                                    @foreach (['Sales Executive', 'PHP Developer', 'Data Entry Operator', 'Driver', 'Electrician', 'CNC Operator', 'HR Executive', 'Accountant', 'Delivery Executive', 'Tele-calling', 'Machine Operator', 'Office Admin', 'React Developer', 'Python Developer', 'AutoCAD', 'Tally ERP', 'MS Excel', 'Digital Marketing', 'Quality Inspector', 'Warehouse Staff'] as $sg)
-                                        <button type="button" class="pj-sug" onclick="addSkill('{{ $sg }}')">
-                                            <i class="fa-solid fa-plus"></i> {{ $sg }}
+                                    @foreach ($skills as $skill)
+                                        <button type="button" class="pj-sug" onclick="addSkill('{{ $skill->skill_name }}')">
+                                            <i class="fa-solid fa-plus"></i> {{ $skill->skill_name }}
                                         </button>
                                     @endforeach
                                 </div>
@@ -2663,7 +2652,9 @@
                 if (!ok && al) al.classList.add('show');
                 return ok;
             }
-
+            function updateSkillsHidden() {
+                document.getElementById('skillsHidden').value = JSON.stringify(selectedSkills);
+            }
             /* live clear on input */
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.pj-input').forEach(function(inp) {
@@ -2708,19 +2699,7 @@
                SKILLS
             ═══════════════════════════════ */
             var selectedSkills = [];
-            var ALL_SKILLS = [
-                'PHP Developer', 'Java Developer', 'Python Developer', 'React Developer', 'Vue.js Developer',
-                'Node.js Developer', 'MySQL / Database', 'Laravel Developer', 'WordPress Developer',
-                'UI/UX Designer', 'Network Engineer', 'Electrician', 'Plumber', 'Welder',
-                'Machine Operator', 'CNC Operator', 'Lathe Operator', 'Mechanic', 'HVAC Technician',
-                'Quality Inspector', 'Sales Executive', 'Marketing Executive', 'Digital Marketing',
-                'Field Sales', 'Tele-calling', 'Data Entry Operator', 'HR Executive', 'Accountant',
-                'Office Admin', 'Receptionist', 'Driver', 'Delivery Executive', 'Forklift Operator',
-                'Warehouse Staff', 'Customer Support', 'AutoCAD', 'Tally ERP', 'MS Excel', 'MS Office',
-                'Communication Skills', 'Team Management', 'Stock Management', 'GST Filing',
-                'Content Writing', 'Graphic Design', 'Video Editing', 'Social Media Marketing',
-                'SEO / SEM', 'Project Management', 'Business Development', 'Supply Chain'
-            ];
+            var ALL_SKILLS = @json($skills->pluck('name'));
 
             function initSkills() {
                 var old = document.getElementById('skillsHidden').value;
@@ -2735,6 +2714,7 @@
                     } catch (e) {}
                 }
                 filterSkills('');
+                updateSkillsHidden();
             }
 
             window.openSkillsDD = function() {
@@ -2768,12 +2748,13 @@
 
             window.addSkill = function(skill) {
                 skill = skill.trim();
-                if (!skill || selectedSkills.indexOf(skill) !== -1 || selectedSkills.length >= 10) return;
+                if (!skill || selectedSkills.includes(skill) || selectedSkills.length >= 10) return;
+
                 selectedSkills.push(skill);
                 renderChip(skill);
+                updateSkillsHidden(); // ✅ added
                 document.getElementById('skillInput').value = '';
                 filterSkills('');
-                document.getElementById('err-skills').classList.remove('show');
             };
 
             function renderChip(skill) {
@@ -2789,9 +2770,12 @@
 
             window.removeSkill = function(skill) {
                 selectedSkills = selectedSkills.filter(s => s !== skill);
+
                 document.querySelectorAll('#skillChips .pj-chip').forEach(c => {
                     if (c.getAttribute('data-skill') === skill) c.remove();
                 });
+
+                updateSkillsHidden(); // ✅ added
                 filterSkills(document.getElementById('skillInput').value);
             };
 
@@ -3145,5 +3129,35 @@
             }
 
         })();
+        $('#state').on('change', function () {
+
+            let state = $(this).val();
+
+            $('#district').html('<option value="">Loading...</option>');
+
+            if (state) {
+
+                let url = "{{ route('get.districts', ':state') }}";
+                url = url.replace(':state', encodeURIComponent(state));
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+
+                        let options = '<option value="" disabled selected>Select District</option>';
+
+                        response.forEach(function (district) {
+                            options += `<option value="${district}">${district}</option>`;
+                        });
+
+                        $('#district').html(options);
+                    }
+                });
+
+            } else {
+                $('#district').html('<option value="" disabled selected>Select District</option>');
+            }
+        });
     </script>
 @endpush
