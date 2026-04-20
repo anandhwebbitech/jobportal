@@ -268,8 +268,9 @@ class AuthController extends Controller
     public function employerRegister()
     {
         $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
 
-        return view('frontend.auth.register',compact('skills'));
+        return view('frontend.auth.register',compact('skills','qualifications'));
     }
 
     public function employerRegisterSubmit(Request $request)

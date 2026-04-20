@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\JobSeeker;
 
 use App\Http\Controllers\Controller;
+use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use App\Models\Resume;
+use App\Models\ResumePlanSubscription;
 use Illuminate\Support\Facades\Storage;
+
 class ResumeController extends Controller
 {
     public function index()
@@ -93,4 +96,74 @@ class ResumeController extends Controller
         // public / private
         return back()->with('success','Resume visibility updated');
     }
+
+   public function download($id)
+{
+    try {
+
+        $user = auth()->user();
+
+        $plan = ResumePlanSubscription::where('user_id', $user->id)
+            ->where('status', 1)
+            ->whereDate('end_date', '>=', now())
+            ->first();
+
+        if (!$plan) {
+            return response('Please purchase a plan', 403);
+        }
+
+        if ($plan->downloads_used >= $plan->download_limit) {
+            return response('Download limit exceeded', 403);
+        }
+
+        // ✅ FIX: use JobApplication instead of Resume
+        $application = JobApplication::findOrFail($id);
+        if (!$application->resume) {
+            return response('File not found', 404);
+        }
+        // dd($application->resume );
+
+        $filePath = storage_path('app/public/' . $application->resume);
+
+        if (!file_exists($filePath)) {
+            return response('File missing in server', 404);
+        }
+
+        // ✅ increment AFTER validation
+        $plan->increment('downloads_used');
+
+        return response()->download($filePath);
+
+    } catch (\Exception $e) {
+        return response($e->getMessage(), 500);
+    }
+}
+    public function checkDownload($id)
+{
+    $user = auth()->user();
+
+    $plan = ResumePlanSubscription::where('user_id', $user->id)
+        ->where('status', 1)
+        ->whereDate('end_date', '>=', now())
+        ->first();
+
+    if (!$plan) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Please purchase a plan'
+        ]);
+    }
+
+    if ($plan->downloads_used >= $plan->download_limit) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Download limit exceeded'
+        ]);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'download_url' => route('resume.download', $id)
+    ]);
+}
 }

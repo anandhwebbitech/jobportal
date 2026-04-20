@@ -495,11 +495,29 @@
 </div>
 
 {{-- ══ EXPIRY BAR ══════════════════════════════════════ --}}
-<div class="plan-expiry-bar">
+{{-- <div class="plan-expiry-bar">
   <div class="peb-ico"><i class="fas fa-triangle-exclamation"></i></div>
   <span>Your <strong>30 Day Plan</strong> expires in <strong>7 days</strong> (10 Apr 2025). Renew to keep your listings live and visible.</span>
   <a href="{{ route('employer.billing') }}"><i class="fas fa-bolt"></i> Renew Now</a>
+</div> --}}
+@if($plan && $daysLeft !== null && $daysLeft <= 7 && $daysLeft >= 0)
+<div class="plan-expiry-bar">
+  <div class="peb-ico">
+    <i class="fas fa-triangle-exclamation"></i>
+  </div>
+
+  <span>
+    Your <strong>30 Day Plan</strong> expires in 
+    <strong>{{ $daysLeft }} days</strong>
+    ({{ \Carbon\Carbon::parse($plan->end_date)->format('d M Y') }}).
+    Renew to keep your listings live and visible.
+  </span>
+
+  <a href="{{ route('employer.billing') }}">
+    <i class="fas fa-bolt"></i> Renew Now
+  </a>
 </div>
+@endif
 
 {{-- ══ QUICK ACTIONS ════════════════════════════════════ --}}
 <div class="quick-actions">

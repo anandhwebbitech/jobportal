@@ -94,9 +94,13 @@ Route::controller(FrontendController::class)->group(function () {
 
     Route::get('/post-job', 'postJob')->name('post-job');
     Route::post('/contact-submit', 'contactSubmit')->name('contact.submit');
+
     
 });
+Route::get('/search-jobs', [FrontendController::class, 'searchJobs'])->name('jobs.search');
+
 Route::get('/get-districts/{state}', [FrontendController::class, 'getDistricts'])->name('get.districts');
+
 
 Route::controller(FrontendJobController::class)->group(function () {
 
@@ -157,8 +161,18 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/logout', 'logout')->name('logout');
 });
 
+    Route::post('/buy-plan', [JobPlanController::class, 'buyPlan'])->name('buy.plan');
+    Route::post('/buy-resume-plan', [JobPlanController::class, 'buyResumePlan'])->name('buy.resumeplan');
 
-   
+    Route::get('/check-download/{id}', [ResumeController::class, 'checkDownload'])->name('resume.check');
+    Route::get('/download/{id}', [ResumeController::class, 'download'])->name('resume.download');
+
+     Route::post('/purchase-banner', [JobPlanController::class, 'purchaseBanner'])
+        ->name('banner.purchase');
+
+    Route::post('/banner-payment-success', [JobPlanController::class, 'paymentSuccess'])
+        ->name('banner.payment.success');
+
 Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->group(function () {
 
     // Dashboard

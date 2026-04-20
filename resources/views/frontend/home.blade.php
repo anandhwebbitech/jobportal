@@ -989,6 +989,154 @@
                 aspect-ratio: 2.4 / 1;
             }
         }
+        #jobResults{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:18px;
+}
+
+/* CARD */
+.job-card{
+    background:#fff;
+    border-radius:16px;
+    padding:16px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    cursor:pointer;
+    transition:0.25s ease;
+    border:1px solid #f1f1f1;
+}
+
+.job-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* HEADER */
+.job-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:10px;
+}
+
+.job-title{
+    font-size:18px;
+    font-weight:600;
+    margin:0;
+    color:#1f2937;
+}
+
+.job-title-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+/* NEW BADGE (improve isNew output) */
+.badge-new{
+    background:#10b981;
+    color:#fff;
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:20px;
+}
+
+/* COMPANY + LOCATION */
+.job-company, .job-location{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.job-company i, .job-location i{
+    margin-right:5px;
+}
+
+/* LOGO */
+.job-logo{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#f3f4f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#6b7280;
+}
+
+/* BODY */
+.job-body{
+    margin-top:10px;
+}
+
+/* BADGES */
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    font-size:12px;
+    border-radius:20px;
+    margin:4px 4px 0 0;
+    background:#f3f4f6;
+    color:#374151;
+}
+
+.badge.salary{
+    background:#ecfdf5;
+    color:#065f46;
+}
+
+.badge.type{
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.badge.exp{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+/* DESCRIPTION */
+.job-desc{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:8px;
+    line-height:1.4;
+}
+
+/* FOOTER */
+.job-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+    border-top:1px solid #f3f4f6;
+    padding-top:10px;
+}
+
+.time{
+    font-size:12px;
+    color:#9ca3af;
+}
+
+/* SAVE BUTTON */
+.save-btn{
+    background:transparent;
+    border:none;
+    font-size:16px;
+    color:#6b7280;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.save-btn:hover{
+    color:#111827;
+}
+
+/* EMPTY */
+.no-jobs{
+    padding:20px;
+    color:#6b7280;
+}
     </style>
 @endpush
 
@@ -1017,35 +1165,15 @@
                 <input class="lj-search-input" id="ljSearchInput" type="text"
                     placeholder="Job title, keywords, or company" autocomplete="off" />
                 <div class="lj-search-sep"></div>
-                <select class="lj-search-sel" id="ljSkillSel">
-                    <option value="" disabled selected>Select Skill</option>
-                    <option>PHP Developer</option>
-                    <option>Java Developer</option>
-                    <option>Python Developer</option>
-                    <option>React Developer</option>
-                    <option>Electrician</option>
-                    <option>Machine Operator</option>
-                    <option>Sales Executive</option>
-                    <option>Data Entry</option>
-                    <option>HR Executive</option>
-                    <option>Accountant</option>
-                    <option>Welder</option>
-                    <option>Driver</option>
-                </select>
+               
                 <div class="lj-search-sep"></div>
                 <select class="lj-search-sel" id="ljLocSel">
                     <option value="" disabled selected>Location</option>
-                    <option>Chennai</option>
-                    <option>Coimbatore</option>
-                    <option>Madurai</option>
-                    <option>Tiruchirappalli</option>
-                    <option>Salem</option>
-                    <option>Tirunelveli</option>
-                    <option>Erode</option>
-                    <option>Vellore</option>
-                    <option>Thanjavur</option>
-                    <option>Dindigul</option>
-                    <option>Remote</option>
+                    @foreach($locations as $loc)
+                        <option value="{{ $loc->district }}">
+                            {{ $loc->district }}
+                        </option>
+                    @endforeach
                 </select>
                 <div class="lj-search-cta">
                     <button class="lj-search-btn" id="ljSearchBtn">
@@ -1055,6 +1183,7 @@
                 </div>
             </div>
         </div>
+        <div id="jobResults" style="margin-top:20px;"></div>
 
         {{-- Trending tags --}}
         <div class="lj-anim lj-anim-d3">
@@ -1336,6 +1465,177 @@
         </div>
     </section>
 
+<script>
+const searchUrl = "{{ route('jobs.search') }}";
 
+const keywordInput = document.getElementById('ljSearchInput');
+const locationSelect = document.getElementById('ljLocSel');
+const searchBtn = document.getElementById('ljSearchBtn');
+
+let delay;
+
+/* =========================
+   MAIN SEARCH FUNCTION
+========================= */
+function searchJobs() {
+
+    let keyword = keywordInput.value || '';
+    let location = locationSelect.value || '';
+
+    let url = `${searchUrl}?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+
+    let container = document.getElementById('jobResults');
+    container.innerHTML = `<p class="no-jobs">Loading jobs...</p>`;
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                renderJobs(data.jobs);
+            } else {
+                container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            container.innerHTML = `<p class="no-jobs">Something went wrong</p>`;
+        });
+}
+
+/* =========================
+   RENDER JOBS
+========================= */
+function renderJobs(jobs) {
+
+    let container = document.getElementById('jobResults');
+
+    if (!jobs || jobs.length === 0) {
+        container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
+        return;
+    }
+
+    let html = '';
+
+    jobs.forEach(job => {
+        html += `
+        <div class="job-card" onclick="loadPreview(${job.id}, this)" id="job-${job.id}">
+
+            <div class="job-header">
+                <div class="job-info">
+
+                    <div class="job-title-row">
+                        <h3 class="job-title">${job.title ?? ''}</h3>
+                        ${isNew(job.created_at)}
+                    </div>
+
+                    <div class="job-company">
+                        <i class="fa-solid fa-building"></i>
+                        ${job.company_name ?? ''}
+                    </div>
+
+                    <div class="job-location">
+                        <i class="fa-solid fa-location-dot"></i>
+                        ${job.location ?? ''}
+                    </div>
+
+                </div>
+
+                <div class="job-logo">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+            </div>
+
+            <div class="job-body">
+
+                ${job.salary_min ? `
+                    <span class="badge salary">
+                        ₹${job.salary_min} - ₹${job.salary_max}/mo
+                    </span>` : ''}
+
+                ${job.job_type ? `<span class="badge type">${job.job_type}</span>` : ''}
+
+                ${job.experience ? `<span class="badge exp">${job.experience}</span>` : ''}
+
+                ${job.description ? `
+                    <p class="job-desc">${truncate(job.description, 90)}</p>
+                ` : ''}
+
+            </div>
+
+            <div class="job-footer">
+                <span class="time">${timeAgo(job.created_at)}</span>
+
+                <button class="save-btn" onclick="event.stopPropagation();toggleSave(this)">
+                    <i class="fa-regular fa-bookmark"></i>
+                </button>
+            </div>
+
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+/* =========================
+   EVENTS (IMPORTANT FIXED)
+========================= */
+
+/* 1. Button click */
+searchBtn.addEventListener('click', searchJobs);
+
+/* 2. Enter key */
+keywordInput.addEventListener('keypress', function(e){
+    if (e.key === 'Enter') searchJobs();
+});
+
+/* 3. Typing (debounced) */
+keywordInput.addEventListener('input', function() {
+    clearTimeout(delay);
+    delay = setTimeout(searchJobs, 500);
+});
+
+/* 4. Location change */
+locationSelect.addEventListener('change', searchJobs);
+
+/* =========================
+   HELPERS
+========================= */
+
+function isNew(date) {
+    let created = new Date(date);
+    let now = new Date();
+    let diff = (now - created) / (1000 * 60 * 60 * 24);
+
+    return diff <= 2
+        ? `<span class="lj-job-badge new">New</span>`
+        : '';
+}
+
+function timeAgo(date) {
+    let seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+    let intervals = {
+        year: 31536000,
+        month: 2592000,
+        day: 86400,
+        hour: 3600,
+        minute: 60
+    };
+
+    for (let key in intervals) {
+        let value = Math.floor(seconds / intervals[key]);
+        if (value > 0) {
+            return value + " " + key + (value > 1 ? "s" : "") + " ago";
+        }
+    }
+
+    return "Just now";
+}
+
+function truncate(text, length) {
+    if (!text) return '';
+    return text.length > length ? text.substring(0, length) + '...' : text;
+}
+</script>
 
 @endsection

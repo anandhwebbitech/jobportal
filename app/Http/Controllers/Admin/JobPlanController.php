@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BannerPlan;
+use App\Models\BannerPlanSubscription;
 use Illuminate\Http\Request;
 use App\Models\JobPlan;
 use App\Models\ResumePlan;
+use App\Models\ResumePlanSubscription;
 use Yajra\DataTables\DataTables;
+use App\Models\UserPlanSubscription;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class JobPlanController extends Controller
 {
@@ -398,5 +403,155 @@ class JobPlanController extends Controller
             'status' => true,
             'message' => 'Banner Plan Deleted Successfully'
         ]);
+    }
+
+    public function buyPlan(Request $request)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:job_plans,id'
+        ]);
+
+        $user = Auth::user();
+
+        // 🔍 Get plan
+        $plan = JobPlan::findOrFail($request->plan_id);
+
+        // ❗ Deactivate old plans (optional but recommended)
+        UserPlanSubscription::where('user_id', $user->id)
+            ->where('status', 1)
+            ->update(['status' => 0]);
+
+        // ✅ Create new subscription
+        $subscription = UserPlanSubscription::create([
+            'user_id'        => $user->id,
+            'job_plan_id'    => $plan->id,
+            'start_date'     => now(),
+            'end_date'       => now()->addDays($plan->duration_days),
+            'jobs_used'      => 0,
+            'job_post_limit' => $plan->job_post_limit,
+            'payment_id'     => 'TEST_' . rand(10000,99999), // temp
+            'payment_status' => 'paid',
+            'status'         => 1
+        ]);
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Plan purchased successfully',
+            'data'    => $subscription
+        ]);
+    }
+
+
+    /* ===============================
+       GET ACTIVE PLAN
+    =============================== */
+    public function activePlan()
+    {
+        $plan = UserPlanSubscription::where('user_id', Auth::id())
+            ->where('status', 1)
+            ->whereDate('end_date', '>=', now())
+            ->latest()
+            ->first();
+
+        return $plan;
+    }
+
+    public function buyResumePlan(Request $request)
+    {
+         try {
+
+            $request->validate([
+                'plan_id' => 'required|exists:resume_plans,id'
+            ]);
+
+            $user = auth()->user();
+
+            $plan = ResumePlan::findOrFail($request->plan_id);
+
+            // ❌ Already active plan check
+            $existing = ResumePlanSubscription::where('user_id', $user->id)
+                ->where('status', 1)
+                ->whereDate('end_date', '>=', now())
+                ->first();
+
+            if ($existing) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You already have an active plan!'
+                ], 400);
+            }
+
+            // ✅ Create subscription
+            ResumePlanSubscription::create([
+                'user_id'        => $user->id,
+                'plan_id'        => $plan->id,
+                'download_limit' => $plan->downloads_limit ?? 0,
+                'downloads_used' => 0,
+                'start_date'     => Carbon::now(),
+                'end_date'       => Carbon::now()->addDays($plan->duration_days),
+                'status'         => 1,
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Resume plan purchased successfully 🎉'
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+public function purchaseBanner(Request $request)
+    {
+        $request->validate([
+            'banner_plan_id' => 'required|exists:banner_plans,id',
+            'banner_image' => 'required|image|max:5120'
+        ]);
+
+        $plan = BannerPlan::findOrFail($request->banner_plan_id);
+
+        $file = $request->file('banner_image');
+        $filename = time().'_'.$file->getClientOriginalName();
+        $file->storeAs('public/banners', $filename);
+
+        $subscription = BannerPlanSubscription::create([
+            'user_id' => auth()->id(),
+            'banner_plan_id' => $plan->id,
+            'banner_image' => $filename,
+            'price' => $plan->price,
+            'gst_amount' => $plan->gst_amount,
+            'total_price' => $plan->total_price,
+            'status' => 'pending'
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'subscription_id' => $subscription->id,
+            'amount' => $plan->total_price
+        ]);
+    }
+
+    public function paymentSuccess(Request $request)
+    {
+        $subscription = BannerPlanSubscription::findOrFail($request->subscription_id);
+
+        $start = now();
+        $end = now()->addDays(10); // or from plan
+
+        $subscription->update([
+            'status' => 'active',
+            'start_date' => $start,
+            'end_date' => $end,
+            'payment_id' => $request->payment_id
+        ]);
+
+        return response()->json(['status' => 'success']);
     }
 }

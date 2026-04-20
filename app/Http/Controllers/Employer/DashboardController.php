@@ -13,13 +13,14 @@ use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
 use App\Models\Notification;
 use App\Events\UserNotification;
+use App\Models\BannerPlan;
 use App\Models\JobPlan;
 use App\Models\Qualification;
+use App\Models\ResumePlan;
 use App\Models\Skill;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Hash;
-
-
+use App\Models\UserPlanSubscription;
 
 class DashboardController extends Controller
 {
@@ -43,13 +44,27 @@ class DashboardController extends Controller
         $recentJobs = Job::latest()->take(5)->get();
         $recentApplications = JobApplication::latest()->take(5)->get();
 
+         // ✅ GET ACTIVE PLAN
+        $plan = UserPlanSubscription::where('user_id', auth()->id())
+            ->where('status', 1)
+            ->latest()
+            ->first();
+
+        $daysLeft = null;
+
+        if ($plan && $plan->end_date) {
+            $daysLeft = (int) floor(Carbon::now()->diffInDays($plan->end_date, false));
+        }
+
         return view('frontend.employer.dashboard', compact(
             'totalJobs',
             'activeJobs',
             'expiredJobs',
             'totalApplications',
             'recentJobs',
-            'recentApplications'
+            'recentApplications',
+            'daysLeft',
+            'plan'
         ));
     }
 
@@ -102,9 +117,126 @@ class DashboardController extends Controller
        JOBS — STORE
     ============================== */
 
+    // public function jobsStore(Request $request)
+    // {
+    //     try {
+
+    //         $request->validate([
+    //             'job_title'           => 'required|string|min:3|max:150',
+    //             'job_category'        => 'required|string|max:100',
+    //             'industry_type'       => 'required|string|max:100',
+    //             'description'         => 'required|string|min:50|max:3000',
+    //             'responsibilities'    => 'required|string|min:20|max:2000',
+    //             'benefits'            => 'nullable|string|max:500',
+    //             'state'               => 'required|string|max:100',
+    //             'district'            => 'required|string|max:100',
+    //             'city'                => 'required|string|max:100',
+    //             'experience_required' => 'required|string|max:50',
+    //             'vacancies'           => 'required|integer|min:1|max:2000',
+    //             'education'           => 'required|string|max:50',
+    //             'job_type'            => 'required|in:Full Time,Part Time,Contract',
+    //             'status'              => 'required|in:active,inactive',
+    //             'skills'              => 'required|string',
+    //             'terms'               => 'accepted',
+    //         ]);
+
+    //         // responsibilities & benefits (fixed)
+
+    //         // skills decode
+    //         $skills = json_decode($request->skills, true);
+    //         if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
+    //             return back()->withInput()->withErrors([
+    //                 'skills' => 'Invalid skills format'
+    //             ]);
+    //         }
+
+    //         // salary split
+    //         $salaryMin = 0;
+    //         $salaryMax = 0;
+
+    //         if ($request->salary_range) {
+    //             $parts = explode('-', $request->salary_range);
+    //             $salaryMin = $parts[0] ?? 0;
+    //             $salaryMax = $parts[1] ?? 0;
+    //         }
+
+    //         $company = EmployerDetail::where('user_id', auth()->id())->first();
+
+    //         $job = Job::create([
+    //             'company_name'     => $company->company_name ?? null,
+    //             'category'         => $request->job_category,
+    //             'industry'         => $request->industry_type,
+    //             'title'            => $request->job_title,
+    //             'slug'             => Str::slug($request->job_title) . '-' . time(),
+    //             'description'      => $request->description,
+    //             'responsibilities' => $request->responsibilities,
+    //             'benefits'         => $request->benefits,
+    //             'state'            => $request->state,
+    //             'district'         => $request->district,
+    //             'location'         => $request->city,
+    //             'experience'       => $request->experience_required,
+    //             'salary_min'       => $salaryMin,
+    //             'salary_max'       => $salaryMax,
+    //             'education'        => $request->education,
+    //             'job_type'         => $request->job_type,
+    //             'status'           => $request->status === 'active' ? 1 : 0,
+    //             'skills'           => json_encode($skills),
+    //             'num_vacancies'    => $request->vacancies,
+    //             'admin_status'     => 0,
+    //             'is_new'           => 1,
+    //             'expiry_date'      => Carbon::now()->addDays(10),
+    //             'create_user_id'   => auth()->id(),
+    //         ]);
+    //         if($job){
+    //             $message = 'New Job recived for approval';
+    //             $notification = Notification::create([
+    //                 'user_id'   => 3,
+    //                 'job_id'    => $job->id,
+    //                 'title'     => Notification::typeName(Notification::TYPE_JOB_POST),
+    //                 'message'   => $message,
+    //                 'type'      => Notification::TYPE_JOB_POST,
+    //                 'send_from' => auth()->id(), // admin/employer
+    //                 'send_to'   => 3,
+    //             ]);
+    //             event(new UserNotification($notification));
+    //             \Log::info('Notification fired');
+    //         }
+
+    //         return redirect()
+    //             ->route('employer.jobs.show', $job->id)
+    //             ->with('success', 'Job created successfully!');
+
+    //     } catch (\Exception $e) {
+    //         return back()->withInput()->with('error', $e->getMessage());
+    //     }
+    // }
     public function jobsStore(Request $request)
     {
         try {
+
+            /* ===============================
+            🔥 PLAN CHECK START
+            =============================== */
+
+            $plan = UserPlanSubscription::where('user_id', auth()->id())
+                ->where('status', 1)
+                ->whereDate('end_date', '>=', now())
+                ->latest()
+                ->first();
+
+            // ❌ No active plan
+            if (!$plan) {
+                return back()->withInput()->with('error', 'Please purchase a job plan first');
+            }
+
+            // ❌ Limit reached
+            if ($plan->jobs_used >= $plan->job_post_limit) {
+                return back()->withInput()->with('error', 'Job post limit reached for your plan');
+            }
+
+            /* ===============================
+            VALIDATION
+            =============================== */
 
             $request->validate([
                 'job_title'           => 'required|string|min:3|max:150',
@@ -125,8 +257,6 @@ class DashboardController extends Controller
                 'terms'               => 'accepted',
             ]);
 
-            // responsibilities & benefits (fixed)
-
             // skills decode
             $skills = json_decode($request->skills, true);
             if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
@@ -146,6 +276,10 @@ class DashboardController extends Controller
             }
 
             $company = EmployerDetail::where('user_id', auth()->id())->first();
+
+            /* ===============================
+            JOB CREATE
+            =============================== */
 
             $job = Job::create([
                 'company_name'     => $company->company_name ?? null,
@@ -169,22 +303,35 @@ class DashboardController extends Controller
                 'num_vacancies'    => $request->vacancies,
                 'admin_status'     => 0,
                 'is_new'           => 1,
-                'expiry_date'      => Carbon::now()->addDays(10),
+
+                // 🔥 IMPORTANT → plan based expiry
+                'expiry_date'      => now()->addDays($plan->plan->duration_days),
+
                 'create_user_id'   => auth()->id(),
             ]);
-            if($job){
-                $message = 'New Job recived for approval';
+
+            /* ===============================
+            🔥 UPDATE PLAN USAGE
+            =============================== */
+            $plan->increment('jobs_used');
+
+            /* ===============================
+            NOTIFICATION
+            =============================== */
+            if ($job) {
+                $message = 'New Job received for approval';
+
                 $notification = Notification::create([
                     'user_id'   => 3,
                     'job_id'    => $job->id,
                     'title'     => Notification::typeName(Notification::TYPE_JOB_POST),
                     'message'   => $message,
                     'type'      => Notification::TYPE_JOB_POST,
-                    'send_from' => auth()->id(), // admin/employer
+                    'send_from' => auth()->id(),
                     'send_to'   => 3,
                 ]);
+
                 event(new UserNotification($notification));
-                \Log::info('Notification fired');
             }
 
             return redirect()
@@ -195,7 +342,6 @@ class DashboardController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
-
 
     /* ==============================
        JOBS — SHOW
@@ -416,7 +562,10 @@ class DashboardController extends Controller
         ->where('status', 1)
         ->orderBy('price')
         ->get();
-        return view('frontend.employer.billing', compact('jobPlans'));
+        $resumeplans = ResumePlan::where('is_active',1)->where('status',1)->orderBy('price')->get();
+        $bannerplans = BannerPlan::where('is_active',1)->orderBy('price')->get();
+        // dd($resumeplans);
+        return view('frontend.employer.billing', compact('jobPlans','resumeplans','bannerplans'));
     }
 
     public function checkout(Request $request)
@@ -445,7 +594,6 @@ class DashboardController extends Controller
             ->whereIn('job_id', $jobs)
             ->latest()
             ->get();
-
         $candidates = $applications->map(function ($app, $i) {
 
             $name = $app->user->name ?? 'Unknown';

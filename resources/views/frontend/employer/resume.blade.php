@@ -177,6 +177,8 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 function applyFilters() { /* Wire to server-side search */ }
 function resetFilters() { document.querySelectorAll('.fs-input').forEach(i => i.value = ''); }
@@ -198,20 +200,77 @@ document.addEventListener('click', function(e) {
         window.open(url, '_blank'); // 👁 open
     }
 });
-
-// DOWNLOAD
+let checkDownloadUrl = "{{ url('/check-download') }}/";
+let baseDownloadUrl = "{{ url('download') }}/";
 document.addEventListener('click', function(e) {
-    if (e.target.closest('.downloadBtn')) {
-        let id = e.target.closest('.downloadBtn').dataset.id;
 
-        if (!id) {
-            alert('No resume found');
-            return;
+    let btn = e.target.closest('.downloadBtn');
+    if (!btn) return;
+
+    if (btn.classList.contains('processing')) return;
+    btn.classList.add('processing');
+
+    let id = btn.dataset.id;
+
+    if (!id) {
+        Swal.fire('Error', 'No resume found', 'error');
+        btn.classList.remove('processing');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Downloading...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch(baseDownloadUrl + id)
+    .then(async res => {
+
+        // ❌ error response
+        if (!res.ok) {
+            let text = await res.text();
+            throw new Error(text);
         }
 
-        let url = downloadBaseUrl.replace(':id', id);
-        window.open(url, '_blank'); // ⬇ download
-    }
+        return res.blob();
+    })
+    .then(blob => {
+
+        let url = window.URL.createObjectURL(blob);
+
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = 'resume.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Downloaded',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+    })
+    .catch(err => {
+        Swal.fire('Oops!', err.message, 'error');
+    })
+    .finally(() => {
+        btn.classList.remove('processing');
+    });
+
+});
+
+</script>
+@if(session('error'))
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: "{{ session('error') }}"
 });
 </script>
+@endif
 @endpush

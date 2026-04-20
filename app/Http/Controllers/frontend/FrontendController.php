@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\JobPlan;
 use App\Models\Location;
+use App\Models\Qualification;
 use App\Models\ResumePlan;
+use App\Models\Skill;
+
 
 
 
@@ -19,8 +22,9 @@ class FrontendController extends Controller
     public function home()
     {
         $latestJobs = Job::latest()->take(6)->get();
+        $locations = Location::where('status',1)->get();
 
-        return view('frontend.home', compact('latestJobs'));
+        return view('frontend.home', compact('latestJobs','locations'));
     }
 
     // Find Jobs Page
@@ -28,16 +32,39 @@ class FrontendController extends Controller
     {
         $query = Job::query();
 
-        if ($request->title) {
-            $query->where('title', 'like', '%' . $request->title . '%');
+        if ($request->title || $request->q) {
+            $query->where('title', 'like', '%' . ($request->title ?? $request->q) . '%');
         }
 
         if ($request->location) {
-            $query->where('location', $request->location);
+            $query->where('district', $request->location);
         }
 
         if ($request->job_type) {
             $query->where('job_type', $request->job_type);
+        }
+
+        if ($request->skill) {
+            $query->where('skills', 'like', '%' . $request->skill . '%');
+        }
+
+        if ($request->category) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->experience) {
+            if ($request->experience != 'Any') {
+                $query->where('experience', $request->experience);
+            }
+        }
+
+        if ($request->salary) {
+            if (str_contains($request->salary, '-')) {
+                [$min, $max] = explode('-', $request->salary);
+                $query->whereBetween('salary_min', [(int)$min, (int)$max]);
+            } elseif ($request->salary == '50000+') {
+                $query->where('salary_min', '>=', 50000);
+            }
         }
 
         $jobs = $query->latest()->paginate(10);
@@ -96,13 +123,19 @@ class FrontendController extends Controller
     // Job Seeker Register
     public function jobseekerRegister()
     {
-        return view('frontend.auth.jobseeker-register');
+        $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
+
+        return view('frontend.auth.jobseeker-register',compact('skills','qualifications'));
     }
 
     // Employer Register
     public function employerRegister()
     {
-        return view('frontend.auth.employer-register');
+        $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
+
+        return view('frontend.auth.employer-register',compact('skills','qualifications'));
     }
 
     // Forgot Password
@@ -152,6 +185,32 @@ class FrontendController extends Controller
     public function getDistricts($state)
     {
         return Location::where('state', $state)->pluck('district');
+    }
+
+    public function searchJobs(Request $request)
+    {
+        $query = Job::query();
+
+        // 🔍 keyword search
+        if ($request->keyword) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'LIKE', '%' . $request->keyword . '%')
+                ->orWhere('company_name', 'LIKE', '%' . $request->keyword . '%')
+                ->orWhere('skills', 'LIKE', '%' . $request->keyword . '%');
+            });
+        }
+
+        // 📍 location filter
+        if ($request->location) {
+            $query->where('location', $request->location);
+        }
+
+        $jobs = $query->latest()->take(20)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'jobs' => $jobs
+        ]);
     }
 
 }

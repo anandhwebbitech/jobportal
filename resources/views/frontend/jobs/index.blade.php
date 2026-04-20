@@ -974,7 +974,7 @@
 
                 <div class="lj-filter-group">
                     <label class="lj-filter-label">Experience Level</label>
-                    <div class="lj-filter-chips">
+                    <div class="lj-filter-chips filter-chip-experience">
                         @foreach (['Any', 'Fresher', '1-2 Years', '3-5 Years', '5+ Years'] as $exp)
                             <div class="lj-filter-chip {{ request('experience') == $exp ? 'active' : '' }}"
                                 onclick="setFilter('experience','{{ $exp }}',this)">{{ $exp }}</div>
@@ -1181,7 +1181,7 @@
                             <a href="#" class="lj-apply-btn" id="prevApplyBtn">
                                 <i class="fa-solid fa-paper-plane"></i> Apply Now
                             </a>
-                            <button class="lj-save-btn" onclick="toggleSavePreview(this, {{ $job->id }})" data-jobid="{{ $job->id }}">
+                            <button class="lj-save-btn" onclick="toggleSavePreview(this)" >
                                 <i class="fa-regular fa-bookmark"></i> Save
                             </button>
                             <a href="#" class="lj-save-btn" id="prevDetailsLink" target="_blank">
@@ -1260,17 +1260,26 @@
         });
         // ── FILTER CHIPS ────────────────────────────────────
         function setFilter(name, value, el) {
-            document.querySelectorAll(`[onclick*="setFilter('${name}'"]`).forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.filter-chip-experience')
+                .forEach(c => c.classList.remove('active'));
+
             el.classList.add('active');
+
             const form = document.getElementById('searchForm');
+
             let input = form.querySelector(`input[name="${name}"]`);
+
             if (!input) {
                 input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = name;
                 form.appendChild(input);
             }
-            input.value = value === 'Any' ? '' : value;
+
+            input.value = (value === 'Any') ? '' : value;
+
+            // ✅ AUTO SUBMIT (IMPORTANT FIX)
+            form.submit();
         }
 
         // ── RESET ────────────────────────────────────────────
@@ -1290,9 +1299,14 @@
             }
         }
 
-        function toggleSavePreview(btn,jobId) {
-            
+        function toggleSavePreview(btn) {
+            const jobId = document.querySelector('.lj-job-card.active')
+                ?.id?.replace('job-card-','');
+
+            if (!jobId) return;
+
             const ico = btn.querySelector('i');
+
             $.ajax({
                 url: "{{ route('jobseeker.jobs.toggleSave') }}",
                 type: "POST",
@@ -1303,17 +1317,11 @@
                 success: function(response) {
                     if(response.savestatus == 1){
                         ico.classList.replace('fa-regular', 'fa-solid');
-                        btn.style.borderColor = 'var(--blue)';
                         btn.style.color = 'var(--blue)';
                     } else {
                         ico.classList.replace('fa-solid', 'fa-regular');
-                        btn.style.borderColor = '';
                         btn.style.color = '';
                     }
-                    alert(response.message); // optional toaster
-                },
-                error: function() {
-                    alert('Something went wrong. Please try again.');
                 }
             });
         }

@@ -6,7 +6,7 @@
 @section('title','Billing / Plans')
 @section('breadcrumb','Billing / Plans')
 @php $activeNav = 'billing'; @endphp
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -434,45 +434,95 @@ body { font-family:var(--body); color:var(--gray-700); }
 
       <div class="plan-grid-2">
 
-        {{-- 15 Day --}}
-        <div class="plan-card" id="jp_15Card" onclick="selectPlan('jp','15','sel-blue')">
-          <input type="radio" name="job_plan" id="jp_15" value="15_day"/>
-          <div class="plan-tick blue"><i class="fas fa-check"></i></div>
-          <div class="plan-ico blue"><i class="fas fa-bolt"></i></div>
-          <div class="plan-name">15 Day Plan</div>
-          <div class="plan-price"><sup>₹</sup>600 <span class="plus-gst">+ GST</span></div>
-          <div class="plan-validity"><i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>&nbsp;Job visible for 15 Days</div>
-          <hr class="plan-divider"/>
-          <ul class="plan-feats">
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Post 1 Job Opening</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Applicant Management</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Email Notifications</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Tamil Nadu Reach</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>10 Resume Downloads</li>
-          </ul>
-          <div class="plan-total blue">Total: <strong>₹708</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div>
+        @foreach($jobPlans as $plan)
 
-        {{-- 30 Day --}}
-        <div class="plan-card sel-blue" id="jp_30Card" onclick="selectPlan('jp','30','sel-blue')">
-          <div class="plan-badge-top blue">⭐ Most Popular</div>
-          <input type="radio" name="job_plan" id="jp_30" value="30_day" checked/>
-          <div class="plan-tick blue"><i class="fas fa-check"></i></div>
-          <div class="plan-ico purple"><i class="fas fa-crown"></i></div>
-          <div class="plan-name">30 Day Plan</div>
-          <div class="plan-price"><sup>₹</sup>1,000 <span class="plus-gst">+ GST</span></div>
-          <div class="plan-validity"><i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>&nbsp;Job visible for 30 Days</div>
-          <hr class="plan-divider"/>
-          <ul class="plan-feats">
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Post 1 Job Opening</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Applicant Management</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Email Notifications</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Featured Job Listing</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>30 Resume Downloads</li>
-            <li><span class="feat-dot blue"><i class="fas fa-check"></i></span>Priority Support</li>
-          </ul>
-          <div class="plan-total blue">Total: <strong>₹1,180</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div>
+          <div class="plan-card" id="jp_{{ $plan->id }}Card"
+              onclick="selectPlan('jp','{{ $plan->id }}','sel-blue')">
+
+            <input type="radio" name="job_plan" id="jp_{{ $plan->id }}"
+                  value="{{ $plan->id }}"{{ $loop->first ? 'checked' : '' }} />
+
+            <div class="plan-tick blue"><i class="fas fa-check"></i></div>
+
+            <div class="plan-ico blue">
+              <i class="fas 
+                @if($plan->id == 1) fa-bolt
+                @elseif($plan->id == 2) fa-crown
+                @else fa-gem
+                @endif
+              "></i>
+            </div>
+
+            <div class="plan-name">
+              {{ $plan->name }} Plan
+            </div>
+
+            <div class="plan-price">
+              <sup>₹</sup>{{ $plan->price }}
+              <span class="plus-gst">+ GST</span>
+            </div>
+
+            <div class="plan-validity">
+              <i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>
+              &nbsp;Job visible for {{ $plan->duration_days }} Days
+            </div>
+
+            <hr class="plan-divider"/>
+
+            <ul class="plan-feats">
+
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Post {{ $plan->job_post_limit }} Job Opening
+              </li>
+
+              @if($plan->applicant_management)
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Applicant Management
+              </li>
+              @endif
+
+              @if($plan->email_notifications)
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Email Notifications
+              </li>
+              @endif
+
+              @if($plan->tamil_nadu_reach)
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Tamil Nadu Reach
+              </li>
+              @endif
+
+              @if($plan->featured_listing)
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Featured Listing
+              </li>
+              @endif
+
+              @if($plan->priority_support)
+              <li>
+                <span class="feat-dot blue"><i class="fas fa-check"></i></span>
+                Priority Support
+              </li>
+              @endif
+
+            </ul>
+
+            <div class="plan-total blue">
+              Total: <strong>₹{{ $plan->total_price }}</strong>
+              <span style="opacity:.65;font-weight:500;">
+                (incl. 18% GST)
+              </span>
+            </div>
+
+          </div>
+
+          @endforeach
 
       </div>
 
@@ -528,7 +578,7 @@ body { font-family:var(--body); color:var(--gray-700); }
       <div class="plan-grid-3">
 
         {{-- Silver --}}
-        <div class="plan-card" id="rdb_silverCard" onclick="selectPlan('rdb','silver','sel-green')">
+        {{-- <div class="plan-card" id="rdb_silverCard" onclick="selectPlan('rdb','silver','sel-green')">
           <input type="radio" name="resume_plan" id="rdb_silver" value="silver"/>
           <div class="plan-tick green"><i class="fas fa-check"></i></div>
           <div class="plan-ico silver"><i class="fas fa-medal" style="color:#94a3b8;"></i></div>
@@ -544,10 +594,10 @@ body { font-family:var(--body); color:var(--gray-700); }
             <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Email Support</li>
           </ul>
           <div class="plan-total green">Total: <strong>₹2,360</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div>
+        </div> --}}
 
         {{-- Gold --}}
-        <div class="plan-card sel-green" id="rdb_goldCard" onclick="selectPlan('rdb','gold','sel-green')">
+        {{-- <div class="plan-card sel-green" id="rdb_goldCard" onclick="selectPlan('rdb','gold','sel-green')">
           <div class="plan-badge-top green">🥇 Best Value</div>
           <input type="radio" name="resume_plan" id="rdb_gold" value="gold" checked/>
           <div class="plan-tick green"><i class="fas fa-check"></i></div>
@@ -565,10 +615,10 @@ body { font-family:var(--body); color:var(--gray-700); }
             <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Candidate Shortlisting</li>
           </ul>
           <div class="plan-total green">Total: <strong>₹3,540</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div>
+        </div> --}}
 
         {{-- Platinum --}}
-        <div class="plan-card" id="rdb_platinumCard" onclick="selectPlan('rdb','platinum','sel-purple')">
+        {{-- <div class="plan-card" id="rdb_platinumCard" onclick="selectPlan('rdb','platinum','sel-purple')">
           <input type="radio" name="resume_plan" id="rdb_platinum" value="platinum"/>
           <div class="plan-tick purple"><i class="fas fa-check"></i></div>
           <div class="plan-ico purple"><i class="fas fa-gem"></i></div>
@@ -586,7 +636,128 @@ body { font-family:var(--body); color:var(--gray-700); }
             <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>WhatsApp Support</li>
           </ul>
           <div class="plan-total purple">Total: <strong>₹5,900</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div>
+        </div> --}}
+        @foreach($resumeplans as $plan)
+
+          @php
+              // dynamic styles based on plan name
+              $key = strtolower($plan->name);
+
+              $colorClass = match($key) {
+                  'silver' => 'green',
+                  'gold' => 'green',
+                  'platinum' => 'purple',
+                  default => 'green'
+              };
+
+              $iconClass = match($key) {
+                  'silver' => 'fa-medal',
+                  'gold' => 'fa-medal',
+                  'platinum' => 'fa-gem',
+                  default => 'fa-medal'
+              };
+
+              $extraClass = $key == 'gold' ? 'sel-green' : '';
+          @endphp
+
+          <div class="plan-card {{ $extraClass }}"
+              id="rdb_{{ $key }}Card"
+              onclick="selectPlan('rdb','{{ $key }}','sel-{{ $colorClass }}')">
+
+              {{-- Best Value badge --}}
+              @if($key == 'gold')
+                  <div class="plan-badge-top green">🥇 Best Value</div>
+              @endif
+
+              <input type="radio"
+                    name="resume_plan"
+                    id="rdb_{{ $key }}"
+                    value="{{ $plan->id }}"
+                    {{ $loop->first ? 'checked' : '' }} />
+
+              <div class="plan-tick {{ $colorClass }}">
+                  <i class="fas fa-check"></i>
+              </div>
+
+              <div class="plan-ico {{ $colorClass }}">
+                  <i class="fas {{ $iconClass }}"></i>
+              </div>
+
+              <div class="plan-name">
+                  {{ $plan->name }} Plan
+              </div>
+
+              <div class="plan-price">
+                  <sup>₹</sup>{{ $plan->price }}
+                  <span class="plus-gst">+ GST</span>
+              </div>
+
+              <div class="plan-validity">
+                  <i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>
+                  &nbsp;Valid {{ $plan->duration_days }} Days
+              </div>
+
+              <hr class="plan-divider"/>
+
+              <ul class="plan-feats">
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      {{ $plan->download_limit }} Resume Downloads
+                  </li>
+
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      Full Profile Access
+                  </li>
+
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      Advanced Filters
+                  </li>
+
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      Export to Excel / PDF
+                  </li>
+
+                  @if($key == 'gold' || $key == 'platinum')
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      Priority Support
+                  </li>
+                  @endif
+
+                  @if($key == 'platinum')
+                  <li>
+                      <span class="feat-dot {{ $colorClass }}">
+                          <i class="fas fa-check"></i>
+                      </span>
+                      Dedicated Manager
+                  </li>
+                  @endif
+              </ul>
+
+              <div class="plan-total {{ $colorClass }}">
+                  Total:
+                  <strong>₹{{ $plan->price + ($plan->price * 0.18) }}</strong>
+                  <span style="opacity:.65;font-weight:500;">
+                      (incl. 18% GST)
+                  </span>
+              </div>
+
+          </div>
+
+          @endforeach
 
       </div>
 
@@ -612,130 +783,130 @@ body { font-family:var(--body); color:var(--gray-700); }
 {{-- ══════════════════════════════════════════════════════
      TAB 3 – BANNER ADVERTISEMENT
 ══════════════════════════════════════════════════════ --}}
-<div class="tab-panel" id="tab-banner">
+  <div class="tab-panel" id="tab-banner">
 
-  <div class="hero-banner amber">
-    <div class="hero-body">
-      <div class="hero-pill"><i class="fas fa-image"></i> Home Page Ad</div>
-      <div class="hero-title">Advertise on the Home Page</div>
-      <div class="hero-sub">Post your job ad as an image banner — mention multiple positions in one ad</div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val">10 Days</div><div class="hero-stat-lbl">Duration</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">₹2,360</div><div class="hero-stat-lbl">Total incl. GST</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">Home Page</div><div class="hero-stat-lbl">Placement</div></div>
+    <div class="hero-banner amber">
+      <div class="hero-body">
+        <div class="hero-pill"><i class="fas fa-image"></i> Home Page Ad</div>
+        <div class="hero-title">Advertise on the Home Page</div>
+        <div class="hero-sub">Post your job ad as an image banner — mention multiple positions in one ad</div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hero-stat-val">10 Days</div><div class="hero-stat-lbl">Duration</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">₹2,360</div><div class="hero-stat-lbl">Total incl. GST</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">Home Page</div><div class="hero-stat-lbl">Placement</div></div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-hero amber" onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Slot</button>
       </div>
     </div>
-    <div class="hero-actions">
-      <button class="btn-hero amber" onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Slot</button>
-    </div>
-  </div>
 
-  <div class="emp-card">
-    <div class="emp-card-head">
-      <div class="emp-card-head-ico amber"><i class="fas fa-image"></i></div>
-      <div>
-        <div class="emp-card-head-title">Home Page Banner Advertisement</div>
-        <div class="emp-card-head-sub">Upload an image banner — supports multiple job positions in one ad</div>
-      </div>
-    </div>
-    <div class="emp-card-body">
-
-      <div class="feat-tile-grid">
-        <div class="feat-tile">
-          <div class="feat-tile-ico amber"><i class="fas fa-image"></i></div>
-          <div class="feat-tile-title">Image Banner</div>
-          <div class="feat-tile-desc">Upload your ad as a high-quality PNG, JPG or WEBP image</div>
-        </div>
-        <div class="feat-tile">
-          <div class="feat-tile-ico blue"><i class="fas fa-list-check"></i></div>
-          <div class="feat-tile-title">Multi-Position</div>
-          <div class="feat-tile-desc">Mention multiple job positions within a single banner image</div>
-        </div>
-        <div class="feat-tile">
-          <div class="feat-tile-ico green"><i class="fas fa-calendar-days"></i></div>
-          <div class="feat-tile-title">10-Day Exposure</div>
-          <div class="feat-tile-desc">Banner stays live for 10 continuous days from activation date</div>
+    <div class="emp-card">
+      <div class="emp-card-head">
+        <div class="emp-card-head-ico amber"><i class="fas fa-image"></i></div>
+        <div>
+          <div class="emp-card-head-title">Home Page Banner Advertisement</div>
+          <div class="emp-card-head-sub">Upload an image banner — supports multiple job positions in one ad</div>
         </div>
       </div>
+      <div class="emp-card-body">
 
-      {{-- Banner plan wide card --}}
-      <div class="banner-wide sel-amber" id="bannerCard">
-        <input type="radio" name="banner_plan" id="banner_10day" value="banner_10day" checked/>
-        <div class="banner-wide-ico"><i class="fas fa-image"></i></div>
-        <div>
-          <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
-            <span style="font-family:var(--font);font-size:.62rem;font-weight:800;color:var(--gray-400);letter-spacing:.07em;text-transform:uppercase;">Home Page Banner</span>
-            <span style="background:var(--amber-light);color:var(--amber-text);font-family:var(--font);font-size:.6rem;font-weight:800;padding:2px 9px;border-radius:100px;">10 Days</span>
+        <div class="feat-tile-grid">
+          <div class="feat-tile">
+            <div class="feat-tile-ico amber"><i class="fas fa-image"></i></div>
+            <div class="feat-tile-title">Image Banner</div>
+            <div class="feat-tile-desc">Upload your ad as a high-quality PNG, JPG or WEBP image</div>
           </div>
-          <div style="font-family:var(--font);font-size:1.7rem;font-weight:900;color:var(--gray-900);letter-spacing:-1px;line-height:1.1;">
-            <sup style="font-size:.85rem;vertical-align:super;">₹</sup>2,000
-            <span style="font-family:var(--body);font-size:.75rem;font-weight:500;color:var(--gray-400);">+ GST</span>
+          <div class="feat-tile">
+            <div class="feat-tile-ico blue"><i class="fas fa-list-check"></i></div>
+            <div class="feat-tile-title">Multi-Position</div>
+            <div class="feat-tile-desc">Mention multiple job positions within a single banner image</div>
           </div>
-          <ul class="plan-feats" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:3px 18px;">
-            <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Image-based banner ad</li>
-            <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Multiple job positions</li>
-            <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Home page prime placement</li>
-            <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>10 days continuous display</li>
-            <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>High-visibility slot</li>
-          </ul>
-        </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div style="font-family:var(--font);font-size:.64rem;font-weight:800;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Total (incl. GST)</div>
-          <div style="font-family:var(--font);font-size:1.35rem;font-weight:900;color:var(--amber);">₹2,360</div>
-          <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px;">GST: ₹360</div>
-          <div style="margin-top:10px;width:24px;height:24px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.55rem;margin-left:auto;">
-            <i class="fas fa-check"></i>
+          <div class="feat-tile">
+            <div class="feat-tile-ico green"><i class="fas fa-calendar-days"></i></div>
+            <div class="feat-tile-title">10-Day Exposure</div>
+            <div class="feat-tile-desc">Banner stays live for 10 continuous days from activation date</div>
           </div>
         </div>
-      </div>
 
-      {{-- Upload + Summary --}}
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;align-items:start;">
-        <div>
-          <div style="font-family:var(--font);font-size:.8rem;font-weight:800;color:var(--gray-800);margin-bottom:9px;">
-            <i class="fas fa-upload" style="color:var(--amber);margin-right:5px;"></i>Upload Banner Image
+        {{-- Banner plan wide card --}}
+        <div class="banner-wide sel-amber" id="bannerCard">
+          <input type="radio" name="banner_plan" id="banner_10day" value="banner_10day" checked/>
+          <div class="banner-wide-ico"><i class="fas fa-image"></i></div>
+          <div>
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+              <span style="font-family:var(--font);font-size:.62rem;font-weight:800;color:var(--gray-400);letter-spacing:.07em;text-transform:uppercase;">Home Page Banner</span>
+              <span style="background:var(--amber-light);color:var(--amber-text);font-family:var(--font);font-size:.6rem;font-weight:800;padding:2px 9px;border-radius:100px;">10 Days</span>
+            </div>
+            <div style="font-family:var(--font);font-size:1.7rem;font-weight:900;color:var(--gray-900);letter-spacing:-1px;line-height:1.1;">
+              <sup style="font-size:.85rem;vertical-align:super;">₹</sup>2,000
+              <span style="font-family:var(--body);font-size:.75rem;font-weight:500;color:var(--gray-400);">+ GST</span>
+            </div>
+            <ul class="plan-feats" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:3px 18px;">
+              <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Image-based banner ad</li>
+              <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Multiple job positions</li>
+              <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>Home page prime placement</li>
+              <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>10 days continuous display</li>
+              <li><span class="feat-dot amber"><i class="fas fa-check"></i></span>High-visibility slot</li>
+            </ul>
           </div>
-          <label class="upload-label">
-            <input type="file" accept="image/*" onchange="handleBannerUpload(this)"/>
-            <i class="fas fa-cloud-upload-alt" style="font-size:1.7rem;color:var(--amber);margin-bottom:8px;"></i>
-            <div style="font-family:var(--font);font-size:.8rem;font-weight:700;color:var(--amber);">Click to upload</div>
-            <div style="font-size:.7rem;color:var(--gray-500);margin-top:3px;text-align:center;">PNG, JPG, WEBP · Max 5 MB · Recommended 1200×400 px</div>
-          </label>
-          <div id="bannerPreview" style="display:none;margin-top:10px;border-radius:10px;overflow:hidden;border:1.5px solid var(--gray-200);">
-            <img id="bannerImg" src="" alt="Preview" style="width:100%;display:block;"/>
-          </div>
-        </div>
-        <div>
-          <div style="font-family:var(--font);font-size:.8rem;font-weight:800;color:var(--gray-800);margin-bottom:9px;">
-            <i class="fas fa-receipt" style="color:var(--amber);margin-right:5px;"></i>Order Summary
-          </div>
-          <div class="summary-box">
-            <div class="summary-row"><span class="s-lbl">Plan</span><span class="s-val">Home Page Banner</span></div>
-            <div class="summary-row"><span class="s-lbl">Duration</span><span class="s-val">10 Days</span></div>
-            <div class="summary-row"><span class="s-lbl">Base Price</span><span class="s-val">₹2,000</span></div>
-            <div class="summary-row"><span class="s-lbl">GST (18%)</span><span class="s-val" style="color:var(--amber);">₹360</span></div>
-            <div class="summary-row s-total" style="padding-top:10px;margin-top:4px;border-top:2px solid var(--gray-200);">
-              <span class="s-lbl">Total Payable</span>
-              <span class="s-val">₹2,360</span>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-family:var(--font);font-size:.64rem;font-weight:800;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">Total (incl. GST)</div>
+            <div style="font-family:var(--font);font-size:1.35rem;font-weight:900;color:var(--amber);">₹2,360</div>
+            <div style="font-size:.7rem;color:var(--gray-400);margin-top:2px;">GST: ₹360</div>
+            <div style="margin-top:10px;width:24px;height:24px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.55rem;margin-left:auto;">
+              <i class="fas fa-check"></i>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="gst-row" style="background:#fff7ed;border-color:#fed7aa;">
-        <i class="fas fa-circle-info" style="color:#92400e;"></i>
-        Banner: ₹2,000 + 18% GST (₹360) = <strong>₹2,360 total.</strong>&nbsp; Goes live within 24 hours of payment.
-      </div>
+        {{-- Upload + Summary --}}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;align-items:start;">
+          <div>
+            <div style="font-family:var(--font);font-size:.8rem;font-weight:800;color:var(--gray-800);margin-bottom:9px;">
+              <i class="fas fa-upload" style="color:var(--amber);margin-right:5px;"></i>Upload Banner Image
+            </div>
+            <label class="upload-label">
+              <input type="file" accept="image/*" onchange="handleBannerUpload(this)"/>
+              <i class="fas fa-cloud-upload-alt" style="font-size:1.7rem;color:var(--amber);margin-bottom:8px;"></i>
+              <div style="font-family:var(--font);font-size:.8rem;font-weight:700;color:var(--amber);">Click to upload</div>
+              <div style="font-size:.7rem;color:var(--gray-500);margin-top:3px;text-align:center;">PNG, JPG, WEBP · Max 5 MB · Recommended 1200×400 px</div>
+            </label>
+            <div id="bannerPreview" style="display:none;margin-top:10px;border-radius:10px;overflow:hidden;border:1.5px solid var(--gray-200);">
+              <img id="bannerImg" src="" alt="Preview" style="width:100%;display:block;"/>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--font);font-size:.8rem;font-weight:800;color:var(--gray-800);margin-bottom:9px;">
+              <i class="fas fa-receipt" style="color:var(--amber);margin-right:5px;"></i>Order Summary
+            </div>
+            <div class="summary-box">
+              <div class="summary-row"><span class="s-lbl">Plan</span><span class="s-val">Home Page Banner</span></div>
+              <div class="summary-row"><span class="s-lbl">Duration</span><span class="s-val">10 Days</span></div>
+              <div class="summary-row"><span class="s-lbl">Base Price</span><span class="s-val">₹2,000</span></div>
+              <div class="summary-row"><span class="s-lbl">GST (18%)</span><span class="s-val" style="color:var(--amber);">₹360</span></div>
+              <div class="summary-row s-total" style="padding-top:10px;margin-top:4px;border-top:2px solid var(--gray-200);">
+                <span class="s-lbl">Total Payable</span>
+                <span class="s-val">₹2,360</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div class="divider-actions">
-        <button class="btn-primary amber" onclick="buyBannerPlan()"><i class="fas fa-image"></i> Purchase Banner Ad</button>
-        <button class="btn-outline amber"  onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Placement</button>
-      </div>
+        <div class="gst-row" style="background:#fff7ed;border-color:#fed7aa;">
+          <i class="fas fa-circle-info" style="color:#92400e;"></i>
+          Banner: ₹2,000 + 18% GST (₹360) = <strong>₹2,360 total.</strong>&nbsp; Goes live within 24 hours of payment.
+        </div>
 
+        <div class="divider-actions">
+          <button class="btn-primary amber" onclick="buyBannerPlan()"><i class="fas fa-image"></i> Purchase Banner Ad</button>
+          <button class="btn-outline amber"  onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Placement</button>
+        </div>
+
+      </div>
     </div>
-  </div>
 
-</div>{{-- /tab-banner --}}
+  </div>{{-- /tab-banner --}}
 
 
 {{-- ══════════════════════════════════════════════════════
@@ -808,6 +979,7 @@ body { font-family:var(--body); color:var(--gray-700); }
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 /* ─── TAB SWITCH ─── */
 function switchTab(btn, tab) {
@@ -819,7 +991,13 @@ function switchTab(btn, tab) {
 
 /* ─── GENERIC PLAN SELECTOR ─── */
 var planMeta = {
-  jp:  { ids: ['15','30'] },
+  jp: {
+    ids: [
+      @foreach($jobPlans as $plan)
+        '{{ $plan->id }}',
+      @endforeach
+    ]
+  },
   rdb: { ids: ['silver','gold','platinum'] },
 };
 function selectPlan(prefix, id, selClass) {
@@ -836,14 +1014,66 @@ function selectPlan(prefix, id, selClass) {
 }
 
 /* ─── JOB POSTING ─── */
+// function buyJobPlan() {
+//   var sel = document.querySelector('input[name="job_plan"]:checked');
+//   if (!sel) return alert('Please select a plan.');
+//   var info = sel.value === '15_day' ? '15 Days Plan – ₹708 (incl. GST)' : '30 Days Plan – ₹1,180 (incl. GST)';
+//   if (confirm('Proceed to payment for ' + info + '?')) {
+//     window.location.href = '{{ route("employer.billing.purchase") }}?plan=' + sel.value;
+//   }
+// }
+
 function buyJobPlan() {
-  var sel = document.querySelector('input[name="job_plan"]:checked');
-  if (!sel) return alert('Please select a plan.');
-  var info = sel.value === '15_day' ? '15 Days Plan – ₹708 (incl. GST)' : '30 Days Plan – ₹1,180 (incl. GST)';
-  if (confirm('Proceed to payment for ' + info + '?')) {
-    window.location.href = '{{ route("employer.billing.purchase") }}?plan=' + sel.value;
-  }
+    let selected = document.querySelector('input[name="job_plan"]:checked');
+
+    if (!selected) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Please select a plan!'
+        });
+        return;
+    }
+
+    let planId = selected.value;
+
+    fetch('{{ url("/buy-plan") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ plan_id: planId })
+    })
+    .then(async res => {
+        let data = await res.json();
+
+        if (!res.ok) {
+            throw data;
+        }
+
+        return data;
+    })
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success 🎉',
+            text: data.message,
+            confirmButtonColor: '#1a56db'
+        }).then(() => {
+            location.reload(); // refresh after OK
+        });
+    })
+    .catch(err => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Failed ❌',
+            text: err.message || 'Something went wrong!',
+            confirmButtonColor: '#dc2626'
+        });
+    });
 }
+
 function renewJobPlan() {
   if (confirm('Renew current 30 Days Plan for ₹1,180 (incl. GST)?')) {
     window.location.href = '{{ route("employer.billing.purchase") }}?plan=30_day&renew=1';
@@ -851,26 +1081,57 @@ function renewJobPlan() {
 }
 
 /* ─── RESUME DB ─── */
-function buyResumePlan() {
-  var sel = document.querySelector('input[name="resume_plan"]:checked');
-  if (!sel) return alert('Please select a plan.');
-  var prices = { silver:'₹2,360', gold:'₹3,540', platinum:'₹5,900' };
-  var name = sel.value.charAt(0).toUpperCase() + sel.value.slice(1) + ' Plan – ' + prices[sel.value] + ' (incl. GST)';
-  if (confirm('Proceed to payment for ' + name + '?')) {
-    window.location.href = '{{ route("employer.billing.purchase") }}?plan=resume_' + sel.value;
-  }
-}
+// function buyResumePlan() {
+//   var sel = document.querySelector('input[name="resume_plan"]:checked');
+//   if (!sel) return alert('Please select a plan.');
+//   var prices = { silver:'₹2,360', gold:'₹3,540', platinum:'₹5,900' };
+//   var name = sel.value.charAt(0).toUpperCase() + sel.value.slice(1) + ' Plan – ' + prices[sel.value] + ' (incl. GST)';
+//   if (confirm('Proceed to payment for ' + name + '?')) {
+//     window.location.href = '{{ route("employer.billing.purchase") }}?plan=resume_' + sel.value;
+//   }
+// }
 function viewDownloads() {
   window.location.href = '{{ route("employer.resume") }}';
 }
 
 /* ─── BANNER ─── */
 function buyBannerPlan() {
-  var file = document.querySelector('.upload-label input[type="file"]').files[0];
-  if (!file) { alert('Please upload a banner image before purchasing.'); return; }
-  if (confirm('Purchase Home Page Banner Ad for ₹2,360 (incl. GST)?')) {
-    window.location.href = '{{ route("employer.billing.purchase") }}?plan=banner_10day';
-  }
+
+    let fileInput = document.querySelector('input[type="file"]');
+    let file = fileInput.files[0];
+
+    if (!file) {
+        Swal.fire('Error', 'Upload banner image', 'error');
+        return;
+    }
+
+    let tokenElement = document.querySelector('meta[name="csrf-token"]');
+
+    if (!tokenElement) {
+        Swal.fire('Error', 'CSRF token missing', 'error');
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('banner_plan_id', 1);
+    formData.append('banner_image', file);
+
+    fetch("{{ route('banner.purchase') }}", {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': tokenElement.getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        Swal.fire('Success', data.message, 'success');
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Error', 'Something went wrong', 'error');
+    });
 }
 function previewBanner() {
   alert('Your banner image will appear in the featured slot on the home page for 10 days from activation.');
@@ -884,6 +1145,51 @@ function handleBannerUpload(input) {
     };
     reader.readAsDataURL(input.files[0]);
   }
+}
+
+function buyResumePlan() {
+    let selected = document.querySelector('input[name="resume_plan"]:checked');
+
+    if (!selected) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Please select a plan!'
+        });
+        return;
+    }
+
+    let planId = selected.value;
+
+    fetch('{{ url("/buy-resume-plan") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ plan_id: planId })
+    })
+    .then(async res => {
+        let data = await res.json();
+
+        if (!res.ok) throw data;
+
+        return data;
+    })
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success 🎉',
+            text: data.message
+        }).then(() => location.reload());
+    })
+    .catch(err => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Failed ❌',
+            text: err.message || 'Something went wrong!'
+        });
+    });
 }
 </script>
 @endpush

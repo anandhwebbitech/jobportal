@@ -152,7 +152,7 @@
     window.location.href = '/jobs?' + p.toString();
   }
 
-  if (searchBtn)   searchBtn.addEventListener('click', doSearch);
+  // if (searchBtn)   searchBtn.addEventListener('click', doSearch);
   if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 
   /* ── CHIP → FILL SEARCH ─────────────────────────────────── */
