@@ -24,14 +24,65 @@ class JobController extends Controller
         }
 
         if ($request->location) {
-            $query->where('location', $request->location);
+            $query->where('district', $request->location);
         }
 
         if ($request->job_type) {
             $query->where('job_type', $request->job_type);
         }
 
-        $jobs = $query->latest()->paginate(10);
+        if ($request->skill) {
+            $query->whereJsonContains('skills', $request->skill);
+        }
+
+        if ($request->experience && $request->experience != 'Any') {
+            $query->where('experience', $request->experience);
+        }
+
+        if ($request->salary) {
+            if ($request->salary == '50000+') {
+                $query->where('salary_min', '>=', 50000);
+            } else {
+                [$min, $max] = explode('-', $request->salary);
+                $query->whereBetween('salary_min', [$min, $max]);
+            }
+        }
+
+        if ($request->category) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->posted && $request->posted != 'Any') {
+            switch ($request->posted) {
+                case 'Today':
+                    $query->whereDate('created_at', today());
+                    break;
+                case '3 Days':
+                    $query->where('created_at', '>=', now()->subDays(3));
+                    break;
+                case '7 Days':
+                    $query->where('created_at', '>=', now()->subDays(7));
+                    break;
+                case '30 Days':
+                    $query->where('created_at', '>=', now()->subDays(30));
+                    break;
+            }
+        }
+
+        if ($request->sort == 'salary_high') {
+            $query->orderBy('salary_max', 'desc');
+        } elseif ($request->sort == 'salary_low') {
+            $query->orderBy('salary_min', 'asc');
+        } else {
+            $query->latest();
+        }
+
+        $jobs = $query->paginate(10);
+
+        // 🔥 IMPORTANT: AJAX request na partial view return
+        if ($request->ajax()) {
+            return view('frontend.jobs.partials.job-list', compact('jobs'))->render();
+        }
 
         return view('frontend.jobs.index', compact('jobs'));
     }

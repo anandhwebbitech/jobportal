@@ -56,7 +56,7 @@
       {{-- ── Contact Column ── --}}
       <div class="lj-footer-col">
         <div class="lj-ft-head">Contact</div>
-        <a href="{{ route('about') }}"           class="lj-ft-link">About Us</a>
+        {{-- <a href="{{ route('about') }}"           class="lj-ft-link">About Us</a> --}}
         <a href="{{ route('home') }}"         class="lj-ft-link">Privacy Policy</a>
         <a href="{{ route('home') }}"           class="lj-ft-link">Terms &amp; Conditions</a>
 

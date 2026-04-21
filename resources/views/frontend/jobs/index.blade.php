@@ -986,7 +986,7 @@
 
                 <div class="lj-filter-group">
                     <label class="lj-filter-label">Salary Range</label>
-                    <select class="lj-filter-select" name="salary"
+                    <select class="lj-filter-select" name="salary" form="searchForm"
                         onchange="document.getElementById('searchForm').submit()">
                         <option value="">Any Salary</option>
                         <option value="0-15000" {{ request('salary') == '0-15000' ? 'selected' : '' }}>Up to ₹15,000/mo
@@ -1015,7 +1015,7 @@
 
                 <div class="lj-filter-group">
                     <label class="lj-filter-label">Category</label>
-                    <select class="lj-filter-select" name="category"
+                    <select class="lj-filter-select" name="category" form="searchForm"
                         onchange="document.getElementById('searchForm').submit()">
                         <option value="">All Categories</option>
                         <option value="IT & Software" {{ request('category') == 'IT & Software' ? 'selected' : '' }}>IT &
@@ -1061,10 +1061,10 @@
                         Sort by:
                         <select class="lj-sort-select" onchange="document.getElementById('searchForm').submit()"
                             name="sort">
-                            <option value="recent">Most Recent</option>
-                            <option value="relevant">Most Relevant</option>
-                            <option value="salary_high">Salary: High to Low</option>
-                            <option value="salary_low">Salary: Low to High</option>
+                            <option value="recent" {{ request('sort') == 'recent' ? 'selected' : '' }}>Most Recent</option>
+                            <option value="relevant" {{ request('sort') == 'relevant' ? 'selected' : '' }}>Most Relevant</option>
+                            <option value="salary_high" {{ request('sort') == 'salary_high' ? 'selected' : '' }}>Salary: High to Low</option>
+                            <option value="salary_low" {{ request('sort') == 'salary_low' ? 'selected' : '' }}>Salary: Low to High</option>
                         </select>
                     </div>
                 </div>
@@ -1260,7 +1260,9 @@
         });
         // ── FILTER CHIPS ────────────────────────────────────
         function setFilter(name, value, el) {
-            document.querySelectorAll('.filter-chip-experience')
+
+            // remove active from SAME group only
+            el.parentElement.querySelectorAll('.lj-filter-chip')
                 .forEach(c => c.classList.remove('active'));
 
             el.classList.add('active');
@@ -1278,7 +1280,6 @@
 
             input.value = (value === 'Any') ? '' : value;
 
-            // ✅ AUTO SUBMIT (IMPORTANT FIX)
             form.submit();
         }
 

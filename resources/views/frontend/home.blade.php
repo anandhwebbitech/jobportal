@@ -1398,7 +1398,7 @@
                         Create your profile and get matched with the right role based on your skills.
                     </div>
                     <div class="lj-aud-btns">
-                        <a href="login.html" class="lj-btn lj-btn-blue">
+                        <a href="{{ route('jobseeker.login') }}" class="lj-btn lj-btn-blue">
                             <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Login as Job Seeker
                         </a>
                         <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-ghost">
@@ -1417,10 +1417,10 @@
                         Affordable plans built for India MSMEs — starting at just ₹600.
                     </div>
                     <div class="lj-aud-btns">
-                        <a href="employer-login.html" class="lj-btn lj-btn-green">
+                        <a href="{{route('employer.login')}}" class="lj-btn lj-btn-green">
                             <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Employer Login
                         </a>
-                        <a href="employer-register.html" class="lj-btn lj-btn-ghost-green">
+                        <a href="{{ route('employer.register') }}" class="lj-btn lj-btn-ghost-green">
                             <i class="fa-solid fa-building-circle-check" style="margin-right:6px;"></i>Register Company
                         </a>
                     </div>
