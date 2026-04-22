@@ -41,8 +41,8 @@
             --n900: #0f172a;
             --gb: linear-gradient(135deg, #1a56db, #7c3aed);
             --gg: linear-gradient(135deg, #059669, #0d9488);
-            --ga: linear-gradient(135deg, #b45309, #d97706);
-            --gh: linear-gradient(150deg, #0f172a 0%, #1e293b 70%, #1a3a6e 100%);
+           --ga: linear-gradient(135deg, #6b7280, #9ca3af);
+            --gh: linear-gradient(150deg, #f8fafc 0%, #e2e8f0 70%, #dbeafe 100%);
             --sh: 0 1px 3px rgba(0, 0, 0, .06), 0 4px 12px rgba(0, 0, 0, .07);
             --shh: 0 8px 28px rgba(0, 0, 0, .12);
             --r: 12px;
@@ -124,7 +124,7 @@
             font-family: var(--f);
             font-size: .68rem;
             font-weight: 700;
-            color: rgba(255, 255, 255, .82);
+            color: rgba(7, 7, 7, 0.82);
             letter-spacing: .08em;
             text-transform: uppercase;
         }
@@ -138,7 +138,7 @@
             font-family: var(--f);
             font-size: clamp(1.7rem, 4.5vw, 2.4rem);
             font-weight: 900;
-            color: #fff;
+            color: #000;
             letter-spacing: -.5px;
             line-height: 1.15;
             margin-bottom: 12px;
@@ -153,7 +153,7 @@
 
         .ph-sub {
             font-size: .88rem;
-            color: rgba(255, 255, 255, .6);
+            color: rgba(143, 136, 136, 0.9);
             line-height: 1.7;
             margin-bottom: 20px;
         }
@@ -169,7 +169,7 @@
             font-family: var(--f);
             font-size: .72rem;
             font-weight: 700;
-            color: rgba(255, 255, 255, .68);
+            color: rgba(90, 84, 84, 0.68);
         }
 
         .ph-gst i {
@@ -207,12 +207,12 @@
             font-family: var(--f);
             font-size: 1.1rem;
             font-weight: 900;
-            color: #fff;
+            color: #4c4242;
         }
 
         .ph-stat-lbl {
             font-size: .62rem;
-            color: rgba(255, 255, 255, .55);
+            color: rgba(85, 84, 84, 0.95);
             margin-top: 2px;
             letter-spacing: .04em;
         }
@@ -874,7 +874,7 @@
 
         .pbtn.oa {
             background: #fff;
-            border: 2px solid var(--a);
+            border: 2px solid gray;
             color: var(--a);
         }
 
@@ -1003,7 +1003,7 @@
         /* ── BANNER AD WIDE CARD ────────────────────────── */
         .ba-card {
             background: #fff;
-            border: 2px solid var(--a);
+            border: 2px solid gray;
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 28px;

@@ -25,6 +25,11 @@
             top: 64px;
             z-index: 100;
         }
+        .lj-job-tag.openings {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    font-weight: 600;
+}
 
         .lj-jobs-searchbar-inner {
             max-width: 1280px;
@@ -134,9 +139,11 @@
             max-width: 1280px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 260px 1fr 380px;
+            grid-template-columns: 260px 1fr 480px;
             gap: 0;
-            min-height: calc(100vh - 130px);
+            /* min-height: calc(100vh - 130px); */
+            min-height: calc(100vh - 60px);
+
         }
 
         /* ── LEFT SIDEBAR ─────────────────────────────────── */
@@ -1020,11 +1027,14 @@
                         <option value="">All Categories</option>
                         <option value="IT & Software" {{ request('category') == 'IT & Software' ? 'selected' : '' }}>IT &
                             Software</option>
-                        <option value="Technical & Trade" {{ request('category') == 'Technical & Trade' ? 'selected' : '' }}>
+                        <option value="Technical & Trade"
+                            {{ request('category') == 'Technical & Trade' ? 'selected' : '' }}>
                             Technical & Trade</option>
-                        <option value="Sales & Marketing" {{ request('category') == 'Sales & Marketing' ? 'selected' : '' }}>
+                        <option value="Sales & Marketing"
+                            {{ request('category') == 'Sales & Marketing' ? 'selected' : '' }}>
                             Sales & Marketing</option>
-                        <option value="Office & Admin" {{ request('category') == 'Office & Admin' ? 'selected' : '' }}>Office
+                        <option value="Office & Admin" {{ request('category') == 'Office & Admin' ? 'selected' : '' }}>
+                            Office
                             & Admin</option>
                         <option value="Driver & Logistics"
                             {{ request('category') == 'Driver & Logistics' ? 'selected' : '' }}>Driver & Logistics</option>
@@ -1061,10 +1071,14 @@
                         Sort by:
                         <select class="lj-sort-select" onchange="document.getElementById('searchForm').submit()"
                             name="sort">
-                            <option value="recent" {{ request('sort') == 'recent' ? 'selected' : '' }}>Most Recent</option>
-                            <option value="relevant" {{ request('sort') == 'relevant' ? 'selected' : '' }}>Most Relevant</option>
-                            <option value="salary_high" {{ request('sort') == 'salary_high' ? 'selected' : '' }}>Salary: High to Low</option>
-                            <option value="salary_low" {{ request('sort') == 'salary_low' ? 'selected' : '' }}>Salary: Low to High</option>
+                            <option value="recent" {{ request('sort') == 'recent' ? 'selected' : '' }}>Most Recent
+                            </option>
+                            <option value="relevant" {{ request('sort') == 'relevant' ? 'selected' : '' }}>Most Relevant
+                            </option>
+                            <option value="salary_high" {{ request('sort') == 'salary_high' ? 'selected' : '' }}>Salary:
+                                High to Low</option>
+                            <option value="salary_low" {{ request('sort') == 'salary_low' ? 'selected' : '' }}>Salary: Low
+                                to High</option>
                         </select>
                     </div>
                 </div>
@@ -1116,6 +1130,10 @@
                                 <span class="lj-job-tag"><i class="fa-solid fa-check"></i>
                                     {{ $job->experience }}</span>
                             @endif
+                            <span class="lj-job-tag openings">
+                                <i class="fa-solid fa-users"></i>
+                                5 Openings
+                            </span>
                             @foreach (array_slice($job->benefits ?? [], 0, 2) as $benefit)
                                 <span class="lj-job-tag">{{ $benefit }}</span>
                             @endforeach
@@ -1181,7 +1199,7 @@
                             <a href="#" class="lj-apply-btn" id="prevApplyBtn">
                                 <i class="fa-solid fa-paper-plane"></i> Apply Now
                             </a>
-                            <button class="lj-save-btn" onclick="toggleSavePreview(this)" >
+                            <button class="lj-save-btn" onclick="toggleSavePreview(this)">
                                 <i class="fa-regular fa-bookmark"></i> Save
                             </button>
                             <a href="#" class="lj-save-btn" id="prevDetailsLink" target="_blank">
@@ -1236,7 +1254,6 @@
 
 @push('scripts')
     <script>
-
         $(document).ready(function() {
             $.ajax({
                 url: "{{ route('jobseeker.jobs.getSaved') }}", // New route to get saved jobs
@@ -1245,7 +1262,7 @@
                     // response should be an array of saved job IDs
                     response.savedJobs.forEach(jobId => {
                         const btn = document.querySelector(`button[data-jobid='${jobId}']`);
-                        if(btn){
+                        if (btn) {
                             const ico = btn.querySelector('i');
                             ico.classList.replace('fa-regular', 'fa-solid');
                             btn.style.borderColor = 'var(--blue)';
@@ -1302,7 +1319,7 @@
 
         function toggleSavePreview(btn) {
             const jobId = document.querySelector('.lj-job-card.active')
-                ?.id?.replace('job-card-','');
+                ?.id?.replace('job-card-', '');
 
             if (!jobId) return;
 
@@ -1316,7 +1333,7 @@
                     job_id: jobId
                 },
                 success: function(response) {
-                    if(response.savestatus == 1){
+                    if (response.savestatus == 1) {
                         ico.classList.replace('fa-regular', 'fa-solid');
                         btn.style.color = 'var(--blue)';
                     } else {
@@ -1346,14 +1363,14 @@
             $.ajax({
                 url: "{{ url('/jobs-preview') }}/" + jobId,
                 type: 'GET',
-                success: function (job) {
+                success: function(job) {
 
                     console.log('Fetched job:', job);
 
                     renderPreview(job);
 
                 },
-                error: function (xhr) {
+                error: function(xhr) {
 
                     console.error('Error:', xhr);
 
@@ -1381,7 +1398,7 @@
             const applyUrl = "{{ route('jobs.apply', ':id') }}".replace(':id', job.id);
             // const detailUrl = `/jobs/${job.id}`;
             // const detailUrl = "{{ route('jobs.show', ':id') }}".replace(':id', job.id);
-            const detailUrl = "{{ url('/jobs/:id') }}".replace(':id', job.id);  
+            const detailUrl = "{{ url('/jobs/:id') }}".replace(':id', job.id);
             document.getElementById('prevApplyBtn').href = applyUrl;
             document.getElementById('prevApplyBtnBottom').href = applyUrl;
             document.getElementById('prevDetailsLink').href = detailUrl;

@@ -18,13 +18,13 @@
         /* ── HERO ──────────────────────────────────────────────────── */
         .lj-hero {
             background: #fff;
-            padding: 60px 20px 52px;
+            padding: 20px 20px 25px;
             text-align: center;
             border-bottom: var(--border);
         }
 
         .lj-hero-logo {
-            font-size: clamp(2.4rem, 8vw, 4.4rem);
+            font-size: clamp(1.4rem, 5vw, 2.5rem);
             font-weight: 800;
             color: var(--blue);
             letter-spacing: -2px;
@@ -33,7 +33,7 @@
         }
 
         .lj-hero-title {
-            font-size: clamp(1rem, 2.6vw, 1.2rem);
+            font-size: clamp(1rem, 2.6vw, 1.1rem);
             font-weight: 700;
             color: var(--n900);
             margin-bottom: 6px;
@@ -42,11 +42,16 @@
         .lj-hero-sub {
             font-size: .9375rem;
             color: var(--n500);
-            margin-bottom: 28px;
+            margin-bottom: 15px;
             line-height: 1.6;
         }
 
         /* Search bar */
+        /* ===============================
+       SEARCH BAR - MODERN UI
+    ================================ */
+
+        /* BOX */
         .lj-search-box {
             max-width: 800px;
             margin: 0 auto 14px;
@@ -57,14 +62,22 @@
             display: flex;
             align-items: stretch;
             overflow: hidden;
-            transition: border-color var(--t), box-shadow var(--t);
+            transition: all 0.25s ease;
         }
 
+        /* 🔥 FOCUS EFFECT (MAIN MAGIC) */
         .lj-search-box:focus-within {
             border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(26, 86, 219, .13);
+
+            box-shadow:
+                0 0 0 3px rgba(26, 86, 219, 0.15),
+                0 10px 30px rgba(26, 86, 219, 0.15);
+
+            transform: translateY(-2px);
         }
 
+
+        /* ICON */
         .lj-search-ico {
             display: flex;
             align-items: center;
@@ -72,8 +85,16 @@
             color: var(--n400);
             font-size: .9rem;
             flex-shrink: 0;
+            transition: color 0.25s ease;
         }
 
+        /* Icon reacts on focus */
+        .lj-search-box:focus-within .lj-search-ico {
+            color: var(--blue);
+        }
+
+
+        /* INPUT */
         .lj-search-input {
             flex: 1.5;
             min-width: 0;
@@ -84,20 +105,43 @@
             color: var(--n900);
             padding: 14px 10px 14px 0;
             background: transparent;
+            transition: all 0.25s ease;
         }
 
+        /* INPUT FOCUS */
+        .lj-search-input:focus {
+            background: #f9fbff;
+        }
+
+        /* Placeholder */
         .lj-search-input::placeholder {
             color: var(--n400);
+            transition: all 0.25s ease;
         }
 
+        .lj-search-input:focus::placeholder {
+            color: var(--blue);
+            transform: translateX(4px);
+        }
+
+
+        /* SEPARATOR */
         .lj-search-sep {
             width: 1px;
             background: var(--n200);
             flex-shrink: 0;
             align-self: stretch;
             margin: 9px 0;
+            transition: background 0.25s ease;
         }
 
+        /* Separator highlight on focus */
+        .lj-search-box:focus-within .lj-search-sep {
+            background: var(--blue);
+        }
+
+
+        /* SELECT DROPDOWN */
         .lj-search-sel {
             flex: 1;
             min-width: 0;
@@ -111,19 +155,31 @@
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
+
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 10px center;
+
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+
+            transition: all 0.25s ease;
         }
 
+        /* Dropdown focus */
+        .lj-search-sel:focus {
+            color: var(--blue);
+        }
+
+        /* Options */
         .lj-search-sel option {
             background: #fff;
             color: var(--n900);
         }
 
+
+        /* CTA WRAPPER */
         .lj-search-cta {
             flex-shrink: 0;
             padding: 6px;
@@ -131,6 +187,8 @@
             align-items: stretch;
         }
 
+
+        /* BUTTON */
         .lj-search-btn {
             display: flex;
             align-items: center;
@@ -145,11 +203,18 @@
             padding: 0 22px;
             cursor: pointer;
             white-space: nowrap;
-            transition: background var(--t);
+            transition: all 0.25s ease;
         }
 
+        /* Hover */
         .lj-search-btn:hover {
             background: var(--blue-h);
+        }
+
+        /* 🔥 Button reacts when input is focused */
+        .lj-search-box:focus-within .lj-search-btn {
+            background: linear-gradient(135deg, var(--blue), #3b82f6);
+            box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
         }
 
         /* Trending tags */
@@ -743,13 +808,13 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-           ── SPONSORED / IMAGE ADS SECTION ─────────────────────
-           Pure image banner ads — no text cards
-        ═══════════════════════════════════════════════════════ */
+                                                                           ── SPONSORED / IMAGE ADS SECTION ─────────────────────
+                                                                           Pure image banner ads — no text cards
+                                                                        ═══════════════════════════════════════════════════════ */
 
         .lj-ads {
             background: #f1f4f9;
-            padding: 44px 0 50px;
+            padding: 24px 0 24px;
             position: relative;
             overflow: hidden;
         }
@@ -849,7 +914,7 @@
             /* make it a link */
             text-decoration: none;
             /* fixed aspect ratio so all banners are uniform */
-       aspect-ratio: 2.4 / 1;
+            aspect-ratio: 2.4 / 1;
             /* 1200×400 banner ratio */
             background: #e2e8f2;
             /* placeholder bg while image loads */
@@ -989,154 +1054,157 @@
                 aspect-ratio: 2.4 / 1;
             }
         }
-        #jobResults{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:18px;
-}
 
-/* CARD */
-.job-card{
-    background:#fff;
-    border-radius:16px;
-    padding:16px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.06);
-    cursor:pointer;
-    transition:0.25s ease;
-    border:1px solid #f1f1f1;
-}
+        #jobResults {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
 
-.job-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.12);
-}
+        /* CARD */
+        .job-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: 0.25s ease;
+            border: 1px solid #f1f1f1;
+        }
 
-/* HEADER */
-.job-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:10px;
-}
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
 
-.job-title{
-    font-size:18px;
-    font-weight:600;
-    margin:0;
-    color:#1f2937;
-}
+        /* HEADER */
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
 
-.job-title-row{
-    display:flex;
-    gap:10px;
-    align-items:center;
-}
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #1f2937;
+        }
 
-/* NEW BADGE (improve isNew output) */
-.badge-new{
-    background:#10b981;
-    color:#fff;
-    font-size:11px;
-    padding:3px 8px;
-    border-radius:20px;
-}
+        .job-title-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
-/* COMPANY + LOCATION */
-.job-company, .job-location{
-    font-size:13px;
-    color:#6b7280;
-    margin-top:4px;
-}
+        /* NEW BADGE (improve isNew output) */
+        .badge-new {
+            background: #10b981;
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
 
-.job-company i, .job-location i{
-    margin-right:5px;
-}
+        /* COMPANY + LOCATION */
+        .job-company,
+        .job-location {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
 
-/* LOGO */
-.job-logo{
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    background:#f3f4f6;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#6b7280;
-}
+        .job-company i,
+        .job-location i {
+            margin-right: 5px;
+        }
 
-/* BODY */
-.job-body{
-    margin-top:10px;
-}
+        /* LOGO */
+        .job-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+        }
 
-/* BADGES */
-.badge{
-    display:inline-block;
-    padding:5px 10px;
-    font-size:12px;
-    border-radius:20px;
-    margin:4px 4px 0 0;
-    background:#f3f4f6;
-    color:#374151;
-}
+        /* BODY */
+        .job-body {
+            margin-top: 10px;
+        }
 
-.badge.salary{
-    background:#ecfdf5;
-    color:#065f46;
-}
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 20px;
+            margin: 4px 4px 0 0;
+            background: #f3f4f6;
+            color: #374151;
+        }
 
-.badge.type{
-    background:#eff6ff;
-    color:#1d4ed8;
-}
+        .badge.salary {
+            background: #ecfdf5;
+            color: #065f46;
+        }
 
-.badge.exp{
-    background:#fef3c7;
-    color:#92400e;
-}
+        .badge.type {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
 
-/* DESCRIPTION */
-.job-desc{
-    font-size:13px;
-    color:#6b7280;
-    margin-top:8px;
-    line-height:1.4;
-}
+        .badge.exp {
+            background: #fef3c7;
+            color: #92400e;
+        }
 
-/* FOOTER */
-.job-footer{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:12px;
-    border-top:1px solid #f3f4f6;
-    padding-top:10px;
-}
+        /* DESCRIPTION */
+        .job-desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
 
-.time{
-    font-size:12px;
-    color:#9ca3af;
-}
+        /* FOOTER */
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 10px;
+        }
 
-/* SAVE BUTTON */
-.save-btn{
-    background:transparent;
-    border:none;
-    font-size:16px;
-    color:#6b7280;
-    cursor:pointer;
-    transition:0.2s;
-}
+        .time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
 
-.save-btn:hover{
-    color:#111827;
-}
+        /* SAVE BUTTON */
+        .save-btn {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-/* EMPTY */
-.no-jobs{
-    padding:20px;
-    color:#6b7280;
-}
+        .save-btn:hover {
+            color: #111827;
+        }
+
+        /* EMPTY */
+        .no-jobs {
+            padding: 20px;
+            color: #6b7280;
+        }
     </style>
 @endpush
 
@@ -1159,30 +1227,46 @@
         {{-- Search Bar --}}
         <div class="lj-anim lj-anim-d2">
             <div class="lj-search-box" id="ljSearchBox">
+
+                <!-- ICON -->
                 <div class="lj-search-ico">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
+
+                <!-- INPUT -->
                 <input class="lj-search-input" id="ljSearchInput" type="text"
                     placeholder="Job title, keywords, or company" autocomplete="off" />
+
                 <div class="lj-search-sep"></div>
-               
-                <div class="lj-search-sep"></div>
-                <select class="lj-search-sel" id="ljLocSel">
-                    <option value="" disabled selected>Location</option>
-                    @foreach($locations as $loc)
-                        <option value="{{ $loc->district }}">
-                            {{ $loc->district }}
-                        </option>
-                    @endforeach
+
+                <!-- STATE -->
+                <select class="lj-search-sel" id="ljStateSel">
+                    <option value="" disabled selected>State</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Telangana">Telangana</option>
                 </select>
+
+                <div class="lj-search-sep"></div>
+
+                <!-- LOCATION -->
+                <select class="lj-search-sel" id="ljLocationSel">
+                    <option value="" disabled selected>Location</option>
+                </select>
+
+                <!-- BUTTON -->
                 <div class="lj-search-cta">
                     <button class="lj-search-btn" id="ljSearchBtn">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Find jobs</span>
+                        <span>Find Jobs</span>
                     </button>
                 </div>
+
             </div>
         </div>
+
         <div id="jobResults" style="margin-top:20px;"></div>
 
         {{-- Trending tags --}}
@@ -1206,24 +1290,16 @@
                 <a href="find-jobs.html?q=Electrician" class="lj-trend-tag">
                     <i class="fa-solid fa-bolt" style="margin-right:5px; font-size:.7rem;"></i>Electrician
                 </a>
-                <a href="find-jobs.html?q=Fresher" class="lj-trend-tag">
-                    <i class="fa-solid fa-graduation-cap" style="margin-right:5px; font-size:.7rem;"></i>Fresher Jobs
-                </a>
+
             </div>
         </div>
 
     </section>
 
-    {{-- ══════════════════════════════════════════════════════
-     ── SPONSORED IMAGE ADS SECTION ──────────────────────
-     Pure image banner ads — stored in DB via employer billing
-     $ads is passed from the controller as a collection of active banner ads
-     Each ad has: image_path (storage path), click_url, company_name
-══════════════════════════════════════════════════════ --}}
+
     <section class="lj-ads">
         <div class="lj-wrap">
 
-            {{-- Sponsored label --}}
             <div class="lj-ads-lbl">
                 <div class="lj-ads-lbl-inner">
                     <span class="lj-ads-lbl-dot"></span>
@@ -1231,19 +1307,8 @@
                 </div>
             </div>
 
-            {{-- ── Image ad grid ──
-         In production: loop over $ads from controller.
-         Each item renders as a full-bleed clickable image banner.
-         Fallback placeholder shown when no ads are active.
-    ── --}}
             <div class="lj-ad-img-grid">
 
-                {{-- ───────────────────────────────────────────────────
-           AD SLOT 1
-           Replace the <img> src with {{ Storage::url($ad->image_path) }}
-           Replace href with {{ $ad->click_url }}
-           Replace alt  with {{ $ad->company_name }}
-      ─────────────────────────────────────────────────── --}}
                 <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
 
                     {{-- "Ad" pill – always visible, top-left --}}
@@ -1251,12 +1316,6 @@
                         <i class="fa-solid fa-circle-info"></i> Ad
                     </span>
 
-                    {{--
-          PRODUCTION IMAGE TAG — swap placeholder src:
-          <img src="{{ Storage::url($ads[0]->image_path) }}"
-               alt="{{ $ads[0]->company_name }}"
-               loading="lazy" />
-        --}}
                     <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&h=400&q=80"
                         alt="Job advertisement banner" loading="lazy" />
 
@@ -1269,21 +1328,13 @@
 
                 </a>
 
-                {{-- ───────────────────────────────────────────────────
-           AD SLOT 2
-      ─────────────────────────────────────────────────── --}}
+
                 <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
 
                     <span class="lj-ad-img-pill">
                         <i class="fa-solid fa-circle-info"></i> Ad
                     </span>
 
-                    {{--
-          PRODUCTION:
-          <img src="{{ Storage::url($ads[1]->image_path) }}"
-               alt="{{ $ads[1]->company_name }}"
-               loading="lazy" />
-        --}}
                     <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&h=400&q=80"
                         alt="Career opportunity banner" loading="lazy" />
 
@@ -1295,41 +1346,11 @@
 
                 </a>
 
-                {{-- ───────────────────────────────────────────────────
-           OPTIONAL: Blade loop for dynamic ads from DB
-           Uncomment and use this block instead of hardcoded slots:
 
-      @foreach ($ads as $ad)
-      <a href="{{ $ad->click_url ?? '#' }}"
-         class="lj-ad-img-wrap"
-         target="_blank" rel="noopener sponsored">
+            </div>
 
-        <span class="lj-ad-img-pill">
-          <i class="fa-solid fa-circle-info"></i> Ad
-        </span>
-
-        <img
-          src="{{ Storage::url($ad->image_path) }}"
-          alt="{{ $ad->company_name }}"
-          loading="lazy"
-        />
-
-        <div class="lj-ad-img-overlay">
-          <span class="lj-ad-img-overlay-cta">
-            Visit Website <i class="fa-solid fa-arrow-right"></i>
-          </span>
         </div>
-
-      </a>
-      @endforeach
-      ─────────────────────────────────────────────────── --}}
-
-            </div>{{-- end .lj-ad-img-grid --}}
-
-        </div>{{-- end .lj-wrap --}}
     </section>
-
-
 
     <hr class="lj-rule" />
 
@@ -1417,7 +1438,7 @@
                         Affordable plans built for India MSMEs — starting at just ₹600.
                     </div>
                     <div class="lj-aud-btns">
-                        <a href="{{route('employer.login')}}" class="lj-btn lj-btn-green">
+                        <a href="{{ route('employer.login') }}" class="lj-btn lj-btn-green">
                             <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Employer Login
                         </a>
                         <a href="{{ route('employer.register') }}" class="lj-btn lj-btn-ghost-green">
@@ -1465,59 +1486,59 @@
         </div>
     </section>
 
-<script>
-const searchUrl = "{{ route('jobs.search') }}";
+    <script>
+        const searchUrl = "{{ route('jobs.search') }}";
 
-const keywordInput = document.getElementById('ljSearchInput');
-const locationSelect = document.getElementById('ljLocSel');
-const searchBtn = document.getElementById('ljSearchBtn');
+        const keywordInput = document.getElementById('ljSearchInput');
+        const locationSelect = document.getElementById('ljLocSel');
+        const searchBtn = document.getElementById('ljSearchBtn');
 
-let delay;
+        let delay;
 
-/* =========================
-   MAIN SEARCH FUNCTION
-========================= */
-function searchJobs() {
+        /* =========================
+           MAIN SEARCH FUNCTION
+        ========================= */
+        function searchJobs() {
 
-    let keyword = keywordInput.value || '';
-    let location = locationSelect.value || '';
+            let keyword = keywordInput.value || '';
+            let location = locationSelect.value || '';
 
-    let url = `${searchUrl}?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+            let url = `${searchUrl}?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
 
-    let container = document.getElementById('jobResults');
-    container.innerHTML = `<p class="no-jobs">Loading jobs...</p>`;
+            let container = document.getElementById('jobResults');
+            container.innerHTML = `<p class="no-jobs">Loading jobs...</p>`;
 
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                renderJobs(data.jobs);
-            } else {
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        renderJobs(data.jobs);
+                    } else {
+                        container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = `<p class="no-jobs">Something went wrong</p>`;
+                });
+        }
+
+        /* =========================
+           RENDER JOBS
+        ========================= */
+        function renderJobs(jobs) {
+
+            let container = document.getElementById('jobResults');
+
+            if (!jobs || jobs.length === 0) {
                 container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
+                return;
             }
-        })
-        .catch(err => {
-            console.error(err);
-            container.innerHTML = `<p class="no-jobs">Something went wrong</p>`;
-        });
-}
 
-/* =========================
-   RENDER JOBS
-========================= */
-function renderJobs(jobs) {
+            let html = '';
 
-    let container = document.getElementById('jobResults');
-
-    if (!jobs || jobs.length === 0) {
-        container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
-        return;
-    }
-
-    let html = '';
-
-    jobs.forEach(job => {
-        html += `
+            jobs.forEach(job => {
+                html += `
         <div class="job-card" onclick="loadPreview(${job.id}, this)" id="job-${job.id}">
 
             <div class="job-header">
@@ -1548,17 +1569,17 @@ function renderJobs(jobs) {
             <div class="job-body">
 
                 ${job.salary_min ? `
-                    <span class="badge salary">
-                        ₹${job.salary_min} - ₹${job.salary_max}/mo
-                    </span>` : ''}
+                                                                                    <span class="badge salary">
+                                                                                        ₹${job.salary_min} - ₹${job.salary_max}/mo
+                                                                                    </span>` : ''}
 
                 ${job.job_type ? `<span class="badge type">${job.job_type}</span>` : ''}
 
                 ${job.experience ? `<span class="badge exp">${job.experience}</span>` : ''}
 
                 ${job.description ? `
-                    <p class="job-desc">${truncate(job.description, 90)}</p>
-                ` : ''}
+                                                                                    <p class="job-desc">${truncate(job.description, 90)}</p>
+                                                                                ` : ''}
 
             </div>
 
@@ -1571,71 +1592,71 @@ function renderJobs(jobs) {
             </div>
 
         </div>`;
-    });
+            });
 
-    container.innerHTML = html;
-}
-
-/* =========================
-   EVENTS (IMPORTANT FIXED)
-========================= */
-
-/* 1. Button click */
-searchBtn.addEventListener('click', searchJobs);
-
-/* 2. Enter key */
-keywordInput.addEventListener('keypress', function(e){
-    if (e.key === 'Enter') searchJobs();
-});
-
-/* 3. Typing (debounced) */
-keywordInput.addEventListener('input', function() {
-    clearTimeout(delay);
-    delay = setTimeout(searchJobs, 500);
-});
-
-/* 4. Location change */
-locationSelect.addEventListener('change', searchJobs);
-
-/* =========================
-   HELPERS
-========================= */
-
-function isNew(date) {
-    let created = new Date(date);
-    let now = new Date();
-    let diff = (now - created) / (1000 * 60 * 60 * 24);
-
-    return diff <= 2
-        ? `<span class="lj-job-badge new">New</span>`
-        : '';
-}
-
-function timeAgo(date) {
-    let seconds = Math.floor((new Date() - new Date(date)) / 1000);
-
-    let intervals = {
-        year: 31536000,
-        month: 2592000,
-        day: 86400,
-        hour: 3600,
-        minute: 60
-    };
-
-    for (let key in intervals) {
-        let value = Math.floor(seconds / intervals[key]);
-        if (value > 0) {
-            return value + " " + key + (value > 1 ? "s" : "") + " ago";
+            container.innerHTML = html;
         }
-    }
 
-    return "Just now";
-}
+        /* =========================
+           EVENTS (IMPORTANT FIXED)
+        ========================= */
 
-function truncate(text, length) {
-    if (!text) return '';
-    return text.length > length ? text.substring(0, length) + '...' : text;
-}
-</script>
+        /* 1. Button click */
+        searchBtn.addEventListener('click', searchJobs);
+
+        /* 2. Enter key */
+        keywordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchJobs();
+        });
+
+        /* 3. Typing (debounced) */
+        keywordInput.addEventListener('input', function() {
+            clearTimeout(delay);
+            delay = setTimeout(searchJobs, 500);
+        });
+
+        /* 4. Location change */
+        locationSelect.addEventListener('change', searchJobs);
+
+        /* =========================
+           HELPERS
+        ========================= */
+
+        function isNew(date) {
+            let created = new Date(date);
+            let now = new Date();
+            let diff = (now - created) / (1000 * 60 * 60 * 24);
+
+            return diff <= 2 ?
+                `<span class="lj-job-badge new">New</span>` :
+                '';
+        }
+
+        function timeAgo(date) {
+            let seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+            let intervals = {
+                year: 31536000,
+                month: 2592000,
+                day: 86400,
+                hour: 3600,
+                minute: 60
+            };
+
+            for (let key in intervals) {
+                let value = Math.floor(seconds / intervals[key]);
+                if (value > 0) {
+                    return value + " " + key + (value > 1 ? "s" : "") + " ago";
+                }
+            }
+
+            return "Just now";
+        }
+
+        function truncate(text, length) {
+            if (!text) return '';
+            return text.length > length ? text.substring(0, length) + '...' : text;
+        }
+    </script>
 
 @endsection
