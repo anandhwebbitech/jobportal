@@ -42,7 +42,7 @@ class ApplicationController extends Controller
         $statusCounts = JobApplication::where('user_id', Auth::id())
             ->selectRaw('application_status, COUNT(*) as count')
             ->groupBy('application_status')
-            ->pluck('count', 'application_status') // returns [1=>10, 2=>5,...]
+            ->pluck('count', 'application_status') 
             ->toArray();
 
         return view('frontend.jobseeker.applied', compact('applications', 'totalCount', 'statusCounts', 'statusLabels'));

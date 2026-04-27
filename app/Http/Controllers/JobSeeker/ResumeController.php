@@ -50,7 +50,7 @@ class ResumeController extends Controller
         // ✅ If AJAX request
         if ($request->ajax()) {
             return response()->json([
-                'status' => true,
+                'status'  => true,
                 'message' => 'Resume uploaded successfully'
             ]);
         }
@@ -98,9 +98,47 @@ class ResumeController extends Controller
     }
 
    public function download($id)
-{
-    try {
+    {
+        try {
 
+            $user = auth()->user();
+
+            $plan = ResumePlanSubscription::where('user_id', $user->id)
+                ->where('status', 1)
+                ->whereDate('end_date', '>=', now())
+                ->first();
+
+            if (!$plan) {
+                return response('Please purchase a plan', 403);
+            }
+
+            if ($plan->downloads_used >= $plan->download_limit) {
+                return response('Download limit exceeded', 403);
+            }
+
+            // ✅ FIX: use JobApplication instead of Resume
+            $application = JobApplication::findOrFail($id);
+            if (!$application->resume) {
+                return response('File not found', 404);
+            }
+
+            $filePath = storage_path('app/public/' . $application->resume);
+
+            if (!file_exists($filePath)) {
+                return response('File missing in server', 404);
+            }
+
+            // ✅ increment AFTER validation
+            $plan->increment('downloads_used');
+
+            return response()->download($filePath);
+
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 500);
+        }
+    }
+    public function checkDownload($id)
+    {
         $user = auth()->user();
 
         $plan = ResumePlanSubscription::where('user_id', $user->id)
@@ -109,61 +147,22 @@ class ResumeController extends Controller
             ->first();
 
         if (!$plan) {
-            return response('Please purchase a plan', 403);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Please purchase a plan'
+            ]);
         }
 
         if ($plan->downloads_used >= $plan->download_limit) {
-            return response('Download limit exceeded', 403);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Download limit exceeded'
+            ]);
         }
 
-        // ✅ FIX: use JobApplication instead of Resume
-        $application = JobApplication::findOrFail($id);
-        if (!$application->resume) {
-            return response('File not found', 404);
-        }
-        // dd($application->resume );
-
-        $filePath = storage_path('app/public/' . $application->resume);
-
-        if (!file_exists($filePath)) {
-            return response('File missing in server', 404);
-        }
-
-        // ✅ increment AFTER validation
-        $plan->increment('downloads_used');
-
-        return response()->download($filePath);
-
-    } catch (\Exception $e) {
-        return response($e->getMessage(), 500);
-    }
-}
-    public function checkDownload($id)
-{
-    $user = auth()->user();
-
-    $plan = ResumePlanSubscription::where('user_id', $user->id)
-        ->where('status', 1)
-        ->whereDate('end_date', '>=', now())
-        ->first();
-
-    if (!$plan) {
         return response()->json([
-            'status' => 'error',
-            'message' => 'Please purchase a plan'
+            'status' => 'success',
+            'download_url' => route('resume.download', $id)
         ]);
     }
-
-    if ($plan->downloads_used >= $plan->download_limit) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Download limit exceeded'
-        ]);
-    }
-
-    return response()->json([
-        'status' => 'success',
-        'download_url' => route('resume.download', $id)
-    ]);
-}
 }

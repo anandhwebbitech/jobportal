@@ -49,9 +49,9 @@ class SavedJobController extends Controller
         $saveJob->save();
 
         return response()->json([
-            'success' => true,
+            'success'    => true,
             'savestatus' => $saveJob->savestatus,
-            'message' => $saveJob->savestatus ? 'Job saved!' : 'Job removed from saved list.'
+            'message'    => $saveJob->savestatus ? 'Job saved!' : 'Job removed from saved list.'
         ]);
     }
     public function getSavedJobs(){
@@ -62,8 +62,8 @@ class SavedJobController extends Controller
     public function destroy($id)
     {
         $saved = SaveJob::where('id', $id)
-                        ->where('user_id', auth()->id())
-                        ->first();
+                    ->where('user_id', auth()->id())
+                    ->first();
 
         if(!$saved) {
             return response()->json(['success' => false, 'message' => 'Saved job not found']);

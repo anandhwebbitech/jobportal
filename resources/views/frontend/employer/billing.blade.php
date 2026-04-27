@@ -368,6 +368,41 @@ body { font-family:var(--body); color:var(--gray-700); }
   display:inline-flex; align-items:center; gap:5px; transition:all .17s; text-decoration:none;
 }
 .btn-sm:hover { border-color:var(--blue); color:var(--blue); }
+
+
+.plan-card {
+    position: relative;
+}
+
+.plan-qty-box {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.plan-qty-box button {
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.plan-qty-box input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+}
 </style>
 @endpush
 
@@ -438,7 +473,17 @@ body { font-family:var(--body); color:var(--gray-700); }
 
           <div class="plan-card" id="jp_{{ $plan->id }}Card"
               onclick="selectPlan('jp','{{ $plan->id }}','sel-blue')">
-
+            <div class="plan-qty-box">
+              <button type="button" onclick="changeQty(-1, {{ $plan->id }})">-</button>
+              
+              <input type="number" 
+                    id="qty_{{ $plan->id }}" 
+                    value="1" 
+                    min="1"
+                    onclick="event.stopPropagation()">
+              
+              <button type="button" onclick="changeQty(1, {{ $plan->id }})">+</button>
+            </div>
             <input type="radio" name="job_plan" id="jp_{{ $plan->id }}"
                   value="{{ $plan->id }}"{{ $loop->first ? 'checked' : '' }} />
 
@@ -577,66 +622,6 @@ body { font-family:var(--body); color:var(--gray-700); }
 
       <div class="plan-grid-3">
 
-        {{-- Silver --}}
-        {{-- <div class="plan-card" id="rdb_silverCard" onclick="selectPlan('rdb','silver','sel-green')">
-          <input type="radio" name="resume_plan" id="rdb_silver" value="silver"/>
-          <div class="plan-tick green"><i class="fas fa-check"></i></div>
-          <div class="plan-ico silver"><i class="fas fa-medal" style="color:#94a3b8;"></i></div>
-          <div class="plan-name">Silver Plan</div>
-          <div class="plan-price"><sup>₹</sup>2,000 <span class="plus-gst">+ GST</span></div>
-          <div class="plan-validity"><i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>&nbsp;Valid 30 Days</div>
-          <hr class="plan-divider"/>
-          <ul class="plan-feats">
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>100 Resume Downloads</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Full Profile Access</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Filter by Skills &amp; Location</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Export to Excel / PDF</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Email Support</li>
-          </ul>
-          <div class="plan-total green">Total: <strong>₹2,360</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div> --}}
-
-        {{-- Gold --}}
-        {{-- <div class="plan-card sel-green" id="rdb_goldCard" onclick="selectPlan('rdb','gold','sel-green')">
-          <div class="plan-badge-top green">🥇 Best Value</div>
-          <input type="radio" name="resume_plan" id="rdb_gold" value="gold" checked/>
-          <div class="plan-tick green"><i class="fas fa-check"></i></div>
-          <div class="plan-ico teal"><i class="fas fa-medal"></i></div>
-          <div class="plan-name">Gold Plan</div>
-          <div class="plan-price"><sup>₹</sup>3,000 <span class="plus-gst">+ GST</span></div>
-          <div class="plan-validity"><i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>&nbsp;Valid 45 Days</div>
-          <hr class="plan-divider"/>
-          <ul class="plan-feats">
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>200 Resume Downloads</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Full Profile Access</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Advanced Filters</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Export to Excel / PDF</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Priority Email Support</li>
-            <li><span class="feat-dot green"><i class="fas fa-check"></i></span>Candidate Shortlisting</li>
-          </ul>
-          <div class="plan-total green">Total: <strong>₹3,540</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div> --}}
-
-        {{-- Platinum --}}
-        {{-- <div class="plan-card" id="rdb_platinumCard" onclick="selectPlan('rdb','platinum','sel-purple')">
-          <input type="radio" name="resume_plan" id="rdb_platinum" value="platinum"/>
-          <div class="plan-tick purple"><i class="fas fa-check"></i></div>
-          <div class="plan-ico purple"><i class="fas fa-gem"></i></div>
-          <div class="plan-name">Platinum Plan</div>
-          <div class="plan-price"><sup>₹</sup>5,000 <span class="plus-gst">+ GST</span></div>
-          <div class="plan-validity"><i class="fas fa-clock" style="color:var(--green);font-size:.7rem;"></i>&nbsp;Valid 60 Days</div>
-          <hr class="plan-divider"/>
-          <ul class="plan-feats">
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>500 Resume Downloads</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>Full Profile Access</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>All Advanced Filters</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>Export to Excel / PDF</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>Dedicated Account Manager</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>Unlimited Shortlisting</li>
-            <li><span class="feat-dot purple"><i class="fas fa-check"></i></span>WhatsApp Support</li>
-          </ul>
-          <div class="plan-total purple">Total: <strong>₹5,900</strong>&nbsp;<span style="opacity:.65;font-weight:500;">(incl. 18% GST)</span></div>
-        </div> --}}
         @foreach($resumeplans as $plan)
 
           @php
@@ -942,32 +927,10 @@ body { font-family:var(--body); color:var(--gray-700); }
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            @php
-            $invoices = [
-              ['inv'=>'#INV-2025-031','module'=>'Job Posting','plan'=>'30 Days Plan',  'base'=>'₹1,000','gst'=>'₹180','total'=>'₹1,180','pid'=>'pay_OsK89AbCdEf','date'=>'11 Mar 2025','mod'=>'blue'],
-              ['inv'=>'#INV-2025-028','module'=>'Resume DB',  'plan'=>'Gold Plan',     'base'=>'₹3,000','gst'=>'₹540','total'=>'₹3,540','pid'=>'pay_QpT45MnBvCx','date'=>'05 Mar 2025','mod'=>'green'],
-              ['inv'=>'#INV-2025-020','module'=>'Banner Ad',  'plan'=>'Home Page 10D', 'base'=>'₹2,000','gst'=>'₹360','total'=>'₹2,360','pid'=>'pay_RsU12WxYzAb','date'=>'18 Feb 2025','mod'=>'amber'],
-              ['inv'=>'#INV-2025-012','module'=>'Job Posting','plan'=>'15 Days Plan',  'base'=>'₹600',  'gst'=>'₹108','total'=>'₹708',  'pid'=>'pay_NpJ72XyZwVu','date'=>'10 Feb 2025','mod'=>'blue'],
-              ['inv'=>'#INV-2025-005','module'=>'Resume DB',  'plan'=>'Silver Plan',   'base'=>'₹2,000','gst'=>'₹360','total'=>'₹2,360','pid'=>'pay_LkM38PqRsTu','date'=>'02 Jan 2025','mod'=>'green'],
-              ['inv'=>'#INV-2024-089','module'=>'Job Posting','plan'=>'30 Days Plan',  'base'=>'₹1,000','gst'=>'₹180','total'=>'₹1,180','pid'=>'pay_MkL58AbCfGh','date'=>'15 Dec 2024','mod'=>'blue'],
-            ];
-            $mod_icon = ['Job Posting'=>'fa-briefcase','Resume DB'=>'fa-database','Banner Ad'=>'fa-image'];
-            @endphp
-            @foreach($invoices as $inv)
-            <tr>
-              <td><strong style="font-family:var(--font);">{{ $inv['inv'] }}</strong></td>
-              <td><span class="badge badge-{{ $inv['mod'] }}"><i class="fas {{ $mod_icon[$inv['module']] }}"></i> {{ $inv['module'] }}</span></td>
-              <td style="font-family:var(--font);font-weight:600;">{{ $inv['plan'] }}</td>
-              <td>{{ $inv['base'] }}</td>
-              <td style="color:var(--amber);font-family:var(--font);font-weight:700;">{{ $inv['gst'] }}</td>
-              <td><strong style="color:var(--green);font-family:var(--font);">{{ $inv['total'] }}</strong></td>
-              <td style="font-family:monospace;font-size:.72rem;color:var(--gray-500);">{{ $inv['pid'] }}</td>
-              <td>{{ $inv['date'] }}</td>
-              <td><span class="badge badge-green"><i class="fas fa-check"></i> Paid</span></td>
-              <td><a href="#" class="btn-sm"><i class="fas fa-download"></i> PDF</a></td>
-            </tr>
-            @endforeach
+          <tbody  id="invoiceTableBody">
+              <tr>
+                <td colspan="10" style="text-align:center;">Loading...</td>
+              </tr>
           </tbody>
         </table>
       </div>
@@ -980,7 +943,9 @@ body { font-family:var(--body); color:var(--gray-700); }
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  document.addEventListener('DOMContentLoaded', loadInvoices);
 /* ─── TAB SWITCH ─── */
 function switchTab(btn, tab) {
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
@@ -1013,67 +978,70 @@ function selectPlan(prefix, id, selClass) {
   if (radio) radio.checked = true;
 }
 
-/* ─── JOB POSTING ─── */
-// function buyJobPlan() {
-//   var sel = document.querySelector('input[name="job_plan"]:checked');
-//   if (!sel) return alert('Please select a plan.');
-//   var info = sel.value === '15_day' ? '15 Days Plan – ₹708 (incl. GST)' : '30 Days Plan – ₹1,180 (incl. GST)';
-//   if (confirm('Proceed to payment for ' + info + '?')) {
-//     window.location.href = '{{ route("employer.billing.purchase") }}?plan=' + sel.value;
-//   }
-// }
+  function buyJobPlan() {
 
-function buyJobPlan() {
-    let selected = document.querySelector('input[name="job_plan"]:checked');
+      let selected = document.querySelector('input[name="job_plan"]:checked');
 
-    if (!selected) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Please select a plan!'
-        });
-        return;
-    }
+      let planId = selected.value;
+      let quantity = document.getElementById('qty_' + planId).value;
 
-    let planId = selected.value;
+      fetch('{{ url("/create-order") }}', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ plan_id: planId, quantity: quantity })
+      })
+      .then(res => res.json())
+      .then(data => {
 
-    fetch('{{ url("/buy-plan") }}', {
+          let options = {
+              "key": data.key,
+              "amount": data.amount,
+              "currency": "INR",
+              "name": "LinearJobs",
+              "description": "Plan Purchase",
+              "order_id": data.order_id,
+
+              "handler": function (response){
+                  verifyPayment(response, planId, quantity);
+              },
+
+              "theme": {
+                  "color": "#2563eb"
+              }
+          };
+
+          let rzp = new Razorpay(options);
+          rzp.open();
+      });
+  }
+function verifyPayment(response, planId, quantity) {
+
+    fetch('{{ url("/verify-payment") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
-        body: JSON.stringify({ plan_id: planId })
+        body: JSON.stringify({
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            plan_id: planId,
+            quantity: quantity
+        })
     })
-    .then(async res => {
-        let data = await res.json();
-
-        if (!res.ok) {
-            throw data;
-        }
-
-        return data;
-    })
+    .then(res => res.json())
     .then(data => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success 🎉',
-            text: data.message,
-            confirmButtonColor: '#1a56db'
-        }).then(() => {
-            location.reload(); // refresh after OK
-        });
-    })
-    .catch(err => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Failed ❌',
-            text: err.message || 'Something went wrong!',
-            confirmButtonColor: '#dc2626'
-        });
+      Swal.fire({
+          title: "Success 🎉",
+          text: data.message, // 🔥 dynamic
+          icon: "success"
+      }).then(() => location.reload());
     });
 }
-
 function renewJobPlan() {
   if (confirm('Renew current 30 Days Plan for ₹1,180 (incl. GST)?')) {
     window.location.href = '{{ route("employer.billing.purchase") }}?plan=30_day&renew=1';
@@ -1105,32 +1073,54 @@ function buyBannerPlan() {
         return;
     }
 
-    let tokenElement = document.querySelector('meta[name="csrf-token"]');
-
-    if (!tokenElement) {
-        Swal.fire('Error', 'CSRF token missing', 'error');
-        return;
-    }
-
     let formData = new FormData();
     formData.append('banner_plan_id', 1);
     formData.append('banner_image', file);
 
-    fetch("{{ route('banner.purchase') }}", {
+    // 👉 CREATE ORDER (route use)
+    fetch("{{ route('banner.order.create') }}", {
         method: 'POST',
-        body: formData,
         headers: {
-            'X-CSRF-TOKEN': tokenElement.getAttribute('content'),
-            'Accept': 'application/json'
-        }
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: formData
     })
     .then(res => res.json())
     .then(data => {
-        Swal.fire('Success', data.message, 'success');
-    })
-    .catch(err => {
-        console.error(err);
-        Swal.fire('Error', 'Something went wrong', 'error');
+
+        let options = {
+            key: data.key,
+            amount: data.amount,
+            currency: "INR",
+            name: "Job Portal",
+            description: "Banner Purchase",
+            order_id: data.order_id,
+
+            handler: function (response) {
+
+                // 👉 VERIFY PAYMENT (route use)
+                fetch("{{ route('banner.payment.verify') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    Swal.fire("Success 🎉", res.message, "success")
+                        .then(() => location.reload());
+                });
+            }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.open();
     });
 }
 function previewBanner() {
@@ -1151,17 +1141,14 @@ function buyResumePlan() {
     let selected = document.querySelector('input[name="resume_plan"]:checked');
 
     if (!selected) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Oops...',
-            text: 'Please select a plan!'
-        });
+        Swal.fire('Select a plan');
         return;
     }
 
     let planId = selected.value;
 
-    fetch('{{ url("/buy-resume-plan") }}', {
+    // 👉 Step 1: create order
+    fetch('{{ url("/create-resume-order") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1169,26 +1156,150 @@ function buyResumePlan() {
         },
         body: JSON.stringify({ plan_id: planId })
     })
-    .then(async res => {
-        let data = await res.json();
-
-        if (!res.ok) throw data;
-
-        return data;
-    })
+    .then(res => res.json())
     .then(data => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success 🎉',
-            text: data.message
-        }).then(() => location.reload());
-    })
-    .catch(err => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Failed ❌',
-            text: err.message || 'Something went wrong!'
+
+        let options = {
+            key: data.key,
+            amount: data.amount,
+            currency: "INR",
+            name: "Job Portal",
+            description: "Resume Plan Purchase",
+            order_id: data.order_id,
+
+            handler: function (response) {
+
+                // 👉 Step 2: verify payment
+                fetch('{{ url("/verify-resume-payment") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    Swal.fire("Success 🎉", res.message, "success")
+                        .then(() => location.reload());
+                });
+            }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.open();
+    });
+}
+function changeQty(val, planId) {
+
+    let input = document.getElementById('qty_' + planId);
+    let qty = parseInt(input.value) || 1;
+
+    qty += val;
+    if (qty < 1) qty = 1;
+
+    input.value = qty;
+
+    updateTotal(); // optional
+}
+function loadInvoices() {
+
+    fetch("{{ url('/user/invoices') }}")
+    .then(res => res.json())
+    .then(res => {
+
+        if (!res.status) {
+            console.error(res.message);
+            return;
+        }
+
+        let data = res.data;
+        let html = '';
+
+        if (data.length === 0) {
+            html = `<tr><td colspan="10" style="text-align:center;">No invoices found</td></tr>`;
+        }
+
+        data.forEach(inv => {
+
+            let module = getModule(inv.plan_type || 'other');
+            let icon = getIcon(module);
+
+            let amount = parseFloat(inv.amount || 0);
+            let gst = (amount * 0.18).toFixed(0);
+            let total = (amount * 1.18).toFixed(0);
+
+            html += `
+                <tr>
+                    <td><strong>${inv.invoice_no}</strong></td>
+
+                    <td>
+                        <span class="badge badge-${module.color}">
+                            <i class="fas ${icon}"></i> ${module.name}
+                        </span>
+                    </td>
+
+                    <td>${inv.plan_name ? inv.plan_name : '-'}</td>
+
+                    <td>₹${amount}</td>
+
+                    <td style="color:orange;">₹${gst}</td>
+
+                    <td><strong style="color:green;">₹${total}</strong></td>
+
+                    <td>${inv.payment_id ? inv.payment_id : '-'}</td>
+
+                    <td>${formatDate(inv.created_at)}</td>
+
+                    <td>
+                        <span class="badge badge-green">
+                            <i class="fas fa-check"></i> ${inv.payment_status}
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="/invoice-pdf/${inv.id}" class="btn-sm">
+                            <i class="fas fa-download"></i> PDF
+                        </a>
+                    </td>
+                </tr>
+            `;
         });
+
+        document.getElementById('invoiceTableBody').innerHTML = html;
+    });
+}
+
+// 🔥 Module mapping
+function 
+getModule(type) {
+
+    switch(type) {
+        case 'job': return {name:'Job Posting', color:'blue'};
+        case 'resume': return {name:'Resume DB', color:'green'};
+        case 'banner': return {name:'Banner Ad', color:'amber'};
+        default: return {name:'Other', color:'gray'};
+    }
+}
+
+// 🔥 Icons
+function getIcon(module) {
+    if(module.name === 'Job Posting') return 'fa-briefcase';
+    if(module.name === 'Resume DB') return 'fa-database';
+    if(module.name === 'Banner Ad') return 'fa-image';
+    return 'fa-file';
+}
+
+// 🔥 Date format
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
     });
 }
 </script>

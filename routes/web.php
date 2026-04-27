@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\JobSeeker\DashboardController;
+use App\Http\Controllers\ResumePlanController;
 use App\Models\SubCategory;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\AuthController;
@@ -35,8 +36,25 @@ use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EmployerController;
 use App\Http\Controllers\Admin\JobController;
 use App\Http\Controllers\Admin\JobPlanController;
+use App\Http\Controllers\BannerPlanController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LocationController;
+use Illuminate\Support\Facades\Mail;
 
+
+
+Route::get('/test-mail', function () {
+    try {
+        Mail::raw('Test Mail Working', function ($message) {
+            $message->to('anandhwebbitech@gmail.com')
+                    ->subject('Test Mail');
+        });
+
+        return "Mail Sent Successfully ✅";
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
 Route::get('/', [AdminController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('userlogin');
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -164,6 +182,15 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/buy-plan', [JobPlanController::class, 'buyPlan'])->name('buy.plan');
     Route::post('/buy-resume-plan', [JobPlanController::class, 'buyResumePlan'])->name('buy.resumeplan');
 
+   
+    Route::post('/create-resume-order', [ResumePlanController::class, 'createResumeOrder'])
+        ->name('resume.order.create');
+
+    Route::post('/verify-resume-payment', [ResumePlanController::class, 'verifyResumePayment'])
+        ->name('resume.payment.verify');
+
+    Route::post('/create-order', [JobPlanController::class, 'createOrder']);
+    Route::post('/verify-payment', [JobPlanController::class, 'verifyPayment']);
     Route::get('/check-download/{id}', [ResumeController::class, 'checkDownload'])->name('resume.check');
     Route::get('/download/{id}', [ResumeController::class, 'download'])->name('resume.download');
 
@@ -172,6 +199,16 @@ Route::controller(AuthController::class)->group(callback: function () {
 
     Route::post('/banner-payment-success', [JobPlanController::class, 'paymentSuccess'])
         ->name('banner.payment.success');
+
+
+    Route::post('/create-banner-order', [BannerPlanController::class, 'createBannerOrder'])
+        ->name('banner.order.create');
+
+    Route::post('/verify-banner-payment', [BannerPlanController::class, 'verifyBannerPayment'])
+        ->name('banner.payment.verify');
+   Route::get('/user/invoices', [InvoiceController::class, 'getInvoices'])->name('user.invoices');
+
+    Route::get('/invoice-pdf/{id}', [InvoiceController::class, 'downloadPdf'])->name('invoice.pdf');
 
 Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->group(function () {
 

@@ -99,13 +99,13 @@ class SliderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'nullable|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:1024',
-            'button_text' => 'nullable|string|max:100',
-            'button_link' => 'nullable|url',
-            'position' => 'nullable|integer|min:0',
+            'title'         => 'nullable|string|max:255',
+            'subtitle'      => 'nullable|string|max:255',
+            'description'   => 'nullable|string',
+            'image'         => 'required|image|mimes:jpg,jpeg,png,webp|max:1024',
+            'button_text'   => 'nullable|string|max:100',
+            'button_link'   => 'nullable|url',
+            'position'      => 'nullable|integer|min:0',
         ]);
 
         DB::beginTransaction();

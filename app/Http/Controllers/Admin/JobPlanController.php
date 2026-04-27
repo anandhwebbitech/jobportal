@@ -7,12 +7,19 @@ use App\Models\BannerPlan;
 use App\Models\BannerPlanSubscription;
 use Illuminate\Http\Request;
 use App\Models\JobPlan;
+use App\Models\Order;
 use App\Models\ResumePlan;
 use App\Models\ResumePlanSubscription;
+use App\Models\User;
 use Yajra\DataTables\DataTables;
 use App\Models\UserPlanSubscription;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Razorpay\Api\Api;
+use App\Models\Invoice;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+
 
 class JobPlanController extends Controller
 {
@@ -78,13 +85,13 @@ class JobPlanController extends Controller
         $validated['total_price'] = $validated['price'] + $validated['gst_amount'];
 
         JobPlan::create(array_merge($validated, [
-            'job_post_limit' => $request->job_post_limit ?? 1,
-            'applicant_management' => $request->has('applicant_management'),
-            'email_notifications' => $request->has('email_notifications'),
-            'tamil_nadu_reach' => $request->has('tamil_nadu_reach'),
-            'featured_listing' => $request->has('featured_listing'),
-            'priority_support' => $request->has('priority_support'),
-            'is_active' => $request->is_active,
+            'job_post_limit'        => $request->job_post_limit ?? 1,
+            'applicant_management'  => $request->has('applicant_management'),
+            'email_notifications'   => $request->has('email_notifications'),
+            'tamil_nadu_reach'      => $request->has('tamil_nadu_reach'),
+            'featured_listing'      => $request->has('featured_listing'),
+            'priority_support'      => $request->has('priority_support'),
+            'is_active'             => $request->is_active,
         ]));
 
         return response()->json([
@@ -104,23 +111,23 @@ class JobPlanController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name'          => 'required|string|max:255',
             'duration_days' => 'required|integer|min:1',
-            'price' => 'required|numeric',
+            'price'         => 'required|numeric',
             'job_post_limit' => 'required|integer|min:1',
         ]);
 
         $plan = JobPlan::findOrFail($id);
 
         $plan->update(array_merge($validated, [
-            'is_active' => $request->is_active,
-            'applicant_management' => $request->has('applicant_management'),
-            'email_notifications' => $request->has('email_notifications'),
-            'tamil_nadu_reach' => $request->has('tamil_nadu_reach'),
-            'featured_listing' => $request->has('featured_listing'),
-            'priority_support' => $request->has('priority_support'),
-            'gst_amount' => $request->gst_amount ?? ($request->price * 0.18),
-            'total_price' => $request->total_price ?? ($request->price * 1.18),
+            'is_active'             => $request->is_active,
+            'applicant_management'  => $request->has('applicant_management'),
+            'email_notifications'   => $request->has('email_notifications'),
+            'tamil_nadu_reach'      => $request->has('tamil_nadu_reach'),
+            'featured_listing'      => $request->has('featured_listing'),
+            'priority_support'      => $request->has('priority_support'),
+            'gst_amount'            => $request->gst_amount ?? ($request->price * 0.18),
+            'total_price'           => $request->total_price ?? ($request->price * 1.18),
         ]));
 
         return response()->json([
@@ -128,7 +135,136 @@ class JobPlanController extends Controller
             'message' => 'Plan updated successfully!'
         ]);
     }
+    public function verifyPayment(Request $request)
+    {
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
+        try {
+            $api->utility->verifyPaymentSignature([
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature
+            ]);
+        } catch (\Exception $e) {
+                dd($e->getMessage());
+
+        }
+
+        // ✅ get order
+        $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
+
+        // ✅ update order
+        $order->update([
+            'payment_id' => $request->razorpay_payment_id,
+            'status' => 'paid'
+        ]);
+
+        // 🔥 get message from activatePlan
+        $message = $this->activatePlan(
+            $order->user_id,
+            $request->plan_id,
+            $request->quantity,
+            $request->razorpay_payment_id
+        );
+
+        return response()->json([
+            'status' => true,
+            'message' => $message // 👈 dynamic message
+        ]);
+    }
+    public function activatePlan($userId, $planId, $qty, $paymentId)
+    {
+        $plan = JobPlan::findOrFail($planId);
+        $user = User::findOrFail($userId);
+        // 🔍 check existing active plan
+        $existing = UserPlanSubscription::where('user_id', $userId)
+            ->where('status', 'active')
+            ->first();
+        $isExtended = false; // 👈 flag
+        if ($existing && $existing->end_date > now()) {
+
+            // 👉 extend from current plan end
+            $startDate = $existing->end_date;
+
+            // 👉 deactivate old
+            $existing->update(['status' => 'expired']);
+
+            $isExtended = true; // ⚠️ mark
+        } else {
+            $startDate = now(); 
+        }
+
+        // 💡 calculation
+        $totalJobLimit = $plan->job_post_limit * $qty;
+
+        $endDate = Carbon::parse($startDate)
+            ->addDays($plan->duration_days);
+
+        // 💾 SAVE
+        UserPlanSubscription::create([
+            'user_id'        => $userId,
+            'job_plan_id'    => $plan->id,
+            'start_date'     => $startDate,
+            'end_date'       => $endDate,
+            'jobs_used'      => 0,
+            'job_post_limit' => $totalJobLimit,
+            'payment_id'     => $paymentId,
+            'payment_status' => 'paid',
+            'status'         => 'active',
+            'quantity'       => $qty 
+        ]);
+         // ✅ Invoice
+        $invoiceNo = 'INV-' . strtoupper(Str::random(8));
+        $amount = ($plan->price ?? 0) * $qty;
+        $baseAmount = ($plan->price ?? 0) * $qty;
+        $gstAmount  = $baseAmount * 0.18;
+        $totalAmount = $baseAmount + $gstAmount;
+
+        $invoice = Invoice::create([
+            'invoice_no'     => $invoiceNo,
+            'user_id'        => $user->id,
+            'plan_id'        => $plan->id,
+
+            // 🔥 IMPORTANT FIELDS
+            'plan_type'      => 'job', // 👈 use keyword
+            'plan_name'      => $plan->name,
+
+            'amount'         => $baseAmount,
+            'gst_amount'     => $gstAmount,
+            'total_amount'   => $totalAmount,
+
+            'payment_id'     => $paymentId,
+            'payment_status' => 'paid',
+            'payment_method' => 'razorpay',
+
+            'paid_at'        => now(),
+        ]);
+
+        // ✅ Mail
+        try {
+            Mail::send('emails.invoice_mail', [
+                'user' => $user,
+                'plan' => $plan,
+                'invoice' => $invoice,
+                'qty' => $qty ,
+                'plan_type' => 'Job Posting'
+            ], function ($message) use ($user, $invoice) {
+                $message->to("anandhwebbitech@gmail.com") // ✅ dynamic email
+                    ->subject('Invoice #' . $invoice->invoice_no);
+            });
+
+        } catch (\Exception $e) {
+            dd('Mail Error: ' . $e->getMessage());
+        }
+
+
+        // 🔥 return message
+        if ($isExtended) {
+            return "You already have an active plan. New plan will start after current plan expiry.";
+        }
+
+        return "Plan activated successfully";
+    }
     // Delete a plan
     public function destroy(JobPlan $plan)
     {
@@ -138,6 +274,7 @@ class JobPlanController extends Controller
             'message' => 'Plan deleted successfully.'
         ]);
     }
+
    public function resumeindex(Request $request)
     {
         if ($request->ajax()) {
@@ -192,14 +329,14 @@ class JobPlanController extends Controller
         ]);
 
         ResumePlan::create([
-            'name' => $request->name,
-            'price' => $request->price,
-            'gst_amount' => $request->gst_amount,
-            'total_price' => $request->total_price,
-            'downloads_limit' => $request->downloads_limit,
-            'valid_days' => $request->valid_days,
-            'features' => $request->features ?? [], // ✅ FIX
-            'is_active' => $request->is_active ?? 1
+            'name'              => $request->name,
+            'price'             => $request->price,
+            'gst_amount'        => $request->gst_amount,
+            'total_price'       => $request->total_price,
+            'downloads_limit'   => $request->downloads_limit,
+            'valid_days'        => $request->valid_days,
+            'features'          => $request->features ?? [], // ✅ FIX
+            'is_active'         => $request->is_active ?? 1
         ]);
 
         return response()->json(['message' => 'Plan Created Successfully']);
@@ -212,15 +349,15 @@ class JobPlanController extends Controller
         $plan = ResumePlan::findOrFail($id);
 
         return response()->json([
-            'id' => $plan->id,
-            'name' => $plan->name,
-            'price' => $plan->price,
-            'gst_amount' => $plan->gst_amount,
-            'total_price' => $plan->total_price,
+            'id'              => $plan->id,
+            'name'            => $plan->name,
+            'price'           => $plan->price,
+            'gst_amount'      => $plan->gst_amount,
+            'total_price'     => $plan->total_price,
             'downloads_limit' => $plan->downloads_limit,
-            'valid_days' => $plan->valid_days,
-            'features' => $plan->features, // ✅ already array
-            'is_active' => $plan->is_active,
+            'valid_days'      => $plan->valid_days,
+            'features'        => $plan->features, // ✅ already array
+            'is_active'       => $plan->is_active,
         ]);
     }
 
@@ -229,21 +366,21 @@ class JobPlanController extends Controller
     public function Resumeupdate(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'price' => 'required|numeric',
         ]);
 
         $plan = ResumePlan::findOrFail($id);
 
         $plan->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'gst_amount' => $request->gst_amount,
-            'total_price' => $request->total_price,
+            'name'            => $request->name,
+            'price'           => $request->price,
+            'gst_amount'      => $request->gst_amount,
+            'total_price'     => $request->total_price,
             'downloads_limit' => $request->downloads_limit,
-            'valid_days' => $request->valid_days,
-            'features' => $request->features ?? [], // ✅ FIX
-            'is_active' => $request->is_active
+            'valid_days'      => $request->valid_days,
+            'features'        => $request->features ?? [], // ✅ FIX
+            'is_active'       => $request->is_active
         ]);
 
         return response()->json(['message' => 'Plan Updated Successfully']);
@@ -353,7 +490,7 @@ class JobPlanController extends Controller
             'placement' => $plan->placement,
             'price' => $plan->price,
             'gst_amount' => $plan->gst_amount,
-            'total_price' => $plan->total_price,
+            'total_price' => $plan->total_price, 
             'duration_days' => $plan->duration_days,
             'features' => $plan->features, // already array
             'is_active' => $plan->is_active,
@@ -408,31 +545,79 @@ class JobPlanController extends Controller
     public function buyPlan(Request $request)
     {
         $request->validate([
-            'plan_id' => 'required|exists:job_plans,id'
+            'plan_id' => 'required|exists:job_plans,id',
+            'quantity' => 'required|integer|min:1'
         ]);
 
-        $user = Auth::user();
-
-        // 🔍 Get plan
+        $user = auth()->user();
         $plan = JobPlan::findOrFail($request->plan_id);
+        $qty  = (int) $request->quantity;
 
-        // ❗ Deactivate old plans (optional but recommended)
-        UserPlanSubscription::where('user_id', $user->id)
+        // 🔥 Check existing active plan
+        $existing = UserPlanSubscription::where('user_id', $user->id)
             ->where('status', 1)
-            ->update(['status' => 0]);
+            ->first();
 
-        // ✅ Create new subscription
+        if ($existing && $existing->end_date > now()) {
+            // 👉 extend from current end date
+            $startDate = $existing->end_date;
+
+            // ❗ old plan deactivate
+            $existing->update(['status' => 0]);
+        } else {
+            $startDate = now();
+        }
+
+        // 💡 Calculation
+        $totalJobLimit = $plan->job_post_limit * $qty;
+
+        $endDate = \Carbon\Carbon::parse($startDate)
+                    ->addDays($plan->duration_days);
+
+        // 💾 Save subscription
         $subscription = UserPlanSubscription::create([
             'user_id'        => $user->id,
             'job_plan_id'    => $plan->id,
-            'start_date'     => now(),
-            'end_date'       => now()->addDays($plan->duration_days),
+            'start_date'     => $startDate,
+            'end_date'       => $endDate,
             'jobs_used'      => 0,
-            'job_post_limit' => $plan->job_post_limit,
-            'payment_id'     => 'TEST_' . rand(10000,99999), // temp
+            'job_post_limit' => $totalJobLimit,
+            'payment_id'     => 'TEST_' . uniqid(),
             'payment_status' => 'paid',
-            'status'         => 1
+            'status'         => 1,
+            'quantity'       => $qty 
         ]);
+        // ✅ Invoice Number
+        $invoiceNo = 'INV-' . strtoupper(Str::random(8));
+
+        // ✅ Correct Amount (important)
+        $amount = ($plan->price ?? 0) * $qty;
+
+        // ✅ Create Invoice
+        $invoice = Invoice::create([
+            'invoice_no'     => $invoiceNo,
+            'user_id'        => $user->id,
+            'plan_id'        => $plan->id,
+            'amount'         => $amount,
+            'payment_status' => 'paid',
+            'payment_method' => 'manual',
+            'paid_at'        => now(),
+        ]);
+        try {
+
+            Mail::send('emails.invoice_mail', [
+                'user' => $user,
+                'plan' => $plan,
+                'invoice' => $invoice,
+                'qty' => $qty
+            ], function ($message) use ($user, $invoice) {
+                $message->to("anandhwebbitech@gmail.com")
+                    ->subject('Invoice #' . $invoice->invoice_no);
+            });
+
+        } catch (\Exception $e) {
+            dd('Mail Error: ' . $e->getMessage());
+        }
 
         return response()->json([
             'status'  => true,
@@ -505,10 +690,9 @@ class JobPlanController extends Controller
             ], 500);
         }
     }
+    
 
-
-
-public function purchaseBanner(Request $request)
+    public function purchaseBanner(Request $request)
     {
         $request->validate([
             'banner_plan_id' => 'required|exists:banner_plans,id',
@@ -522,13 +706,13 @@ public function purchaseBanner(Request $request)
         $file->storeAs('public/banners', $filename);
 
         $subscription = BannerPlanSubscription::create([
-            'user_id' => auth()->id(),
-            'banner_plan_id' => $plan->id,
-            'banner_image' => $filename,
-            'price' => $plan->price,
-            'gst_amount' => $plan->gst_amount,
-            'total_price' => $plan->total_price,
-            'status' => 'pending'
+            'user_id'         => auth()->id(),
+            'banner_plan_id'  => $plan->id,
+            'banner_image'    => $filename,
+            'price'           => $plan->price,
+            'gst_amount'      => $plan->gst_amount,
+            'total_price'     => $plan->total_price,
+            'status'          => 'pending'
         ]);
 
         return response()->json([
@@ -553,5 +737,45 @@ public function purchaseBanner(Request $request)
         ]);
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function createOrder(Request $request)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:job_plans,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $user = auth()->user();
+
+        $plan = JobPlan::findOrFail($request->plan_id);
+        $qty  = (int) $request->quantity;
+
+        // 💰 total amount (with GST already included)
+        $amount = $plan->total_price * $qty * 100; // paisa
+
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+        // dd(7,$user,$amount);
+
+        $razorpayOrder = $api->order->create([
+            'receipt' => 'order_' . uniqid(),
+            'amount' => $amount,
+            'currency' => 'INR'
+        ]);
+        // dd($razorpayOrder);
+        // 💾 save order in DB
+        $order = Order::create([
+            'user_id'           => $user->id,
+            'plan_id'           => $plan->id,
+            'amount'            => $amount / 100,
+            'razorpay_order_id' => $razorpayOrder['id'],
+            'status'            => 'pending'
+        ]);
+        // dd(7);
+        return response()->json([
+            'order_id' => $razorpayOrder['id'],
+            'amount' => $amount,
+            'key' => env('RAZORPAY_KEY')
+        ]);
     }
 }
