@@ -139,7 +139,7 @@
             max-width: 1280px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 260px 1fr 480px;
+            grid-template-columns: 260px 1fr 500px;
             gap: 0;
             /* min-height: calc(100vh - 130px); */
             min-height: calc(100vh - 60px);

@@ -1253,7 +1253,7 @@
 
                 <!-- LOCATION -->
                 <select class="lj-search-sel" id="ljLocationSel">
-                    <option value="" disabled selected>Location</option>
+                    <option value="" disabled selected>District</option>
                 </select>
 
                 <!-- BUTTON -->
