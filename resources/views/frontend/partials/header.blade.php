@@ -38,7 +38,10 @@
             @guest
                 <a href="{{ route('jobseeker.login') }}" class="lj-btn lj-btn-ghost">Login</a>
                 <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-blue">Register</a>
-                <a href="{{ route('employer.register') }}" class="lj-btn lj-btn-green">Post a Job</a>
+                <a href="{{ route('employer.register', ['type' => 'employer']) }}" 
+                    class="lj-btn lj-btn-green">
+                        Post a Job
+                </a>
             @else
                 <span class="lj-nav-user">
                     <i class="fas fa-circle-user"></i> {{ Auth::user()->name }}

@@ -131,14 +131,7 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
         <option>Most Recent</option><option>Most Experienced</option><option>Name A-Z</option>
       </select>
     </div>
-    {{-- <?php dd($resumes); ?> --}}
-    {{-- @php $resumes=[
-      ['init'=>'SK','name'=>'Senthil Kumar', 'skills'=>['Java','Spring Boot','MySQL'],   'exp'=>'5 yrs','edu'=>'B.Tech', 'loc'=>'Chennai',    'industry'=>'IT'],
-      ['init'=>'AP','name'=>'Anitha P',       'skills'=>['Python','Django','AWS'],        'exp'=>'3 yrs','edu'=>'MCA',    'loc'=>'Coimbatore', 'industry'=>'IT'],
-      ['init'=>'RT','name'=>'Rajesh T',       'skills'=>['AutoCAD','SolidWorks','CNC'],  'exp'=>'7 yrs','edu'=>'Diploma','loc'=>'Salem',      'industry'=>'Manufacturing'],
-      ['init'=>'LN','name'=>'Lakshmi N',      'skills'=>['Tally','GST','Accounting'],    'exp'=>'4 yrs','edu'=>'B.Com',  'loc'=>'Madurai',    'industry'=>'Finance'],
-      ['init'=>'BS','name'=>'Bharath S',      'skills'=>['React','Vue','Node.js'],       'exp'=>'2 yrs','edu'=>'B.E',    'loc'=>'Trichy',     'industry'=>'IT'],
-    ]; @endphp --}}
+
 
     @foreach($resumes as $r)
     <div class="resume-card">

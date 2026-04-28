@@ -53,5 +53,18 @@
 
   {{-- Page-specific JS --}}
   @stack('scripts')
+<script>
+window.onload = function () {
+    let type = "{{ $type ?? 'jobseeker' }}";
+
+    console.log("Loaded type:", type);
+
+    if (typeof switchType === "function") {
+        switchType(type);
+    } else {
+        console.error("switchType NOT loaded");
+    }
+};
+</script>
 </body>
 </html>

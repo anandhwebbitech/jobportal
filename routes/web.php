@@ -163,8 +163,8 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/employer/login', 'employerLoginSubmit')->name('employer.login.submit');
 
     Route::get('/employer/register', 'employerRegister')->name('employer.register');
-    Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
-
+    // Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
+    Route::get('/employer/register/{type}', [AuthController::class, 'employerRegister']) ->name('employer.register');
     // Forgot Password
     Route::get('/forgot-password', 'forgotPassword')->name('forgot.password');
     Route::post('/forgot-password', 'forgotPasswordSubmit')->name('forgot.password.submit');
