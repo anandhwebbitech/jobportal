@@ -149,7 +149,7 @@ resources/views/frontend/auth/employer-login.blade.php
     .split {
       display: grid;
       grid-template-columns: 400px 1fr;
-      max-width: 900px;
+      max-width: 1200px;
       width: 100%;
       background: #fff;
       border-radius: 24px;

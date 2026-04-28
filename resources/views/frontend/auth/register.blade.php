@@ -103,7 +103,7 @@
 
         body {
             font-family: var(--fb);
-            background: var(--n50);
+            background: #ffffff; /* User requested pure white background */
             color: var(--n900);
             min-height: 100vh;
             display: flex;
@@ -506,6 +506,7 @@
            MAIN — REGISTER SPLIT LAYOUT
         ══════════════════════════════════════════════════════ */
         main {
+            width: 100%;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -519,7 +520,7 @@
         .reg-split {
             display: grid;
             grid-template-columns: 340px 1fr;
-            max-width: 1000px;
+            max-width: 1200px !important;
             width: 100%;
             gap: 28px;
             align-items: flex-start;
@@ -1051,18 +1052,21 @@
         /* ── FORM ELEMENTS ── */
         .fgrp {
             margin-bottom: 15px;
+            width: 100%;
         }
 
         .frow {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
+            width: 100%;
         }
 
         .frow3 {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 13px;
+            width: 100%;
         }
 
         .flbl {
@@ -1090,6 +1094,7 @@
 
         .fiw {
             position: relative;
+            width: 100%;
         }
 
         .fiw-l {
@@ -1407,6 +1412,7 @@
             transition: border-color var(--t), background var(--t);
             background: var(--n50);
             position: relative;
+            width: 100%;
         }
 
         .file-zone:hover {
@@ -2100,7 +2106,7 @@
                                             <label class="flbl" for="js_name">Full Name <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
-                                                    type="text" id="full_name" name="full_name"class="finput fc-b"
+                                                    type="text" id="full_name" name="full_name" class="finput fc-b"
                                                     placeholder="Your full name" /></div>
                                             <div class="ferr-msg" id="e-js_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Full name required
@@ -2139,7 +2145,7 @@
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
                                                 <input type="password" id="password"
-                                                    name="password"class="finput pr fc-b" placeholder="Min. 8 characters"
+                                                    name="password" class="finput pr fc-b" placeholder="Min. 8 characters"
                                                     oninput="pwdStr(this.value,'js-pb')" />
                                                 <button type="button" class="fiw-r" onclick="togPwd('password',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
@@ -2160,7 +2166,7 @@
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
                                                 <input type="password" id="confirm_password"
-                                                    name="confirm_password"class="finput pr fc-b"
+                                                    name="confirm_password" class="finput pr fc-b"
                                                     placeholder="Re-enter password" />
                                                 <button type="button" class="fiw-r"
                                                     onclick="togPwd('confirm_password',this)" tabindex="-1"><i
@@ -2183,7 +2189,7 @@
                                             <label class="flbl" for="js_state">State <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
-                                                <select id="state" name="state"class="finput fc-b">
+                                                <select id="state" name="state" class="finput fc-b">
                                                     <option value="" disabled selected>Select State</option>
                                                     <option>Tamil Nadu</option>
                                                     <option>Other</option>
@@ -2228,7 +2234,7 @@
                                         <label class="flbl" for="js_qual">Highest Qualification <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-graduation-cap fiw-l"></i>
-                                            <select id="qualification"name="qualification" class="finput fc-b">
+                                            <select id="qualification" name="qualification" class="finput fc-b">
                                                 <option value="" disabled selected>Select Qualification</option>
 
                                                 @foreach($qualifications as $item)
@@ -2307,7 +2313,7 @@
                                         <div class="fgrp">
                                             <label class="flbl">Upload Resume</label>
                                             <div class="file-zone"><input type="file" name="resume"
-                                                    id="resume"accept=".pdf,.doc,.docx"
+                                                    id="resume" accept=".pdf,.doc,.docx"
                                                     onchange="setFileLabel(this,'js-rl')">
                                                 <div class="fz-ico"><i class="fa-solid fa-file-pdf"
                                                         style="color:var(--blue);"></i></div>
@@ -2354,7 +2360,7 @@
                                         style="display:none;"><i class="fa-solid fa-arrow-left"></i> Back</button>
                                     <button type="button" class="btn-next blue-next" id="jsBtnNext"
                                         onclick="jsNav(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
-                                    <button type="submit"class="btn-submit blue-sub" id="jsBtnSub"
+                                    <button type="submit" class="btn-submit blue-sub" id="jsBtnSub"
                                         style="display:none;"><i class="fa-solid fa-user-plus"></i> Create
                                         Account</button>
                                 </div>
@@ -2446,8 +2452,8 @@
                                         <label class="flbl" for="ec_pin">Pincode <span
                                                 class="req">*</span></label>
                                         <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i><input
-                                                type="text" id="c_pincode" name="c_pincode"class="finput fc-g"
-                                                placeholder="6-digit pincode" maxlength="6" style="max-width:200px;" />
+                                                type="text" id="c_pincode" name="c_pincode" class="finput fc-g"
+                                                placeholder="6-digit pincode" maxlength="6" />
                                         </div>
                                         <div class="ferr-msg" id="e-ec_pin"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 6-digit
@@ -2470,7 +2476,7 @@
                                             <label class="flbl" for="eo_name">Owner Name <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
-                                                    type="text" id="c_ownername" name="c_ownername"class="finput fc-g"
+                                                    type="text" id="c_ownername" name="c_ownername" class="finput fc-g"
                                                     placeholder="Full name" /></div>
                                             <div class="ferr-msg" id="e-eo_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Owner name is
@@ -2480,7 +2486,7 @@
                                             <label class="flbl" for="eo_mob">Owner Mobile <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
-                                                    type="tel" id="c_mobile" name="c_mobile"class="finput fc-g"
+                                                    type="tel" id="c_mobile" name="c_mobile" class="finput fc-g"
                                                     placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
                                             <div class="ferr-msg" id="e-eo_mob"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
@@ -2500,7 +2506,7 @@
                                             <label class="flbl" for="eh_name">HR Name <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
-                                                    type="text" id="c_hr_name" name="c_hr_name"class="finput fc-g"
+                                                    type="text" id="c_hr_name" name="c_hr_name" class="finput fc-g"
                                                     placeholder="Full name" /></div>
                                             <div class="ferr-msg" id="e-eh_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>HR name is
@@ -2625,7 +2631,7 @@
                                                 class="opt">Optional</span></label>
                                         <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input
                                                 type="text" id="c_msme" name="c_msme" class="finput fc-g"
-                                                placeholder="UDYAM-TN-01-0000000" style="max-width:380px;" /></div>
+                                                placeholder="UDYAM-TN-01-0000000" /></div>
                                         <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration
                                             number
                                             — recommended for MSMEs</div>
@@ -2667,7 +2673,7 @@
                                     <div class="fgrp">
                                         <label class="flbl">MSME Certificate <span
                                                 class="opt">Optional</span></label>
-                                        <div class="file-zone" style="max-width:380px;"><input type="file"
+                                        <div class="file-zone"><input type="file"
                                                 id="msme_certificate" name="msme_certificate"
                                                 accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
                                             <div class="fz-ico"><i class="fa-solid fa-industry"
@@ -2720,15 +2726,17 @@
     <button class="to-top" id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
         aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
 @endsection
+
 <!-- ════════ JAVASCRIPT ════════ -->
 @push('scripts')
     <script>
-        const skillsData = @json($skills);
+        const skillsData = @json($skills ?? []);
     </script>
     <script>
         /* ── ANNOUNCE ── */
         function closeAnnounce() {
             const b = document.getElementById('announceBar');
+            if(!b) return;
             b.style.maxHeight = b.offsetHeight + 'px';
             requestAnimationFrame(() => {
                 b.style.transition = 'max-height .3s,opacity .3s,padding .3s';
@@ -2740,34 +2748,24 @@
         }
 
         /* ── STICKY HEADER ── */
-        // const hdr = document.getElementById('mainHeader');
-        // window.addEventListener('scroll', () => {
-        //     hdr.classList.toggle('scrolled', window.scrollY > 20);
-        //     document.getElementById('toTop').classList.toggle('visible', window.scrollY > 300);
-        // }, {
-        //     passive: true
-        // });
         const hdr = document.getElementById('mainHeader');
         const toTop = document.getElementById('toTop');
 
         window.addEventListener('scroll', () => {
-
             if (hdr) {
                 hdr.classList.toggle('scrolled', window.scrollY > 20);
             }
-
             if (toTop) {
                 toTop.classList.toggle('visible', window.scrollY > 300);
             }
-
         }, {
             passive: true
         });
 
         /* ── MOBILE NAV ── */
         function toggleMobile() {
-            document.getElementById('navHam').classList.toggle('open');
-            document.getElementById('mobileMenu').classList.toggle('open');
+            document.getElementById('navHam')?.classList.toggle('open');
+            document.getElementById('mobileMenu')?.classList.toggle('open');
         }
 
         /* ── CONFIG ── */
@@ -3047,7 +3045,7 @@
 
             // ❗ Show toaster
             if (!valid) {
-                toastr.error(firstError);
+                if (typeof toastr !== 'undefined') toastr.error(firstError);
 
                 // scroll to first error
                 document.querySelector('.error')?.scrollIntoView({
@@ -3130,7 +3128,7 @@
                     btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
 
                     if (data.status) {
-                        toastr.success(data.message);
+                        if (typeof toastr !== 'undefined') toastr.success(data.message);
 
                         setTimeout(() => {
                             form.reset();
@@ -3154,7 +3152,7 @@
                             document.getElementById('jsBtnSub').style.display = 'none';
                         }, 1500);
                     } else {
-                        toastr.error(data.message);
+                        if (typeof toastr !== 'undefined') toastr.error(data.message);
                     }
 
                 })
@@ -3165,10 +3163,10 @@
 
                     if (error.errors) {
                         Object.values(error.errors).forEach(err => {
-                            toastr.error(err[0]);
+                            if (typeof toastr !== 'undefined') toastr.error(err[0]);
                         });
                     } else {
-                        toastr.error('Something went wrong');
+                        if (typeof toastr !== 'undefined') toastr.error('Something went wrong');
                     }
                 });
         });
@@ -3207,7 +3205,7 @@
                 btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
 
                 if (data.status) {
-                    toastr.success(data.message);
+                    if (typeof toastr !== 'undefined') toastr.success(data.message);
 
                     setTimeout(() => {
                         form.reset();
@@ -3236,7 +3234,7 @@
                     }, 1500);
 
                 } else {
-                    toastr.error(data.message);
+                    if (typeof toastr !== 'undefined') toastr.error(data.message);
                 }
             })
             .catch(error => {
@@ -3249,18 +3247,18 @@
                     let errors = error.data.errors;
 
                     Object.values(errors).forEach(err => {
-                        toastr.error(err[0]);
+                        if (typeof toastr !== 'undefined') toastr.error(err[0]);
                     });
                 }
 
                 // ✅ SERVER ERROR
                 else if (error.status === 500) {
-                    toastr.error(error.data.message || 'Server error');
+                    if (typeof toastr !== 'undefined') toastr.error(error.data.message || 'Server error');
                 }
 
                 // ✅ OTHER
                 else {
-                    toastr.error('Something went wrong');
+                    if (typeof toastr !== 'undefined') toastr.error('Something went wrong');
                 }
             });
         });
@@ -3310,6 +3308,7 @@
         /* ── BUILD DOTS ── */
         (function() {
             const d = document.getElementById('rlDots');
+            if(!d) return;
             for (let i = 0; i < 30; i++) {
                 const s = document.createElement('span');
                 d.appendChild(s);
@@ -3319,7 +3318,7 @@
         /* ── BUILD SKILLS ── */
         (function() {
             const c = document.getElementById('skillsBox');
-
+            if(!c || !skillsData) return;
             skillsData.forEach(skill => {
                 const id = 'sk_' + skill.id;
 
@@ -3347,65 +3346,57 @@
         /* ── INIT ── */
         switchType('jobseeker');
 
-        $('#state',).on('change', function () {
+        // Note: Assuming jQuery is loaded in frontend.app
+        if(typeof $ !== 'undefined') {
+            $('#state').on('change', function () {
+                let state = $(this).val();
+                $('#district').html('<option value="">Loading...</option>');
 
-            let state = $(this).val();
+                if (state) {
+                    let url = "{{ route('get.districts', ':state') }}";
+                    url = url.replace(':state', state);
 
-            $('#district').html('<option value="">Loading...</option>');
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (response) {
+                            let options = '<option value="" disabled selected>Select District</option>';
+                            response.forEach(function (district) {
+                                options += `<option value="${district}">${district}</option>`;
+                            });
+                            $('#district').html(options);
+                        }
+                    });
 
-            if (state) {
+                } else {
+                    $('#district').html('<option value="" disabled selected>Select District</option>');
+                }
+            });
 
-                let url = "{{ route('get.districts', ':state') }}";
-                url = url.replace(':state', state);
+            $('#c_state').on('change', function () {
+                let state = $(this).val();
+                $('#c_district').html('<option value="">Loading...</option>');
 
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function (response) {
+                if (state) {
+                    let url = "{{ route('get.districts', ':state') }}";
+                    url = url.replace(':state', encodeURIComponent(state));
 
-                        let options = '<option value="" disabled selected>Select District</option>';
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (response) {
+                            let options = '<option value="" disabled selected>Select District</option>';
+                            response.forEach(function (district) {
+                                options += `<option value="${district}">${district}</option>`;
+                            });
+                            $('#c_district').html(options);
+                        }
+                    });
 
-                        response.forEach(function (district) {
-                            options += `<option value="${district}">${district}</option>`;
-                        });
-
-                        $('#district').html(options);
-                    }
-                });
-
-            } else {
-                $('#district').html('<option value="" disabled selected>Select District</option>');
-            }
-        });
-        $('#c_state').on('change', function () {
-
-            let state = $(this).val();
-
-            $('#c_district').html('<option value="">Loading...</option>');
-
-            if (state) {
-
-                let url = "{{ route('get.districts', ':state') }}";
-                url = url.replace(':state', encodeURIComponent(state));
-
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function (response) {
-
-                        let options = '<option value="" disabled selected>Select District</option>';
-
-                        response.forEach(function (district) {
-                            options += `<option value="${district}">${district}</option>`;
-                        });
-
-                        $('#c_district').html(options);
-                    }
-                });
-
-            } else {
-                $('#c_district').html('<option value="" disabled selected>Select District</option>');
-            }
-        });
+                } else {
+                    $('#c_district').html('<option value="" disabled selected>Select District</option>');
+                }
+            });
+        }
     </script>
 @endpush
