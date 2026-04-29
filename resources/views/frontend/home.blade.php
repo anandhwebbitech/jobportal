@@ -48,8 +48,8 @@
 
         /* Search bar */
         /* ===============================
-       SEARCH BAR - MODERN UI
-    ================================ */
+           SEARCH BAR - MODERN UI
+        ================================ */
 
         /* BOX */
         .lj-search-box {
@@ -808,9 +808,9 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-                                                                           ── SPONSORED / IMAGE ADS SECTION ─────────────────────
-                                                                           Pure image banner ads — no text cards
-                                                                        ═══════════════════════════════════════════════════════ */
+                                                                               ── SPONSORED / IMAGE ADS SECTION ─────────────────────
+                                                                               Pure image banner ads — no text cards
+                                                                            ═══════════════════════════════════════════════════════ */
 
         .lj-ads {
             background: #f1f4f9;
@@ -1205,6 +1205,17 @@
             padding: 20px;
             color: #6b7280;
         }
+
+        .lj-search-form{
+            width: 100%;
+            display: flex;
+            align-items: stretch;
+        }
+        @media (max-width: 600px) {
+            .lj-search-form{
+                flex-direction: column;
+            }
+        }
     </style>
 @endpush
 
@@ -1226,48 +1237,60 @@
 
         {{-- Search Bar --}}
         <div class="lj-anim lj-anim-d2">
-            <div class="lj-search-box" id="ljSearchBox">
+    <div class="lj-search-box">
 
-                <!-- ICON -->
-                <div class="lj-search-ico">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
+        <form method="GET"
+              action="{{ route('jobs.index') }}"
+              class="lj-search-form">
 
-                <!-- INPUT -->
-                <input class="lj-search-input" id="ljSearchInput" type="text"
-                    placeholder="Job title, keywords, or company" autocomplete="off" />
-
-                <div class="lj-search-sep"></div>
-
-                <!-- STATE -->
-                <select class="lj-search-sel" id="ljStateSel">
-                    <option value="" disabled selected>State</option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Kerala">Kerala</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                    <option value="Telangana">Telangana</option>
-                </select>
-
-                <div class="lj-search-sep"></div>
-
-                <!-- LOCATION -->
-                <select class="lj-search-sel" id="ljLocationSel">
-                    <option value="" disabled selected>District</option>
-                </select>
-
-                <!-- BUTTON -->
-                <div class="lj-search-cta">
-                    <button class="lj-search-btn" id="ljSearchBtn">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Find Jobs</span>
-                    </button>
-                </div>
-
+            <div class="lj-search-ico">
+                <i class="fa-solid fa-magnifying-glass"></i>
             </div>
-        </div>
 
-        <div id="jobResults" style="margin-top:20px;"></div>
+            <input class="lj-search-input"
+                   id="ljSearchInput"
+                   name="title"
+                   type="text"
+                   placeholder="Job title, keywords, or company">
+
+            <div class="lj-search-sep"></div>
+
+            <select class="lj-search-sel"
+                    id="ljStateSel"
+                    name="state">
+                <option value="">State</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Telangana">Telangana</option>
+            </select>
+
+            <div class="lj-search-sep"></div>
+
+            <select class="lj-search-sel"
+                    id="ljLocationSel"
+                    name="location">
+                <option value="">District</option>
+            </select>
+
+            <div class="lj-search-cta">
+                <button type="submit"
+                        class="lj-search-btn"
+                        id="ljSearchBtn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Find Jobs</span>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+        {{-- <div id="jobResults">
+            @include('frontend.jobs.job-list')
+        </div> --}}
 
         {{-- Trending tags --}}
         <div class="lj-anim lj-anim-d3">
@@ -1487,136 +1510,137 @@
     </section>
 
     <script>
-        const searchUrl = "{{ route('jobs.search') }}";
+        // const searchUrl = "{{ route('jobs.index') }}";
 
-        const keywordInput = document.getElementById('ljSearchInput');
-        const locationSelect = document.getElementById('ljLocSel');
-        const searchBtn = document.getElementById('ljSearchBtn');
+        // const keywordInput = document.getElementById('ljSearchInput');
+        // const stateSelect = document.getElementById('ljStateSel');
+        // const locationSelect = document.getElementById('ljLocationSel');
+        // const searchBtn = document.getElementById('ljSearchBtn');
 
-        let delay;
+        // searchBtn.addEventListener('click', searchJobs);
 
-        /* =========================
-           MAIN SEARCH FUNCTION
-        ========================= */
-        function searchJobs() {
+        // function searchJobs() {
 
-            let keyword = keywordInput.value || '';
-            let location = locationSelect.value || '';
+        //     let keyword = keywordInput.value || '';
+        //     let state = stateSelect.value || '';
+        //     let location = locationSelect.value || '';
 
-            let url = `${searchUrl}?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`;
+        //     let url = `${searchUrl}?title=${encodeURIComponent(keyword)}&state=${encodeURIComponent(state)}&location=${encodeURIComponent(location)}`;
 
-            let container = document.getElementById('jobResults');
-            container.innerHTML = `<p class="no-jobs">Loading jobs...</p>`;
+        //     let container = document.getElementById('jobResults');
+        //     container.innerHTML = `<p>Loading jobs...</p>`;
 
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        renderJobs(data.jobs);
-                    } else {
-                        container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    container.innerHTML = `<p class="no-jobs">Something went wrong</p>`;
-                });
-        }
+        //     fetch(url, {
+        //         headers: {
+        //             'X-Requested-With': 'XMLHttpRequest'
+        //         }
+        //     })
+        //     .then(res => res.text())
+        //     .then(html => {
+        //         container.innerHTML = html;
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //         container.innerHTML = `<p>Something went wrong</p>`;
+        //     });
+        // }
 
         /* =========================
            RENDER JOBS
         ========================= */
-        function renderJobs(jobs) {
+        // function renderJobs(jobs) {
 
-            let container = document.getElementById('jobResults');
+        //     let container = document.getElementById('jobResults');
 
-            if (!jobs || jobs.length === 0) {
-                container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
-                return;
-            }
+        //     if (!jobs || jobs.length === 0) {
+        //         container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
+        //         return;
+        //     }
 
-            let html = '';
+        //     let html = '';
 
-            jobs.forEach(job => {
-                html += `
-        <div class="job-card" onclick="loadPreview(${job.id}, this)" id="job-${job.id}">
+        //     jobs.forEach(job => {
+        //         html += `
+        // <div class="job-card" onclick="loadPreview(${job.id}, this)" id="job-${job.id}">
 
-            <div class="job-header">
-                <div class="job-info">
+        //     <div class="job-header">
+        //         <div class="job-info">
 
-                    <div class="job-title-row">
-                        <h3 class="job-title">${job.title ?? ''}</h3>
-                        ${isNew(job.created_at)}
-                    </div>
+        //             <div class="job-title-row">
+        //                 <h3 class="job-title">${job.title ?? ''}</h3>
+        //                 ${isNew(job.created_at)}
+        //             </div>
 
-                    <div class="job-company">
-                        <i class="fa-solid fa-building"></i>
-                        ${job.company_name ?? ''}
-                    </div>
+        //             <div class="job-company">
+        //                 <i class="fa-solid fa-building"></i>
+        //                 ${job.company_name ?? ''}
+        //             </div>
 
-                    <div class="job-location">
-                        <i class="fa-solid fa-location-dot"></i>
-                        ${job.location ?? ''}
-                    </div>
+        //             <div class="job-location">
+        //                 <i class="fa-solid fa-location-dot"></i>
+        //                 ${job.location ?? ''}
+        //             </div>
 
-                </div>
+        //         </div>
 
-                <div class="job-logo">
-                    <i class="fa-solid fa-briefcase"></i>
-                </div>
-            </div>
+        //         <div class="job-logo">
+        //             <i class="fa-solid fa-briefcase"></i>
+        //         </div>
+        //     </div>
 
-            <div class="job-body">
+        //     <div class="job-body">
 
-                ${job.salary_min ? `
-                                                                                    <span class="badge salary">
-                                                                                        ₹${job.salary_min} - ₹${job.salary_max}/mo
-                                                                                    </span>` : ''}
+        //         ${job.salary_min ? `
+        //                                                                                 <span class="badge salary">
+        //                                                                                     ₹${job.salary_min} - ₹${job.salary_max}/mo
+        //                                                                                 </span>` : ''}
 
-                ${job.job_type ? `<span class="badge type">${job.job_type}</span>` : ''}
+        //         ${job.job_type ? `<span class="badge type">${job.job_type}</span>` : ''}
 
-                ${job.experience ? `<span class="badge exp">${job.experience}</span>` : ''}
+        //         ${job.experience ? `<span class="badge exp">${job.experience}</span>` : ''}
 
-                ${job.description ? `
-                                                                                    <p class="job-desc">${truncate(job.description, 90)}</p>
-                                                                                ` : ''}
+        //         ${job.description ? `
+        //                                                                                 <p class="job-desc">${truncate(job.description, 90)}</p>
+        //                                                                             ` : ''}
 
-            </div>
+        //     </div>
 
-            <div class="job-footer">
-                <span class="time">${timeAgo(job.created_at)}</span>
+        //     <div class="job-footer">
+        //         <span class="time">${timeAgo(job.created_at)}</span>
 
-                <button class="save-btn" onclick="event.stopPropagation();toggleSave(this)">
-                    <i class="fa-regular fa-bookmark"></i>
-                </button>
-            </div>
+        //         <button class="save-btn" onclick="event.stopPropagation();toggleSave(this)">
+        //             <i class="fa-regular fa-bookmark"></i>
+        //         </button>
+        //     </div>
 
-        </div>`;
-            });
+        // </div>`;
+        //     });
 
-            container.innerHTML = html;
-        }
+        //     container.innerHTML = html;
+        // }
 
         /* =========================
            EVENTS (IMPORTANT FIXED)
         ========================= */
 
-        /* 1. Button click */
-        searchBtn.addEventListener('click', searchJobs);
+    //     /* 1. Button click */
+    //     searchBtn.addEventListener('click', searchJobs);
 
-        /* 2. Enter key */
-        keywordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchJobs();
-        });
+    //     /* 2. Enter key */
+    //    keywordInput.addEventListener('keypress', function(e) {
+    //         if (e.key === 'Enter') {
+    //             searchJobs();
+    //         }
+    //     });
 
-        /* 3. Typing (debounced) */
-        keywordInput.addEventListener('input', function() {
-            clearTimeout(delay);
-            delay = setTimeout(searchJobs, 500);
-        });
+        // /* 3. Typing (debounced) */
+        // keywordInput.addEventListener('input', function() {
+        //     clearTimeout(delay);
+        //     delay = setTimeout(searchJobs, 500);
+        // });
 
-        /* 4. Location change */
-        locationSelect.addEventListener('change', searchJobs);
+        // /* 4. Location change */
+        // locationSelect.addEventListener('change', searchJobs);
 
         /* =========================
            HELPERS
@@ -1657,6 +1681,52 @@
             if (!text) return '';
             return text.length > length ? text.substring(0, length) + '...' : text;
         }
+
+        document.getElementById('ljStateSel').addEventListener('change', async function () {
+
+            let state = this.value;
+            let districtSel = document.getElementById('ljLocationSel');
+
+            // reset
+            districtSel.innerHTML = '<option value  ="">Loading...</option>';
+
+            if (!state) {
+                districtSel.innerHTML = '<option value="">District</option>';
+                return;
+            }
+
+            try {
+                let response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        country: "India",
+                        state: state
+                    })
+                });
+
+                let result = await response.json();
+
+                districtSel.innerHTML = '<option value="">District</option>';
+
+                if (result.data && result.data.length > 0) {
+                    result.data.forEach(function (district) {
+                        let opt = document.createElement('option');
+                        opt.value = district;
+                        opt.textContent = district;
+                        districtSel.appendChild(opt);
+                    });
+                } else {
+                    districtSel.innerHTML = '<option value="">No District Found</option>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                districtSel.innerHTML = '<option value="">Error loading districts</option>';
+            }
+        });
     </script>
 
 @endsection

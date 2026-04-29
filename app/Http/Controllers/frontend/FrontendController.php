@@ -191,26 +191,21 @@ class FrontendController extends Controller
     {
         $query = Job::query();
 
-        // 🔍 keyword search
-        if ($request->keyword) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'LIKE', '%' . $request->keyword . '%')
-                ->orWhere('company_name', 'LIKE', '%' . $request->keyword . '%')
-                ->orWhere('skills', 'LIKE', '%' . $request->keyword . '%');
-            });
+        if ($request->title) {
+            $query->where('title', 'like', '%' . $request->title . '%');
         }
 
-        // 📍 location filter
+        if ($request->state) {
+            $query->where('state', $request->state);
+        }
+
         if ($request->location) {
-            $query->where('location', $request->location);
+            $query->where('district', $request->location);
         }
 
-        $jobs = $query->latest()->take(20)->get();
+        $jobs = $query->get();
 
-        return response()->json([
-            'status' => 'success',
-            'jobs' => $jobs
-        ]);
+        return view('frontend.jobs.job-list', compact('jobs'));
     }
 
 }

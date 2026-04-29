@@ -22,6 +22,9 @@ class JobController extends Controller
         if ($request->title) {
             $query->where('title', 'like', '%' . $request->title . '%');
         }
+        if ($request->state) {
+            $query->where('state', $request->state);
+        }
 
         if ($request->location) {
             $query->where('district', $request->location);
@@ -85,6 +88,23 @@ class JobController extends Controller
         }
 
         return view('frontend.jobs.index', compact('jobs'));
+    }
+    public function search(Request $request)
+    {
+        $jobs = Job::query();
+
+        if ($request->title) {
+            $jobs->where('title', 'like', '%' . $request->title . '%');
+        }
+
+        if ($request->location) {
+            $jobs->where('city', $request->location);
+        }
+
+        $jobs = $jobs->latest()->get();
+
+        // 👇 return ONLY partial HTML
+        return view('frontend.jobs.job-list', compact('jobs'));
     }
 
 
@@ -168,8 +188,8 @@ class JobController extends Controller
            
             // ✅ Save to DB
             JobApplication::create([
-                'job_id' => $id,
-                'user_id' => Auth::id(),
+                'job_id'                => $id,
+                'user_id'               => Auth::id(),
 
                 'applicant_name'        => $request->applicant_name,
                 'applicant_email'       => $request->applicant_email,
