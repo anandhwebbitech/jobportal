@@ -274,6 +274,15 @@ class AuthController extends Controller
 
         return view('frontend.auth.register', compact('skills','qualifications','type'));
     }
+    public function employerSingleRegister(Request $request)
+    {
+        $type = $request->query('type', 'jobseeker');
+
+        $skills = Skill::where('status', 1)->get();
+        $qualifications = Qualification::where('status',1)->get();
+
+        return view('frontend.auth.single-register', compact('skills','qualifications','type'));
+    }
 
 
     public function employerRegisterSubmit(Request $request)

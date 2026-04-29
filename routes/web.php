@@ -102,7 +102,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
-Route::controller(FrontendController::class)->group(function () {
+Route::middleware('prevent.admin.frontend')->controller(FrontendController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
     Route::get('/about', 'about')->name('about');
@@ -163,8 +163,12 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/employer/login', 'employerLoginSubmit')->name('employer.login.submit');
 
     Route::get('/employer/register', 'employerRegister')->name('employer.register');
-    // Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
-    Route::get('/employer/register/{type}', [AuthController::class, 'employerRegister']) ->name('employer.register');
+    // single Regiter
+    Route::get('/employer/singleregister', 'employerSingleRegister')->name('employer.singleregister');
+
+
+    Route::post('/employer/register', 'employerRegisterSubmit')->name('employer.register.submit');
+    Route::get('/employer/register', [AuthController::class, 'employerRegister']) ->name('employer.register');
     // Forgot Password
     Route::get('/forgot-password', 'forgotPassword')->name('forgot.password');
     Route::post('/forgot-password', 'forgotPasswordSubmit')->name('forgot.password.submit');

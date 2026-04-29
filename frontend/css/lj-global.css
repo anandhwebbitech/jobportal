@@ -315,6 +315,7 @@ button { font-family: var(--f); }
   background: #fff;
   border-top: var(--border);
   padding: 40px 0 0;
+  z-index: 999;
 }
 .lj-footer-grid {
   display: grid;

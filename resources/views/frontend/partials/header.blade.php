@@ -16,8 +16,8 @@
             <li class="{{ request()->routeIs('jobs.*') ? 'lj-cur' : '' }}">
                 <a href="{{ route('jobs.index') }}">Find Jobs</a>
             </li>
-            <li class="{{ request()->routeIs('employer.register') ? 'lj-cur' : '' }}">
-                <a href="{{ route('employer.register') }}">Post a Job</a>
+            <li class="{{ request()->routeIs('employer.singleregister') ? 'lj-cur' : '' }}">
+                <a href="{{ route('employer.singleregister') }}">Post a Job</a>
             </li>
             <li class="{{ request()->routeIs('pricing') ? 'lj-cur' : '' }}">
                 <a href="{{ route('pricing') }}">Pricing</a>
@@ -38,7 +38,7 @@
             @guest
                 <a href="{{ route('jobseeker.login') }}" class="lj-btn lj-btn-ghost">Login</a>
                 <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-blue">Register</a>
-                <a href="{{ route('employer.register', ['type' => 'employer']) }}" 
+                <a href="{{ route('employer.singleregister') }}" 
                     class="lj-btn lj-btn-green">
                         Post a Job
                 </a>

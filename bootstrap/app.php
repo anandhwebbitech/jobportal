@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'frontend' => \App\Http\Middleware\FrontendMiddleware::class,
             'employer' => EmployerMiddleware::class,
+             'prevent.admin.frontend' => \App\Http\Middleware\PreventAdminFrontendAccess::class,
         ]);
 
     })
