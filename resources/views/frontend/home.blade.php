@@ -377,7 +377,7 @@
         }
 
         .lj-chips-inner {
-            max-width: 1160px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -1428,7 +1428,7 @@
     </section>
 
     {{-- ── AUDIENCE SPLIT ──────────────────────────────── --}}
-    <section class="lj-section">
+    {{-- <section class="lj-section">
         <div class="lj-wrap">
             <div class="lj-aud-grid">
 
@@ -1472,7 +1472,7 @@
 
             </div>
         </div>
-    </section>
+    </section> --}}
 
 
     <hr class="lj-rule" />
