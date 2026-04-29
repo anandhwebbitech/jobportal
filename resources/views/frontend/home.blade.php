@@ -1333,21 +1333,38 @@
                 <span class="lj-trend-label">
                     <i class="fa-solid fa-fire-flame-curved" style="color:#f97316; margin-right:4px;"></i>Trending:
                 </span>
-                <a href="find-jobs.html?q=Software+Engineer" class="lj-trend-tag">
-                    <i class="fa-solid fa-laptop-code" style="margin-right:5px; font-size:.7rem;"></i>Software Engineer
-                </a>
-                <a href="find-jobs.html?q=Machine+Operator" class="lj-trend-tag">
-                    <i class="fa-solid fa-gears" style="margin-right:5px; font-size:.7rem;"></i>Machine Operator
-                </a>
-                <a href="find-jobs.html?q=Sales+Executive" class="lj-trend-tag">
-                    <i class="fa-solid fa-handshake" style="margin-right:5px; font-size:.7rem;"></i>Sales Executive
-                </a>
-                <a href="find-jobs.html?q=Data+Entry" class="lj-trend-tag">
-                    <i class="fa-solid fa-keyboard" style="margin-right:5px; font-size:.7rem;"></i>Data Entry
-                </a>
-                <a href="find-jobs.html?q=Electrician" class="lj-trend-tag">
-                    <i class="fa-solid fa-bolt" style="margin-right:5px; font-size:.7rem;"></i>Electrician
-                </a>
+                @foreach($trendingJobs as $job)
+
+                    @php
+                        $icon = 'fa-briefcase';
+
+                        if(str_contains(strtolower($job->title), 'software'))
+                            $icon = 'fa-laptop-code';
+
+                        elseif(str_contains(strtolower($job->title), 'machine'))
+                            $icon = 'fa-gears';
+
+                        elseif(str_contains(strtolower($job->title), 'sales'))
+                            $icon = 'fa-handshake';
+
+                        elseif(str_contains(strtolower($job->title), 'data'))
+                            $icon = 'fa-keyboard';
+
+                        elseif(str_contains(strtolower($job->title), 'electric'))
+                            $icon = 'fa-bolt';
+                    @endphp
+
+                    <a href="{{ route('jobs.index', ['title' => $job->title]) }}"
+                    class="lj-trend-tag">
+
+                        <i class="fa-solid {{ $icon }}"
+                        style="margin-right:5px; font-size:.7rem;"></i>
+
+                        {{ $job->title }}
+
+                    </a>
+
+                @endforeach
 
             </div>
         </div>
@@ -1355,8 +1372,10 @@
     </section>
 
 
-    <section class="lj-ads">
-        <div class="lj-wrap">
+   <section class="lj-ads">
+    <div class="lj-wrap">
+
+        @if($banners->count())
 
             <div class="lj-ads-lbl">
                 <div class="lj-ads-lbl-inner">
@@ -1367,48 +1386,38 @@
 
             <div class="lj-ad-img-grid">
 
-                <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
+                @foreach($banners as $banner)
 
-                    {{-- "Ad" pill – always visible, top-left --}}
-                    <span class="lj-ad-img-pill">
-                        <i class="fa-solid fa-circle-info"></i> Ad
-                    </span>
+                    <a href="#"
+                       class="lj-ad-img-wrap"
+                       target="_blank"
+                       rel="noopener">
 
-                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&h=400&q=80"
-                        alt="Job advertisement banner" loading="lazy" />
-
-                    {{-- Hover overlay with Visit CTA --}}
-                    <div class="lj-ad-img-overlay">
-                        <span class="lj-ad-img-overlay-cta">
-                            Visit Website <i class="fa-solid fa-arrow-right"></i>
+                        <span class="lj-ad-img-pill">
+                            <i class="fa-solid fa-circle-info"></i> Ad
                         </span>
-                    </div>
 
-                </a>
+                        <img src="{{ asset('public/storage/banners/' . $banner->banner_image) }}"
+                             alt="Sponsored Banner"
+                             loading="lazy" />
 
+                        <div class="lj-ad-img-overlay">
+                            <span class="lj-ad-img-overlay-cta">
+                                Visit Website
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
 
-                <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
+                    </a>
 
-                    <span class="lj-ad-img-pill">
-                        <i class="fa-solid fa-circle-info"></i> Ad
-                    </span>
-
-                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&h=400&q=80"
-                        alt="Career opportunity banner" loading="lazy" />
-
-                    <div class="lj-ad-img-overlay">
-                        <span class="lj-ad-img-overlay-cta">
-                            Visit Website <i class="fa-solid fa-arrow-right"></i>
-                        </span>
-                    </div>
-
-                </a>
-
+                @endforeach
 
             </div>
 
-        </div>
-    </section>
+        @endif
+
+    </div>
+</section>
 
     <hr class="lj-rule" />
 

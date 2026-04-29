@@ -18,43 +18,73 @@ public function createBannerOrder(Request $request)
 {
     $request->validate([
         'banner_plan_id' => 'required|exists:banner_plans,id',
-        'banner_image' => 'required|image|max:5120'
+        'banner_image'   => 'required|image|mimes:jpg,jpeg,png,webp|max:5120'
     ]);
 
-    $plan = BannerPlan::findOrFail($request->banner_plan_id);
+    try {
 
-    // upload image
-    $file = $request->file('banner_image');
-    $filename = time().'_'.$file->getClientOriginalName();
-    $file->storeAs('public/banners', $filename);
+        // ✅ Get Plan
+        $plan = BannerPlan::findOrFail($request->banner_plan_id);
 
-    $amount = $plan->total_price * 100;
+        // ✅ Upload Banner Image
+        $filename = null;
 
-    $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+        if ($request->hasFile('banner_image')) {
 
-    $razorpayOrder = $api->order->create([
-        'receipt' => 'banner_' . uniqid(),
-        'amount' => $amount,
-        'currency' => 'INR'
-    ]);
+            $file = $request->file('banner_image');
 
-    // save DB
-    $subscription = BannerPlanSubscription::create([
-        'user_id' => auth()->id(),
-        'banner_plan_id' => $plan->id,
-        'banner_image' => $filename,
-        'price' => $plan->price,
-        'gst_amount' => $plan->gst_amount,
-        'total_price' => $plan->total_price,
-        'status' => 'pending',
-        'razorpay_order_id' => $razorpayOrder['id']
-    ]);
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
 
-    return response()->json([
-        'order_id' => $razorpayOrder['id'],
-        'amount' => $amount,
-        'key' => env('RAZORPAY_KEY')
-    ]);
+            // storage/app/public/banners
+            $file->storeAs('banners', $filename, 'public');
+        }
+
+        // ✅ Razorpay Amount (paise)
+        $amount = $plan->total_price * 100;
+
+        // ✅ Razorpay Init
+        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+        // ✅ Create Razorpay Order
+        $razorpayOrder = $api->order->create([
+            'receipt'  => 'banner_' . uniqid(),
+            'amount'   => $amount,
+            'currency' => 'INR'
+        ]);
+
+        // ✅ Save Subscription
+        $subscription = BannerPlanSubscription::create([
+            'user_id'           => auth()->id(),
+            'banner_plan_id'    => $plan->id,
+            'banner_image'      => $filename,
+
+            'price'             => $plan->price,
+            'gst_amount'        => $plan->gst_amount,
+            'total_price'       => $plan->total_price,
+
+            'status'            => 'pending',
+            'payment_status'    => 'pending',
+
+            'razorpay_order_id' => $razorpayOrder['id']
+        ]);
+
+        return response()->json([
+            'status'   => true,
+            'order_id' => $razorpayOrder['id'],
+            'amount'   => $amount,
+            'key'      => env('RAZORPAY_KEY'),
+            'message'  => 'Order created successfully'
+        ]);
+
+    } catch (\Exception $e) {
+
+        \Log::error('Banner Order Error: ' . $e->getMessage());
+
+        return response()->json([
+            'status'  => false,
+            'message' => 'Something went wrong while creating order'
+        ], 500);
+    }
 }
 public function verifyBannerPayment(Request $request)
 {

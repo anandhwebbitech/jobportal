@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\Qualification;
 use App\Models\ResumePlan;
 use App\Models\Skill;
+use App\Models\BannerPlanSubscription;
 
 
 
@@ -23,8 +24,23 @@ class FrontendController extends Controller
     {
         $latestJobs = Job::latest()->take(6)->get();
         $locations = Location::where('status',1)->get();
+        // Most repeated job titles
+        $trendingJobs = Job::select('title')
+            ->selectRaw('COUNT(*) as total')
+            ->where('admin_status', 1)
+            ->where('status', 1)
+            ->groupBy('title')
+            ->orderByDesc('total')
+            ->take(7)
+            ->get();
+            // Active banner ads
+        $banners = BannerPlanSubscription::where('status', 'active')
+            ->where('payment_status', 'paid')
+            ->latest()
+            ->take(2)
+            ->get();
 
-        return view('frontend.home', compact('latestJobs','locations'));
+        return view('frontend.home', compact('latestJobs','locations','trendingJobs','banners'));
     }
 
     // Find Jobs Page
