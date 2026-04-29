@@ -55,27 +55,89 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
 </div>
 
 {{-- Plan Usage --}}
+@php
+
+    $totalLimit = $resumePlan->download_limit ?? 0;
+
+    $used = $resumePlan->downloads_used ?? 0;
+
+    $remaining = max($totalLimit - $used, 0);
+
+    $usagePercent = $totalLimit > 0
+        ? ($used / $totalLimit) * 100
+        : 0;
+
+    $daysLeft = $resumePlan
+        ? now()->diffInDays($resumePlan->end_date, false)
+        : 0;
+
+    $expiryPercent = 100;
+
+@endphp
+
 <div class="plan-meter">
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-    <div>
-      <div class="pm-lbl">Resume Views</div>
-      <div class="pm-val">22 / 30</div>
-      <div class="pm-bar-wrap"><div class="pm-bar" style="width:73%;"></div></div>
-      <div class="pm-note">8 remaining</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+        {{-- Resume Usage --}}
+        <div>
+            <div class="pm-lbl">Resume Usage</div>
+
+            <div class="pm-val">
+                {{ $used }} / {{ $totalLimit }}
+            </div>
+
+            <div class="pm-bar-wrap">
+                <div class="pm-bar" style="width:{{ $usagePercent }}%;"></div>
+            </div>
+
+            <div class="pm-note">
+                {{ $remaining }} remaining
+            </div>
+        </div>
+
+        {{-- Downloads --}}
+        <div>
+            <div class="pm-lbl">Downloads Used</div>
+
+            <div class="pm-val">
+                {{ $used }}
+            </div>
+
+            <div class="pm-bar-wrap">
+                <div class="pm-bar" style="width:{{ $usagePercent }}%;"></div>
+            </div>
+
+            <div class="pm-note">
+                Total Limit : {{ $totalLimit }}
+            </div>
+        </div>
+
+        {{-- Expiry --}}
+        <div>
+            <div class="pm-lbl">Plan Expiry</div>
+
+            <div class="pm-val">
+                {{ $resumePlan ? \Carbon\Carbon::parse($resumePlan->end_date)->format('d M Y') : 'No Plan' }}
+            </div>
+
+            <div class="pm-bar-wrap">
+                <div class="pm-bar"
+                     style="width:{{ $expiryPercent }}%;background:#fcd34d;">
+                </div>
+            </div>
+
+            <div class="pm-note">
+                @if($resumePlan)
+                    {{ $daysLeft }} days left
+                @else
+                    No active plan
+                @endif
+            </div>
+        </div>
+
     </div>
-    <div>
-      <div class="pm-lbl">Downloads</div>
-      <div class="pm-val">12 / 30</div>
-      <div class="pm-bar-wrap"><div class="pm-bar" style="width:40%;"></div></div>
-      <div class="pm-note">18 remaining</div>
-    </div>
-    <div>
-      <div class="pm-lbl">Plan Expiry</div>
-      <div class="pm-val">10 Apr 2025</div>
-      <div class="pm-bar-wrap"><div class="pm-bar" style="width:76%;background:#fcd34d;"></div></div>
-      <div class="pm-note">7 days left</div>
-    </div>
-  </div>
+
 </div>
 
 <div class="resume-layout">
@@ -85,18 +147,18 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
       <div class="fs-title"><i class="fas fa-sliders" style="color:var(--blue);"></i> Search Filters</div>
       <div class="fs-group">
         <label class="fs-label">Skill</label>
-        <input type="text" class="fs-input" placeholder="e.g. React, Welding..." oninput="applyFilters()"/>
+        <input type="text" id="skillFilter" class="fs-input" placeholder="e.g. React, Welding..." />
       </div>
       <div class="fs-group">
         <label class="fs-label">Experience</label>
-        <select class="fs-input" onchange="applyFilters()">
+        <select id="experienceFilter" class="fs-input">
           <option value="">Any Experience</option>
           <option>Fresher</option><option>1-2 Years</option><option>3-5 Years</option><option>5+ Years</option>
         </select>
       </div>
       <div class="fs-group">
         <label class="fs-label">Education</label>
-        <select class="fs-input" onchange="applyFilters()">
+        <select id="educationFilter" class="fs-input">
           <option value="">Any Education</option>
           <option>10th</option><option>12th</option><option>Diploma</option>
           <option>Bachelor</option><option>Master</option>
@@ -104,15 +166,23 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
       </div>
       <div class="fs-group">
         <label class="fs-label">Location</label>
-        <select class="fs-input" onchange="applyFilters()">
+        <select id="locationFilter" class="fs-input">
           <option value="">Any Location</option>
-          <option>Chennai</option><option>Coimbatore</option><option>Madurai</option>
-          <option>Trichy</option><option>Salem</option>
+          @foreach($locations as $location)
+
+              <option value="{{ $location->district }}"
+                  {{ request('location') == $location->district ? 'selected' : '' }}>
+
+                  {{ $location->district }}
+
+              </option>
+
+          @endforeach
         </select>
       </div>
       <div class="fs-group">
         <label class="fs-label">Industry</label>
-        <select class="fs-input" onchange="applyFilters()">
+        <select id="industryFilter" class="fs-input">
           <option value="">Any Industry</option>
           <option>IT / Software</option><option>Manufacturing</option>
           <option>Finance</option><option>Healthcare</option>
@@ -125,12 +195,56 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
 
   {{-- Results --}}
   <div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <div style="font-size:.82rem;font-weight:600;color:var(--gray-500);"><strong style="color:var(--gray-800);">5</strong> candidates found</div>
-      <select class="filter-select" style="font-size:.78rem;">
-        <option>Most Recent</option><option>Most Experienced</option><option>Name A-Z</option>
-      </select>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:15px;flex-wrap:wrap;">
+
+    <div>
+        <div style="font-size:.82rem;font-weight:600;color:var(--gray-500);">
+            <strong style="color:var(--gray-800);">{{ count($resumes) }}</strong> candidates found
+        </div>
+
+        {{-- Active Filters --}}
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;">
+
+            @if(request('skill'))
+                <span class="skill-tag">
+                    Skill : {{ request('skill') }}
+                </span>
+            @endif
+
+            @if(request('experience'))
+                <span class="skill-tag">
+                    Experience : {{ request('experience') }}
+                </span>
+            @endif
+
+            @if(request('education'))
+                <span class="skill-tag">
+                    Education : {{ request('education') }}
+                </span>
+            @endif
+
+            @if(request('location'))
+                <span class="skill-tag">
+                    Location : {{ request('location') }}
+                </span>
+            @endif
+
+            @if(request('industry'))
+                <span class="skill-tag">
+                    Industry : {{ request('industry') }}
+                </span>
+            @endif
+
+        </div>
     </div>
+
+    {{-- <select class="filter-select" style="font-size:.78rem;">
+        <option>Most Recent</option>
+        <option>Most Experienced</option>
+        <option>Name A-Z</option>
+    </select> --}}
+
+</div>
 
 
     @foreach($resumes as $r)
@@ -173,8 +287,31 @@ select.fs-input{-webkit-appearance:none;appearance:none;background-image:url("da
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-function applyFilters() { /* Wire to server-side search */ }
-function resetFilters() { document.querySelectorAll('.fs-input').forEach(i => i.value = ''); }
+function applyFilters() {
+
+    let skill = document.getElementById('skillFilter').value;
+    let experience = document.getElementById('experienceFilter').value;
+    let education = document.getElementById('educationFilter').value;
+    let location = document.getElementById('locationFilter').value;
+    let industry = document.getElementById('industryFilter').value;
+
+    let params = new URLSearchParams();
+
+    if (skill) params.append('skill', skill);
+    if (experience) params.append('experience', experience);
+    if (education) params.append('education', education);
+    if (location) params.append('location', location);
+    if (industry) params.append('industry', industry);
+
+    window.location.href =
+        "{{ route('employer.resume') }}?" + params.toString();
+}
+
+function resetFilters() {
+
+    window.location.href =
+        "{{ route('employer.resume') }}";
+}
 
 const viewBaseUrl = "{{ route('employer.resume.view', ':id') }}";
 const downloadBaseUrl = "{{ route('employer.candidateresume.download', ':id') }}";

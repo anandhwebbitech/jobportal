@@ -52,6 +52,7 @@ class Notification extends Model
             self::TYPE_JOB_UPDATE => 'Update posted Job',
 
             default => 'Other',
+            
         };
     }
 

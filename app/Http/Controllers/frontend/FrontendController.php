@@ -12,6 +12,7 @@ use App\Models\Qualification;
 use App\Models\ResumePlan;
 use App\Models\Skill;
 use App\Models\BannerPlanSubscription;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -116,12 +117,37 @@ class FrontendController extends Controller
     public function contactSubmit(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'message' => 'required'
+            'query_type' => 'required',
+            'name'       => 'required|min:2',
+            'email'      => 'required|email',
+            'subject'    => 'required|min:3',
+            'message'    => 'required|min:20',
         ]);
+        try {
 
-        return back()->with('success', 'Message sent successfully!');
+            Mail::send('emails.contact_mail', [
+                'data' => $request->all()
+            ], function ($message) use ($request) {
+
+                $message->to('anandhwebbitech@gmail.com') // your admin mail
+                    ->replyTo($request->email, $request->name)
+                    ->subject('New Contact Message - '.$request->subject);
+            });
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Message sent successfully!'
+            ]);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Contact Mail Error: '.$e->getMessage());
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Mail sending failed'
+            ], 500);
+        }
     }
 
     // Job Seeker Login

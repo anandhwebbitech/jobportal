@@ -198,6 +198,9 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::get('/check-download/{id}', [ResumeController::class, 'checkDownload'])->name('resume.check');
     Route::get('/download/{id}', [ResumeController::class, 'download'])->name('resume.download');
 
+    Route::get('/employer/resume/view/{id}', [ResumeController::class, 'viewResume'])
+    ->name('employer.resume.view');
+
      Route::post('/purchase-banner', [JobPlanController::class, 'purchaseBanner'])
         ->name('banner.purchase');
 
@@ -250,11 +253,11 @@ Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->
 
     Route::get('/employer/candidate/download-resume/{id}', [EmployerDashboardController::class, 'downloadResume'])
         ->name('candidateresume.download');
-    Route::get('/employer/resume/view/{id}', [EmployerDashboardController::class, 'viewResume'])
-        ->name('resume.view');
+    // Route::get('/employer/resume/view/{id}', [EmployerDashboardController::class, 'viewResume'])
+    //     ->name('resume.view');
     // Resume Database
     Route::get('/resume', [EmployerDashboardController::class, 'resume'])->name('resume');
-    Route::get('/resume/{id}/view', [EmployerDashboardController::class, 'resumeView'])->name('resume.view');
+    // Route::get('/resume/{id}/view', [EmployerDashboardController::class, 'resumeView'])->name('resume.view');
     Route::get('/resume/{id}/download', [EmployerDashboardController::class, 'resumeDownload'])->name('resume.download');
 
     // Advertisements
@@ -279,7 +282,7 @@ Route::prefix('employer')->name('employer.')->middleware(['auth', 'employer'])->
 // JOB SEEKER DASHBOARD ROUTES
 // ═════════════════════════════════════
 
-Route::prefix('jobseeker')->name('jobseeker.')->group(function () {
+Route::prefix('jobseeker')->name('jobseeker.')->middleware('auth')->group(function () {
 
         // DASHBOARD
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

@@ -949,7 +949,7 @@
             </div>
 
             {{-- Map Section --}}
-   
+
 
         </div>
     </div>
@@ -978,55 +978,135 @@
 
         // Client-side validation
         document.getElementById('contactForm').addEventListener('submit', function(e) {
-            let valid = true;
-            const alertEl = document.getElementById('formAlert');
-            document.querySelectorAll('.lj-field-err').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('.lj-input').forEach(el => el.classList.remove('field-error'));
-            alertEl.classList.remove('show');
 
-            const name = document.getElementById('name');
-            if (!name.value.trim() || name.value.trim().length < 2) {
-                name.classList.add('field-error');
-                document.getElementById('err-name').classList.add('show');
-                valid = false;
+    e.preventDefault();
+
+    let valid = true;
+
+    const alertEl = document.getElementById('formAlert');
+
+    document.querySelectorAll('.lj-field-err').forEach(el => el.classList.remove('show'));
+    document.querySelectorAll('.lj-input').forEach(el => el.classList.remove('field-error'));
+
+    alertEl.classList.remove('show');
+
+    const name = document.getElementById('name');
+
+    if (!name.value.trim() || name.value.trim().length < 2) {
+        name.classList.add('field-error');
+        document.getElementById('err-name').classList.add('show');
+        valid = false;
+    }
+
+    const email = document.getElementById('email');
+
+    if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        email.classList.add('field-error');
+        document.getElementById('err-email').classList.add('show');
+        valid = false;
+    }
+
+    const subject = document.getElementById('subject');
+
+    if (!subject.value.trim() || subject.value.trim().length < 3) {
+        subject.classList.add('field-error');
+        document.getElementById('err-subject').classList.add('show');
+        valid = false;
+    }
+
+    const message = document.getElementById('message');
+
+    if (!message.value.trim() || message.value.trim().length < 20) {
+        message.classList.add('field-error');
+        document.getElementById('err-message').classList.add('show');
+        valid = false;
+    }
+
+    if (!valid) {
+        alertEl.classList.add('show');
+        return;
+    }
+
+    const form = document.getElementById('contactForm');
+
+    const btn = document.getElementById('submitBtn');
+
+    btn.disabled = true;
+
+    btn.innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i> Sending Message...';
+
+    let formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+            'Accept': 'application/json'
+        }
+    })
+    .then(async response => {
+
+        let data = await response.json();
+
+        if (!response.ok) {
+            throw {
+                status: response.status,
+                data: data
+            };
+        }
+
+        return data;
+    })
+    .then(data => {
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+            '<i class="fa-solid fa-paper-plane"></i> Send Message';
+
+        if (data.status) {
+
+            if (typeof toastr !== 'undefined') {
+                toastr.success(data.message);
             }
 
-            const email = document.getElementById('email');
-            if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-                email.classList.add('field-error');
-                document.getElementById('err-email').classList.add('show');
-                valid = false;
+            form.reset();
+
+            document.getElementById('charCount').innerText = 0;
+        }
+
+    })
+    .catch(error => {
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+            '<i class="fa-solid fa-paper-plane"></i> Send Message';
+
+        if (error.status === 422) {
+
+            let errors = error.data.errors;
+
+            Object.values(errors).forEach(err => {
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.error(err[0]);
+                }
+
+            });
+
+        } else {
+
+            if (typeof toastr !== 'undefined') {
+                toastr.error('Something went wrong');
             }
 
-            const subject = document.getElementById('subject');
-            if (!subject.value.trim() || subject.value.trim().length < 3) {
-                subject.classList.add('field-error');
-                document.getElementById('err-subject').classList.add('show');
-                valid = false;
-            }
+        }
 
-            const message = document.getElementById('message');
-            if (!message.value.trim() || message.value.trim().length < 20) {
-                message.classList.add('field-error');
-                document.getElementById('err-message').classList.add('show');
-                document.getElementById('err-message').querySelector('span').textContent =
-                    'Message must be at least 20 characters.';
-                valid = false;
-            }
+    });
 
-            if (!valid) {
-                e.preventDefault();
-                alertEl.classList.add('show');
-                window.scrollTo({
-                    top: alertEl.getBoundingClientRect().top + window.scrollY - 100,
-                    behavior: 'smooth'
-                });
-                return;
-            }
-
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending Message...';
-        });
+});
     </script>
 @endpush

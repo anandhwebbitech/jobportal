@@ -131,7 +131,7 @@
             </a>
             <a href="{{ route('admin.bannerplans.index')}}"
                class="{{ request()->is('admin/plans*') ? 'active' : '' }}">
-                <i class="fa fa-lightbulb"></i> Resume Plans
+                <i class="fa fa-lightbulb"></i> Banner Plans
             </a>
         </div>
 

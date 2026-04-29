@@ -76,19 +76,36 @@ function timeAgo(datetime) {
     return "just now";
 }
 function loadNotifications() {
+
+    let filter = new URLSearchParams(window.location.search).get('filter');
+
     $.ajax({
-        url: "{{ route('jobseeker.notifications.ajax') }}", // ✅ FIXED ROUTE
+
+        url: "{{ route('jobseeker.notifications.ajax') }}",
+
         type: "GET",
+
+        data: {
+            filter: filter
+        },
+
         success: function (res) {
+
             if (res.status) {
+
                 renderNotifications(res.data);
             }
         },
+
         error: function () {
-            $('#notificationList').html('<p style="padding:20px;">Failed to load notifications</p>');
+
+            $('#notificationList').html(
+                '<p style="padding:20px;">Failed to load notifications</p>'
+            );
         }
     });
 }
+
 function renderNotifications(notifs) {
     let container = document.getElementById('notificationList');
     let html = '';

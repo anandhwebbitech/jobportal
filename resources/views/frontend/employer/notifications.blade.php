@@ -474,15 +474,33 @@ window.nfSearch = function(q){
 
 
 })();
-
 function loadNotifications() {
+
+    let filter = new URLSearchParams(window.location.search).get('filter');
+
     $.ajax({
         url: "{{ route('notifications.list') }}",
         type: "GET",
+
+        data: {
+            filter: filter
+        },
+
         success: function (res) {
+
             if (res.status) {
-              renderNotifications(res.data); 
+
+                renderNotifications(res.data);
             }
+        },
+
+        error: function () {
+
+            $("#nfList").html(`
+                <div style="padding:20px;">
+                    Failed to load notifications
+                </div>
+            `);
         }
     });
 }
@@ -653,7 +671,11 @@ function nfDelete(notificationId) {
                 totalElem.text(totalCount - 1 >= 0 ? totalCount - 1 : 0);
 
                 let unreadElem = $('.t-unread .nf-tab-badge');
-                let isUnread = $(`#nf_${notificationId}`).attr('data-read') == 0;
+                // let isUnread = $(`#nf_${notificationId}`).attr('data-read') == 0;
+                let card = $(`#nf_${notificationId}`);
+                let isUnread = card.attr('data-read') == 0;
+
+                card.remove();
                 if(isUnread) {
                     let unreadCount = parseInt(unreadElem.text());
                     unreadElem.text(unreadCount - 1 >= 0 ? unreadCount - 1 : 0);

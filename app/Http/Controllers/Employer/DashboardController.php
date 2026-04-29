@@ -15,12 +15,15 @@ use App\Models\Notification;
 use App\Events\UserNotification;
 use App\Models\BannerPlan;
 use App\Models\JobPlan;
+use App\Models\Location;
 use App\Models\Qualification;
 use App\Models\ResumePlan;
 use App\Models\Skill;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserPlanSubscription;
+use App\Models\ResumeActivityLog;
+use App\Models\ResumePlanSubscription;
 
 class DashboardController extends Controller
 {
@@ -749,80 +752,131 @@ class DashboardController extends Controller
         return view('frontend.employer.candidates', compact('candidates'));
     }
 
-    public function resume()
+   public function resume(Request $request)
     {
-        // Example: show a list of resumes or redirect to candidates page
-        // $resumes = JobApplication::latest()->get();
         $employer_id = auth()->id();
+
+        // ✅ Active Resume Plan
+        $resumePlan = ResumePlanSubscription::where('user_id', $employer_id)
+            ->where('status', 1)
+            ->whereDate('end_date', '>=', now())
+            ->latest()
+            ->first();
 
         $jobs = Job::where('create_user_id', $employer_id)
             ->where('admin_status', 1)
             ->pluck('id');
 
         $applications = JobApplication::with(['user','job'])
-            ->whereIn('job_id', $jobs)
-            ->latest()
-            ->get();
+            ->whereIn('job_id', $jobs);
+
+        // 🔍 Skill Filter
+        if ($request->skill) {
+
+            $applications->whereHas('job', function ($q) use ($request) {
+
+                $q->where('skills', 'like', '%' . $request->skill . '%');
+            });
+        }
+
+        // 🔍 Experience Filter
+        if ($request->experience) {
+
+            $applications->whereHas('job', function ($q) use ($request) {
+
+                $q->where('experience', $request->experience);
+            });
+        }
+
+        // 🔍 Education Filter
+        if ($request->education) {
+
+            $applications->whereHas('job', function ($q) use ($request) {
+
+                $q->where('education', $request->education);
+            });
+        }
+
+        // 🔍 Location Filter
+        if ($request->location) {
+
+            $applications->where('current_location', $request->location);
+        }
+
+        // 🔍 Industry Filter
+        if ($request->industry) {
+
+            $applications->whereHas('job', function ($q) use ($request) {
+
+                $q->where('industry', $request->industry);
+            });
+        }
+
+        $applications = $applications->latest()->get();
 
         $resumes = $applications->map(function ($app, $i) {
 
             $name = $app->user->name ?? 'Unknown';
-            // dd($app->job->education);
-            // dd($app->job->skills);
+
             $skills = [];
 
             if (!empty($app->job->skills)) {
 
-                // if JSON string → decode
+                // JSON string
                 if (is_string($app->job->skills)) {
+
                     $decoded = json_decode($app->job->skills, true);
 
                     $skills = is_array($decoded)
                         ? $decoded
                         : explode(',', $app->job->skills);
+
                 }
 
-                // if already array
+                // Already array
                 elseif (is_array($app->job->skills)) {
+
                     $skills = $app->job->skills;
                 }
             }
 
-            // clean values
+            // clean skills
             $skills = collect($skills)
                 ->map(fn($s) => trim($s, '[]" '))
                 ->filter()
                 ->values()
                 ->toArray();
+
             return [
+
                 'id' => $app->id,
+
                 'name' => $name,
-                'applicant_name' => $name,
+
                 'init' => strtoupper(substr($name, 0, 1)),
-                'av' => $i % 6,
 
                 'job' => $app->job->title ?? 'N/A',
-                'job_id' => $app->job_id,
 
-                'status' => $statusMap[$app->application_status] ?? 'New',
-
-                'match' => rand(60, 95), // temporary (you can replace with real logic)
-
-                'years_experience' => $app->experience ?? '0 yrs',
                 'exp' => $app->job->experience ?? '0 yrs',
 
                 'edu' => $app->job->education ?? 'Not specified',
+
                 'loc' => $app->current_location ?? 'Tamil Nadu',
 
-                'date' => $app->created_at->format('d M Y'),
                 'industry' => $app->job->industry ?? '-',
-               
-               'skills' => !empty($skills) ? $skills : ['Communication','Teamwork'],
-            ];
-             
-        });
 
-        return view('frontend.employer.resume', compact('resumes'));
+                'skills' => !empty($skills)
+                    ? $skills
+                    : ['Communication','Teamwork'],
+            ];
+        });
+        $locations = Location::orderBy('district')->get();
+
+        return view('frontend.employer.resume', compact(
+            'resumes',
+            'resumePlan',
+            'locations'
+        ));
     }
 
     /* ==============================
@@ -888,15 +942,48 @@ class DashboardController extends Controller
     }
     public function viewResume($id)
     {
-        $app = JobApplication::findOrFail($id);
+        try {
 
-        if (!$app->resume) {
-            abort(404, 'Resume not found');
+            $user = auth()->user();
+
+            $plan = ResumePlanSubscription::where('user_id', $user->id)
+                ->where('status', 1)
+                ->whereDate('end_date', '>=', now())
+                ->first();
+
+            if (!$plan) {
+                return redirect()->back()->with('error', 'Please purchase a resume plan');
+            }
+
+            // resume already viewed/downloaded check
+            $alreadyUsed = ResumeActivityLog::where('employer_id', $user->id)
+                ->where('job_application_id', $id)
+                ->exists();
+
+            // first time only increment
+            if (!$alreadyUsed) {
+
+                if ($plan->downloads_used >= $plan->download_limit) {
+                    return redirect()->back()->with('error', 'Resume limit exceeded');
+                }
+
+                $plan->increment('downloads_used');
+
+                ResumeActivityLog::create([
+                    'employer_id' => $user->id,
+                    'job_application_id' => $id,
+                    'type' => 'view'
+                ]);
+            }
+
+            $application = JobApplication::findOrFail($id);
+
+            return view('frontend.employer.resume', compact('application'));
+
+        } catch (\Exception $e) {
+
+            return back()->with('error', $e->getMessage());
         }
-
-        $path = storage_path('app/public/' . $app->resume);
-
-        return response()->file($path); // 👁 view in browser
     }
     public function updateStatus(Request $request)
     {
