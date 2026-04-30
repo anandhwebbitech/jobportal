@@ -143,12 +143,12 @@
             background: radial-gradient(circle, rgba(5, 150, 105, .05) 0%, transparent 70%);
         }
 
-        .bg-grid {
+        /* .bg-grid {
             position: absolute;
             inset: 0;
             background-image: linear-gradient(rgba(180, 185, 210, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(180, 185, 210, .08) 1px, transparent 1px);
             background-size: 44px 44px;
-        }
+        } */
 
         /* ══════════════════════════════════════════════════════
            ANNOUNCE BAR
