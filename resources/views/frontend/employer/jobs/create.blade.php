@@ -1895,7 +1895,7 @@
                                         <i class="fa-solid fa-circle-exclamation"></i><span>Please select a category.</span>
                                     </div>
                                 </div>
-                                <div class="pj-fg">
+                                <!-- <div class="pj-fg">
                                     <label class="pj-lbl" for="industry_type">
                                         <span class="pj-lbl-ico"><i class="fa-solid fa-industry"></i></span>
                                         Industry <span class="pj-req">*</span>
@@ -1917,7 +1917,7 @@
                                         <i class="fa-solid fa-circle-exclamation"></i><span>Please select an
                                             industry.</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             {{-- Description --}}
@@ -2021,8 +2021,46 @@
                                         <select id="state" name="state"
                                             class="pj-input @error('state') err @enderror">
                                             <option value="" disabled selected>Select State</option>
-                                                    <option>Tamil Nadu</option>
-                                                    <option>Other</option>
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+
+                                                <!-- Union Territories -->
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Dadra and Nagar Haveli and Daman and Diu">
+                                                    Dadra and Nagar Haveli and Daman and Diu
+                                                </option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                <option value="Ladakh">Ladakh</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Puducherry">Puducherry</option>
                                         </select>
                                     </div>
                                     <div class="pj-ferr @error('state') show @enderror" id="err-state">
@@ -2594,10 +2632,7 @@
                         showFE('job_category', 'Please select a category.');
                         ok = false;
                     }
-                    if (!gv('industry_type')) {
-                        showFE('industry_type', 'Please select an industry.');
-                        ok = false;
-                    }
+                    
                     if ((document.getElementById('description')?.value.trim() || '').length < 50) {
                         showFE('description', 'Minimum 50 characters required.');
                         ok = false;
@@ -3157,6 +3192,52 @@
 
             } else {
                 $('#district').html('<option value="" disabled selected>Select District</option>');
+            }
+        });
+
+        document.getElementById('state').addEventListener('change', async function () {
+
+            let state = this.value;
+            let districtSel = document.getElementById('district');
+
+            // reset
+            districtSel.innerHTML = '<option value  ="">Loading...</option>';
+
+            if (!state) {
+                districtSel.innerHTML = '<option value="">District</option>';
+                return;
+            }
+
+            try {
+                let response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        country: "India",
+                        state: state
+                    })
+                });
+
+                let result = await response.json();
+
+                districtSel.innerHTML = '<option value="">District</option>';
+
+                if (result.data && result.data.length > 0) {
+                    result.data.forEach(function (district) {
+                        let opt = document.createElement('option');
+                        opt.value = district;
+                        opt.textContent = district;
+                        districtSel.appendChild(opt);
+                    });
+                } else {
+                    districtSel.innerHTML = '<option value="">No District Found</option>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                districtSel.innerHTML = '<option value="">Error loading districts</option>';
             }
         });
     </script>

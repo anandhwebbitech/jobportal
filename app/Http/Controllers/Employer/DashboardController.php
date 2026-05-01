@@ -244,7 +244,7 @@ class DashboardController extends Controller
             $request->validate([
                 'job_title'           => 'required|string|min:3|max:150',
                 'job_category'        => 'required|string|max:100',
-                'industry_type'       => 'required|string|max:100',
+                // 'industry_type'       => 'required|string|max:100',
                 'description'         => 'required|string|min:50|max:3000',
                 'responsibilities'    => 'required|string|min:20|max:2000',
                 'benefits'            => 'nullable|string|max:500',
@@ -287,7 +287,7 @@ class DashboardController extends Controller
             $job = Job::create([
                 'company_name'     => $company->company_name ?? null,
                 'category'         => $request->job_category,
-                'industry'         => $request->industry_type,
+                'industry'         => null,
                 'title'            => $request->job_title,
                 'slug'             => Str::slug($request->job_title) . '-' . time(),
                 'description'      => $request->description,
@@ -990,11 +990,23 @@ class DashboardController extends Controller
         $request->validate([
             'id' => 'required|exists:job_applications,id',
             'status' => 'required|in:4,5,6', // Reject, Shortlist, Interview
+            'interview_date' => 'nullable|date',
+            'interview_mode' => 'nullable|in:online,offline',
         ]);
-        // dd($request->all());
         $app = JobApplication::findOrFail($request->id);
 
         $app->application_status = $request->status;
+        if ($request->status == 6) {
+            $app->interview_date = $request->interview_date;
+            $app->interview_mode = $request->interview_mode;
+        }else {
+            // clear old interview data if any
+            $app->interview_date = null;
+            $app->interview_mode = null;
+        }
+
+        // dd($request->all(),$app);
+
         $app->save();
         $statusMessages = [
             1 => 'Your job is pending approval',
@@ -1026,7 +1038,7 @@ class DashboardController extends Controller
             'send_from' => auth()->id(), // admin/employer
             'send_to'   => $app->user_id,
         ]);
-        event(new UserNotification($notification));
+        // event(new UserNotification($notification));
         \Log::info('Notification fired');
         return response()->json([
             'success' => true,
