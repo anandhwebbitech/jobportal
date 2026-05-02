@@ -9,56 +9,57 @@ use App\Models\Resume;
 use App\Models\ResumePlanSubscription;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ResumeActivityLog;
-
+use Illuminate\Support\Facades\File;
 class ResumeController extends Controller
 {
     public function index()
     {
-        $resume = Resume::where('user_id',auth()->id())->where('is_default',1)->first();
+        $resume = Resume::where('user_id',auth()->id())->where('is_default',1)->latest()->first();
         return view('frontend.jobseeker.resume',compact('resume'));
     }
 
-   public function upload(Request $request)
-    {
-        $user = auth()->user();
+    public function upload(Request $request)
+{
+    $request->validate([
+        'resume' => 'required|file|mimes:pdf,doc,docx|max:5120',
+    ]);
 
-        // ✅ Validation
-        $request->validate([
-            'resume' => 'required|file|mimes:pdf,doc,docx|max:5120',
-            'resume_title' => 'nullable|string|max:255'
+    if ($request->hasFile('resume')) {
+
+        $file = $request->file('resume');
+
+        // BEFORE MOVE
+        $fileSize = $file->getSize();
+        $fileType = $file->getClientOriginalExtension();
+
+        $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+
+        $destinationPath = public_path('uploads/resumes');
+
+        // create folder
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        // move file
+        $file->move($destinationPath, $filename);
+
+        Resume::create([
+            'user_id'     => auth()->id(),
+            'file_path'   => 'uploads/resumes/' . $filename,
+            'file_name'   => $filename,
+            'title'       => $request->resume_title ?? $file->getClientOriginalName(),
+            'file_type'   => $fileType,
+            'file_size'   => $fileSize,
+            'is_default'  => 1,
+            'uploaded_at' => now(),
         ]);
 
-        if ($request->hasFile('resume')) {
-
-            $file = $request->file('resume');
-
-            $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-
-             $path = $file->storeAs('resumes', $filename, 'public');
-            // dd($filename);
-            Resume::create([
-                'user_id'     => $user->id,
-                'file_path'   => $path,
-                'file_name'   => $filename,
-                'title'       => $request->resume_title ?? $file->getClientOriginalName(),
-                'file_type'   => $file->getClientOriginalExtension(),
-                'file_size'   => $file->getSize(),
-                'is_default'  => $user->resumes()->count() == 0 ? 1 : 1,
-                'uploaded_at' => now(),
-            ]);
-        }
-
-        // ✅ If AJAX request
-        if ($request->ajax()) {
-            return response()->json([
-                'status'  => true,
-                'message' => 'Resume uploaded successfully'
-            ]);
-        }
-
-        // ✅ Normal form submit → redirect back
         return back()->with('success', 'Resume uploaded successfully');
     }
+
+    return back()->with('error', 'File not uploaded');
+}
 
     public function delete($id)
     {

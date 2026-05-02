@@ -2,7 +2,36 @@
 @extends('frontend.jobseeker.layout')
 @section('title', 'My Profile')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<style>
+  .chip-select{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
 
+.skill-chip{
+    padding:8px 16px;
+    border:1px solid #d8dfea;
+    border-radius:30px;
+    background:#fff;
+    color:#4b5563;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .2s ease;
+    user-select:none;
+}
+
+.skill-chip:hover{
+    border-color:#2563eb;
+    color:#2563eb;
+}
+
+.skill-chip.active{
+    background:#2563eb;
+    border-color:#2563eb;
+    color:#fff;
+}
+</style>
 @section('content')
 
 <div class="lj-page-header">
@@ -334,15 +363,28 @@
       </div>
 
       <div style="font-size:.78rem;font-weight:600;color:var(--n600);margin-bottom:9px;">Add More Skills</div>
-      <div class="chip-select" id="suggestedSkills">
-        @foreach($skills as $skill)
-            <span class="skill-chip"
-                  data-skill="{{ $skill->name }}"
-                  style="cursor:pointer; display:inline-block; background:#eef3ff; color:#0d6efd; padding:5px 10px; border-radius:20px; margin:3px; font-size:12px;">
-                {{ $skill->name }}
-            </span>
-        @endforeach
-      </div>
+        <div class="chip-select" id="suggestedSkills">
+
+            @php
+                $selectedSkills = array_map('trim', $userSkills);
+            @endphp
+
+            @foreach($skills as $skill)
+
+                @php
+                    $isSelected = in_array($skill->skill_name, $selectedSkills);
+                @endphp
+
+                <span class="skill-chip {{ $isSelected ? 'active' : '' }}"
+                      data-skill="{{ $skill->skill_name }}">
+
+                    {{ $skill->skill_name }}
+
+                </span>
+
+            @endforeach
+
+        </div>
 
       <div style="display:flex;gap:8px;margin-top:13px;">
         <div class="lj-input-wrap" style="flex:1;">
@@ -577,22 +619,40 @@ $(document).on('click', '.skill-chip', function () {
 
     let skill = $(this).data('skill');
 
-    // جلوگیری duplicate
-    if ($('#selectedSkillsCloud input[value="'+skill+'"]').length) return;
+    // already selected
+    if ($('#selectedSkillsCloud input[value="' + skill + '"]').length) {
+        return;
+    }
+
+    // active style
+    $(this).addClass('active');
 
     $('#selectedSkillsCloud').append(`
-        <span class="lj-skill-tag selected">
+        <span class="lj-skill-tag selected" data-skill="${skill}">
             ${skill}
             <input type="hidden" name="skills[]" value="${skill}">
-            <span class="rm"><i class="fa-solid fa-xmark"></i></span>
+            <span class="rm">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
         </span>
     `);
+
 });
 
 
 // REMOVE skill
 $(document).on('click', '.lj-skill-tag .rm', function () {
-    $(this).closest('.lj-skill-tag').remove();
+
+    let parent = $(this).closest('.lj-skill-tag');
+
+    let skill = parent.data('skill');
+
+    // remove active class from chip
+    $('.skill-chip[data-skill="' + skill + '"]').removeClass('active');
+
+    // remove selected tag
+    parent.remove();
+
 });
 </script>
 @endpush
