@@ -538,38 +538,138 @@
     <div class="qa-content"><div class="qa-label">Billing</div><div class="qa-sub">Pro · Expires in 7d</div></div>
   </a>
 </div>
-
 {{-- ══ STAT CARDS ═══════════════════════════════════════ --}}
 @php
+
 $stats = [
-  ['label'=>'Total Jobs Posted', 'value'=>$employer_job_post_count, 'icon'=>'fa-briefcase','cls'=>'sc-blue','trend'=>'+2 this month','up'=>true,'badge'=>'+2'],
-  ['label'=>'Active Jobs', 'value'=>$employer_active_job_count,'icon'=>'fa-circle-check','cls'=>'sc-green','trend'=>'Live & visible','up'=>true,'badge'=>'Live'],
-  ['label'=>'Expired Jobs', 'value'=>$employer_expired_job_count,'icon'=>'fa-clock-rotate-left','cls'=>'sc-red','trend'=>'Needs renewal','up'=>false,'badge'=>'Action'],
-  ['label'=>'Total Applications', 'value'=>$employer_job_application_count,'icon'=>'fa-file-user','cls'=>'sc-purple','trend'=>'+24 this week','up'=>true,'badge'=>'+24'],
-  ['label'=>'Shortlisted', 'value'=>$employer_job_shortlist_count,'icon'=>'fa-star','cls'=>'sc-amber','trend'=>'Ready to review','up'=>true,'badge'=>'24'],
-  ['label'=>'Downloads Left', 'value'=>18,'icon'=>'fa-download','cls'=>'sc-teal','trend'=>'of 30 total','up'=>true,'badge'=>'60%'],
-  ['label'=>'Current Plan', 'value'=>'Pro','icon'=>'fa-crown','cls'=>'sc-indigo','trend'=>'30 Day Plan','up'=>true,'badge'=>'Active'],
-  ['label'=>'Plan Expiry', 'value'=>'7d','icon'=>'fa-calendar-xmark','cls'=>'sc-rose','trend'=>'10 Apr 2025','up'=>false,'badge'=>'Soon'],
+
+    [
+        'label' => 'Total Jobs Posted',
+        'value' => $employer_job_post_count ?? 0,
+        'icon'  => 'fa-briefcase',
+        'cls'   => 'sc-blue',
+        'trend' => 'Jobs created',
+        'up'    => true,
+        'badge' => $employer_job_post_count ?? 0
+    ],
+
+    [
+        'label' => 'Active Jobs',
+        'value' => $employer_active_job_count ?? 0,
+        'icon'  => 'fa-circle-check',
+        'cls'   => 'sc-green',
+        'trend' => 'Live & visible',
+        'up'    => true,
+        'badge' => 'Live'
+    ],
+
+    [
+        'label' => 'Expired Jobs',
+        'value' => $employer_expired_job_count ?? 0,
+        'icon'  => 'fa-clock-rotate-left',
+        'cls'   => 'sc-red',
+        'trend' => 'Needs renewal',
+        'up'    => false,
+        'badge' => 'Expired'
+    ],
+    [
+        'label' => 'Total Applications',
+        'value' => $employer_job_application_count ?? 0,
+        'icon'  => 'fa-file-user',
+        'cls'   => 'sc-purple',
+        'trend' => 'Applications received',
+        'up'    => true,
+        'badge' => $employer_job_application_count ?? 0
+    ],
+
+    [
+        'label' => 'Shortlisted',
+        'value' => $employer_job_shortlist_count ?? 0,
+        'icon'  => 'fa-star',
+        'cls'   => 'sc-amber',
+        'trend' => 'Ready to review',
+        'up'    => true,
+        'badge' => $employer_job_shortlist_count ?? 0
+    ],
+
+    [
+        'label' => 'Downloads Left',
+        'value' => $plan->download_limit ?? 0,
+        'icon'  => 'fa-download',
+        'cls'   => 'sc-teal',
+        'trend' => 'Remaining downloads',
+        'up'    => true,
+        'badge' => ($plan->download_limit ?? 0)
+    ],
+
+    [
+        'label' => 'Current Plan',
+        'value' => $plan->plan->name ?? 'Free',
+        'icon'  => 'fa-crown',
+        'cls'   => 'sc-indigo',
+        'trend' => 'Active subscription',
+        'up'    => true,
+        'badge' => $plan ? 'Active' : 'Free'
+    ],
+
+    [
+        'label' => 'Plan Expiry',
+        'value' => ($daysLeft ?? 0) . 'd',
+        'icon'  => 'fa-calendar-xmark',
+        'cls'   => 'sc-rose',
+        'trend' => $plan->end_date ?? 'No Plan',
+        'up'    => false,
+        'badge' => 'Soon'
+    ],
+
 ];
+
 @endphp
+
+
 <div class="stat-grid">
-  @foreach($stats as $s)
-  <div class="stat-card {{ $s['cls'] }}">
-    <div class="stat-card-top">
-      <div class="stat-card-ico"><i class="fas {{ $s['icon'] }}"></i></div>
-      <span class="stat-badge {{ $s['up'] ? 'up' : 'down' }}">
-        <i class="fas {{ $s['up'] ? 'fa-arrow-up' : 'fa-arrow-down' }}" style="font-size:.52rem;"></i>
-        {{ $s['badge'] }}
-      </span>
+
+    @foreach($stats as $s)
+
+    <div class="stat-card {{ $s['cls'] }}">
+
+        <div class="stat-card-top">
+
+            <div class="stat-card-ico">
+                <i class="fas {{ $s['icon'] }}"></i>
+            </div>
+
+            <span class="stat-badge {{ $s['up'] ? 'up' : 'down' }}">
+
+                <i class="fas {{ $s['up'] ? 'fa-arrow-up' : 'fa-arrow-down' }}"
+                   style="font-size:.52rem;"></i>
+
+                {{ $s['badge'] }}
+
+            </span>
+
+        </div>
+
+        <div class="stat-card-value">
+            {{ $s['value'] }}
+        </div>
+
+        <div class="stat-card-label">
+            {{ $s['label'] }}
+        </div>
+
+        <div class="stat-card-trend {{ $s['up'] ? 'up' : 'down' }}">
+
+            <i class="fas {{ $s['up'] ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }}"></i>
+
+            {!! $s['trend'] !!}
+
+        </div>
+
     </div>
-    <div class="stat-card-value">{{ $s['value'] }}</div>
-    <div class="stat-card-label">{{ $s['label'] }}</div>
-    <div class="stat-card-trend {{ $s['up'] ? 'up' : 'down' }}">
-      <i class="fas {{ $s['up'] ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }}"></i>
-      {!! $s['trend'] !!}
-    </div>
-  </div>
-  @endforeach
+
+    @endforeach
+
 </div>
 
 {{-- ══ LOWER 3-COL ══════════════════════════════════════ --}}

@@ -237,7 +237,7 @@ class NotificationController extends Controller
                 'title' => $n->title ?? 'Notification',
 
                 'msg' => $n->message ?? '',
-
+                'job_id'=> $n->job_id ?? '',
                 // frontend use
                 'type' => $frontendType,
 

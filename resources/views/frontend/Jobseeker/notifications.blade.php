@@ -132,9 +132,27 @@ function renderNotifications(notifs) {
         let type = notif.type ?? 'system';
         let iconData = iconMap[type] ?? ['blue','fa-bell'];
         let isUnread = !notif.read_at;
+        
+        
+        let detailUrl = '';
 
+        if (notif.job_id) {
+
+            detailUrl =
+                "{{ url('/jobs/:id') }}"
+                .replace(':id', notif.job_id);
+        }
+
+        let clickAttr = notif.job_id
+            ? `onclick="window.location.href='${detailUrl}'"`
+            : '';
         html += `
-        <div class="lj-notif-item" style="${isUnread ? 'background:rgba(37,99,235,.025);' : ''}">
+        <div class="lj-notif-item"
+         ${clickAttr}
+         style="
+            cursor:${notif.job_id ? 'pointer' : 'default'};
+            ${isUnread ? 'background:rgba(37,99,235,.025);' : ''}
+         ">
             
             <div class="lj-notif-ico ${iconData[0]}">
                 <i class="fa-solid ${iconData[1]}"></i>

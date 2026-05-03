@@ -38,36 +38,59 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $totalJobs = Job::count();
-        $activeJobs = Job::where('status', 'active')->count();
-        $expiredJobs = Job::where('status', 'expired')->count();
+        $employerId = auth()->id();
+        $jobIds = Job::where('create_user_id', $employerId)
+        ->pluck('id');
+        $employer_job_post_count = Job::where('create_user_id', $employerId)
+        ->count();
+        $employer_active_job_count = Job::where('create_user_id', $employerId)
+        ->where('status', 1)
+        ->count();
 
-        $totalApplications = JobApplication::count();
+        $employer_expired_job_count = Job::where('create_user_id', $employerId)
+        ->where('status', 2)
+        ->count();
+        $employer_job_application_count = JobApplication::whereIn('job_id', $jobIds)
+        ->count();
 
-        $recentJobs = Job::latest()->take(5)->get();
-        $recentApplications = JobApplication::latest()->take(5)->get();
-
-         // ✅ GET ACTIVE PLAN
-        $plan = UserPlanSubscription::where('user_id', auth()->id())
-            ->where('status', 1)
-            ->latest()
-            ->first();
-
-        $daysLeft = null;
+        $employer_job_shortlist_count = JobApplication::whereIn('job_id', $jobIds)
+        ->where('application_status', 5)
+        ->count();  
+        $recentJobs = Job::where('create_user_id', $employerId)
+        ->latest()
+        ->take(5)
+        ->get();
+        $recentApplications = JobApplication::with(['job','user'])
+        ->whereIn('job_id', $jobIds)
+        ->latest()
+        ->take(5)
+        ->get();
+        $plan = UserPlanSubscription::with('plan')->where('user_id', $employerId)
+        ->where('status', 1)
+        ->latest()
+        ->first();
+        $daysLeft = 0;
 
         if ($plan && $plan->end_date) {
-            $daysLeft = (int) floor(Carbon::now()->diffInDays($plan->end_date, false));
+
+            $daysLeft = (int) floor(
+                Carbon::now()->diffInDays($plan->end_date, false)
+            );
         }
 
+    
         return view('frontend.employer.dashboard', compact(
-            'totalJobs',
-            'activeJobs',
-            'expiredJobs',
-            'totalApplications',
+            'employer_job_post_count',
+            'employer_active_job_count',
+            'employer_expired_job_count',
+            'employer_job_application_count',
+            'employer_job_shortlist_count',
+
             'recentJobs',
             'recentApplications',
-            'daysLeft',
-            'plan'
+
+            'plan',
+            'daysLeft'
         ));
     }
 
@@ -568,7 +591,20 @@ class DashboardController extends Controller
         $resumeplans = ResumePlan::where('is_active',1)->where('status',1)->orderBy('price')->get();
         $bannerplans = BannerPlan::where('is_active',1)->orderBy('price')->get();
         // dd($resumeplans);
-        return view('frontend.employer.billing', compact('jobPlans','resumeplans','bannerplans'));
+         // ACTIVE PURCHASED JOB PLAN
+        $activePlan = UserPlanSubscription::with('plan')
+            ->where('user_id', auth()->id())
+            ->where('status', 'active')
+            ->where('payment_status', 'paid')
+            ->latest()
+            ->first();
+            // RESUME PLAN
+        $activeResumePlan = ResumePlanSubscription::with('plan')
+            ->where('user_id', auth()->id())
+            ->where('status', 1)
+            ->latest()
+            ->first();
+        return view('frontend.employer.billing', compact('jobPlans','resumeplans','bannerplans','activePlan','activeResumePlan'));
     }
 
     public function checkout(Request $request)

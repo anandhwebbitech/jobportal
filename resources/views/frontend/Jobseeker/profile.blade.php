@@ -142,22 +142,72 @@
       <div class="lj-form-grid-3">
         <div class="lj-fgroup">
           <label class="lj-label">State <span class="req">*</span></label>
-          <select class="lj-input" name="state" required>
+          <select class="lj-input" id="profileStateSel" name="state" required>
             <option value="">Select state</option>
-            @php $states = ['Tamil Nadu','Karnataka','Kerala','Andhra Pradesh','Telangana','Maharashtra','Gujarat','Rajasthan','Uttar Pradesh','Delhi']; @endphp
-            @foreach($states as $s)
-              <option value="{{ $s }}" {{ old('state', $user->details->state ?? '') == $s ? 'selected' : '' }}>{{ $s }}</option>
-            @endforeach
+
+            <option value="Andhra Pradesh" {{ old('state', $user->details->state ?? '') == 'Andhra Pradesh' ? 'selected' : '' }}>Andhra Pradesh</option>
+
+            <option value="Arunachal Pradesh" {{ old('state', $user->details->state ?? '') == 'Arunachal Pradesh' ? 'selected' : '' }}>Arunachal Pradesh</option>
+
+            <option value="Assam" {{ old('state', $user->details->state ?? '') == 'Assam' ? 'selected' : '' }}>Assam</option>
+
+            <option value="Bihar" {{ old('state', $user->details->state ?? '') == 'Bihar' ? 'selected' : '' }}>Bihar</option>
+
+            <option value="Chhattisgarh" {{ old('state', $user->details->state ?? '') == 'Chhattisgarh' ? 'selected' : '' }}>Chhattisgarh</option>
+
+            <option value="Goa" {{ old('state', $user->details->state ?? '') == 'Goa' ? 'selected' : '' }}>Goa</option>
+
+            <option value="Gujarat" {{ old('state', $user->details->state ?? '') == 'Gujarat' ? 'selected' : '' }}>Gujarat</option>
+
+            <option value="Haryana" {{ old('state', $user->details->state ?? '') == 'Haryana' ? 'selected' : '' }}>Haryana</option>
+
+            <option value="Himachal Pradesh" {{ old('state', $user->details->state ?? '') == 'Himachal Pradesh' ? 'selected' : '' }}>Himachal Pradesh</option>
+
+            <option value="Jharkhand" {{ old('state', $user->details->state ?? '') == 'Jharkhand' ? 'selected' : '' }}>Jharkhand</option>
+
+            <option value="Karnataka" {{ old('state', $user->details->state ?? '') == 'Karnataka' ? 'selected' : '' }}>Karnataka</option>
+
+            <option value="Kerala" {{ old('state', $user->details->state ?? '') == 'Kerala' ? 'selected' : '' }}>Kerala</option>
+
+            <option value="Madhya Pradesh" {{ old('state', $user->details->state ?? '') == 'Madhya Pradesh' ? 'selected' : '' }}>Madhya Pradesh</option>
+
+            <option value="Maharashtra" {{ old('state', $user->details->state ?? '') == 'Maharashtra' ? 'selected' : '' }}>Maharashtra</option>
+
+            <option value="Manipur" {{ old('state', $user->details->state ?? '') == 'Manipur' ? 'selected' : '' }}>Manipur</option>
+
+            <option value="Meghalaya" {{ old('state', $user->details->state ?? '') == 'Meghalaya' ? 'selected' : '' }}>Meghalaya</option>
+
+            <option value="Mizoram" {{ old('state', $user->details->state ?? '') == 'Mizoram' ? 'selected' : '' }}>Mizoram</option>
+
+            <option value="Nagaland" {{ old('state', $user->details->state ?? '') == 'Nagaland' ? 'selected' : '' }}>Nagaland</option>
+
+            <option value="Odisha" {{ old('state', $user->details->state ?? '') == 'Odisha' ? 'selected' : '' }}>Odisha</option>
+
+            <option value="Punjab" {{ old('state', $user->details->state ?? '') == 'Punjab' ? 'selected' : '' }}>Punjab</option>
+
+            <option value="Rajasthan" {{ old('state', $user->details->state ?? '') == 'Rajasthan' ? 'selected' : '' }}>Rajasthan</option>
+
+            <option value="Sikkim" {{ old('state', $user->details->state ?? '') == 'Sikkim' ? 'selected' : '' }}>Sikkim</option>
+
+            <option value="Tamil Nadu" {{ old('state', $user->details->state ?? '') == 'Tamil Nadu' ? 'selected' : '' }}>Tamil Nadu</option>
+
+            <option value="Telangana" {{ old('state', $user->details->state ?? '') == 'Telangana' ? 'selected' : '' }}>Telangana</option>
+
+            <option value="Tripura" {{ old('state', $user->details->state ?? '') == 'Tripura' ? 'selected' : '' }}>Tripura</option>
+
+            <option value="Uttar Pradesh" {{ old('state', $user->details->state ?? '') == 'Uttar Pradesh' ? 'selected' : '' }}>Uttar Pradesh</option>
+
+            <option value="Uttarakhand" {{ old('state', $user->details->state ?? '') == 'Uttarakhand' ? 'selected' : '' }}>Uttarakhand</option>
+
+            <option value="West Bengal" {{ old('state', $user->details->state ?? '') == 'West Bengal' ? 'selected' : '' }}>West Bengal</option>
+
           </select>
         </div>
         <div class="lj-fgroup">
           <label class="lj-label">District <span class="req">*</span></label>
-          <select class="lj-input" name="district" required>
+          <select class="lj-input"  id="profileDistrictSel" name="district" required>
             <option value="">Select district</option>
-            @php $districts = ['Coimbatore','Chennai','Madurai','Tiruchirappalli','Salem','Tirunelveli','Erode','Vellore','Thanjavur','Dindigul','Kanchipuram','Tiruppur','Nagercoil','Cuddalore','Pollachi','Hosur','Ooty','Karur','Namakkal']; @endphp
-            @foreach($districts as $d)
-              <option value="{{ $d }}" {{ old('district', $user->details->district ?? '') == $d ? 'selected' : '' }}>{{ $d }}</option>
-            @endforeach
+           
           </select>
         </div>
         <div class="lj-fgroup">
@@ -654,5 +704,94 @@ $(document).on('click', '.lj-skill-tag .rm', function () {
     parent.remove();
 
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const stateSel = document.getElementById('profileStateSel');
+    const districtSel = document.getElementById('profileDistrictSel');
+
+    const selectedDistrict = "{{ old('district', $user->details->district ?? '') }}";
+
+    async function loadDistricts(state, selected = '') {
+
+        districtSel.innerHTML =
+            '<option value="">Loading...</option>';
+
+        try {
+
+            let response = await fetch(
+                'https://countriesnow.space/api/v0.1/countries/state/cities',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        country: 'India',
+                        state: state
+                    })
+                }
+            );
+
+            let result = await response.json();
+
+            districtSel.innerHTML =
+                '<option value="">Select District</option>';
+
+            if (result.data && result.data.length > 0) {
+
+                result.data.forEach(function (district) {
+
+                    let opt = document.createElement('option');
+
+                    opt.value = district;
+                    opt.textContent = district;
+
+                    if (district === selected) {
+                        opt.selected = true;
+                    }
+
+                    districtSel.appendChild(opt);
+
+                });
+
+            } else {
+
+                districtSel.innerHTML =
+                    '<option value="">No District Found</option>';
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            districtSel.innerHTML =
+                '<option value="">Error loading districts</option>';
+        }
+    }
+
+    stateSel.addEventListener('change', function () {
+
+        let state = this.value;
+
+        if (!state) {
+
+            districtSel.innerHTML =
+                '<option value="">Select District</option>';
+
+            return;
+        }
+
+        loadDistricts(state);
+    });
+
+    // Edit mode existing district load
+    if (stateSel.value) {
+        loadDistricts(stateSel.value, selectedDistrict);
+    }
+
+});
+
+        
 </script>
 @endpush

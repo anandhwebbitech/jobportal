@@ -18,39 +18,76 @@
 </div>
 
 {{-- Profile Completion Card --}}
-@php $completion = $profileCompletion ?? 68; @endphp
 <div class="lj-progress-card">
-  <div class="lj-pc-inner">
-    <div class="lj-pc-text">
-      <div class="lj-pc-label">Profile Strength</div>
-      <div class="lj-pc-title">Complete your profile to get hired faster</div>
-      <div class="lj-pc-sub">Employers are 3× more likely to contact you with a complete profile.</div>
-      <div class="lj-pc-bar-wrap">
-        <div class="lj-pc-bar-track">
-          <div class="lj-pc-bar-fill" id="progressBar" style="width:0%;"></div>
+    <div class="lj-pc-inner">
+
+        <div class="lj-pc-text">
+
+            <div class="lj-pc-label">
+                Profile Strength
+            </div>
+
+            <div class="lj-pc-title">
+                Complete your profile to get hired faster
+            </div>
+
+            <div class="lj-pc-sub">
+                Employers are 3× more likely to contact you with a complete profile.
+            </div>
+
+            {{-- Progress Bar --}}
+            <div class="lj-pc-bar-wrap">
+                <div class="lj-pc-bar-track">
+
+                    <div
+                        class="lj-pc-bar-fill"
+                        id="progressBar"
+                        style="width:0%;">
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- Checklist --}}
+            <div class="lj-pc-checklist">
+
+                <span class="lj-pc-check {{ ($completionSteps['basic_info'] ?? false) ? 'done' : '' }}">
+                    <i class="fa-solid {{ ($completionSteps['basic_info'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i>
+                    Basic Info
+                </span>
+
+                <span class="lj-pc-check {{ ($completionSteps['education'] ?? false) ? 'done' : '' }}">
+                    <i class="fa-solid {{ ($completionSteps['education'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i>
+                    Education
+                </span>
+
+                <span class="lj-pc-check {{ ($completionSteps['skills'] ?? false) ? 'done' : '' }}">
+                    <i class="fa-solid {{ ($completionSteps['skills'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i>
+                    Skills
+                </span>
+
+                <span class="lj-pc-check {{ ($completionSteps['resume'] ?? false) ? 'done' : '' }}">
+                    <i class="fa-solid {{ ($completionSteps['resume'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i>
+                    Resume
+                </span>
+
+                <span class="lj-pc-check {{ ($completionSteps['photo'] ?? false) ? 'done' : '' }}">
+                    <i class="fa-solid {{ ($completionSteps['photo'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i>
+                    Photo
+                </span>
+
+            </div>
+
         </div>
-      </div>
-      <div class="lj-pc-checklist">
-        <span class="lj-pc-check {{ ($completionSteps['basic_info'] ?? true) ? 'done' : '' }}">
-          <i class="fa-solid {{ ($completionSteps['basic_info'] ?? true) ? 'fa-check' : 'fa-circle' }}"></i> Basic Info
-        </span>
-        <span class="lj-pc-check {{ ($completionSteps['education'] ?? true) ? 'done' : '' }}">
-          <i class="fa-solid {{ ($completionSteps['education'] ?? true) ? 'fa-check' : 'fa-circle' }}"></i> Education
-        </span>
-        <span class="lj-pc-check {{ ($completionSteps['skills'] ?? true) ? 'done' : '' }}">
-          <i class="fa-solid {{ ($completionSteps['skills'] ?? true) ? 'fa-check' : 'fa-circle' }}"></i> Skills
-        </span>
-        <span class="lj-pc-check {{ ($completionSteps['resume'] ?? false) ? 'done' : '' }}">
-          <i class="fa-solid {{ ($completionSteps['resume'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i> Resume
-        </span>
-        <span class="lj-pc-check {{ ($completionSteps['photo'] ?? false) ? 'done' : '' }}">
-          <i class="fa-solid {{ ($completionSteps['photo'] ?? false) ? 'fa-check' : 'fa-circle' }}"></i> Photo
-        </span>
-      </div>
+
+        {{-- Percentage --}}
+        <div class="lj-pc-pct" id="progressPct">
+            0<small>%</small>
+        </div>
+
     </div>
-    <div class="lj-pc-pct" id="progressPct">0<small>%</small></div>
-  </div>
 </div>
+
 
 {{-- Stat Cards --}}
 <div class="lj-stat-grid">
@@ -217,12 +254,25 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const pct = {{ $completion }};
-  setTimeout(() => {
-    document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressPct').innerHTML = pct + '<small>%</small>';
-  }, 300);
+document.addEventListener('DOMContentLoaded', function () {
+
+    const pct = {{ $completion ?? 0 }};
+
+    setTimeout(() => {
+
+        const progressBar = document.getElementById('progressBar');
+        const progressPct = document.getElementById('progressPct');
+
+        if (progressBar) {
+            progressBar.style.width = pct + '%';
+        }
+
+        if (progressPct) {
+            progressPct.innerHTML = pct + '<small>%</small>';
+        }
+
+    }, 300);
+
 });
 </script>
 @endpush

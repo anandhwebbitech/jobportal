@@ -427,35 +427,37 @@ body { font-family:var(--body); color:var(--gray-700); }
 <div class="tab-panel active" id="tab-job">
 
   {{-- Hero --}}
-  <div class="hero-banner blue">
-    <div class="hero-body">
-      <div class="hero-pill"><i class="fas fa-bolt"></i> Active Plan</div>
-      <div class="hero-title">30 Days Plan – Premium</div>
-      <div class="hero-sub">Payment ID: pay_OsK89AbCdEfGh12 &nbsp;·&nbsp; Invoice: #INV-2025-031</div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val">₹1,180</div><div class="hero-stat-lbl">Total Paid (incl. GST)</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">11 Mar</div><div class="hero-stat-lbl">Plan Start Date</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">10 Apr</div><div class="hero-stat-lbl">Plan Expiry</div></div>
+  @if($activePlan && $activePlan->plan)
+
+    <div class="hero-banner blue">
+      <div class="hero-body">
+        <div class="hero-pill"><i class="fas fa-bolt"></i> Active Plan</div>
+        <div class="hero-title">{{ $activePlan->plan->name }} – Premium</div>
+        <div class="hero-sub">Payment ID: {{ $activePlan->payment_id }} &nbsp;·&nbsp; Invoice: #INV-{{ $activePlan->id }}</div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hero-stat-val">₹{{ number_format($activePlan->plan->total_price, 0) }}</div><div class="hero-stat-lbl">Total Paid (incl. GST)</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">{{ \Carbon\Carbon::parse($activePlan->start_date)->format('d M') }}</div><div class="hero-stat-lbl">Plan Start Date</div></div>
+          <div class="hero-stat"><div class="hero-stat-val">{{ \Carbon\Carbon::parse($activePlan->end_date)->format('d M') }}</div><div class="hero-stat-lbl">Plan Expiry</div></div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-hero blue"><i class="fas fa-rotate-right"></i> Renew Plan</button>
+        <button class="btn-hero-ghost"><i class="fas fa-file-invoice"></i> Download Invoice</button>
       </div>
     </div>
-    <div class="hero-actions">
-      <button class="btn-hero blue"><i class="fas fa-rotate-right"></i> Renew Plan</button>
-      <button class="btn-hero-ghost"><i class="fas fa-file-invoice"></i> Download Invoice</button>
+
+    {{-- Detail mini cards --}}
+    <div class="detail-grid">
+      <div class="detail-card"><div class="detail-ico blue"><i class="fas fa-tag"></i></div><div><div class="detail-lbl">Plan Name</div><div class="detail-val"> {{ $activePlan->plan->name }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico gray"><i class="fas fa-indian-rupee-sign"></i></div><div><div class="detail-lbl">Plan Price</div><div class="detail-val"> ₹{{ $activePlan->plan->price }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico amber"><i class="fas fa-receipt"></i></div><div><div class="detail-lbl">GST (18%)</div><div class="detail-val"> ₹{{ $activePlan->plan->gst_amount }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico green"><i class="fas fa-wallet"></i></div><div><div class="detail-lbl">Total Paid</div><div class="detail-val">₹₹{{ $activePlan->plan->total_price }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico green"><i class="fas fa-calendar-check"></i></div><div><div class="detail-lbl">Start Date</div><div class="detail-val"> {{ \Carbon\Carbon::parse($activePlan->start_date)->format('d M Y') }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico red"><i class="fas fa-calendar-xmark"></i></div><div><div class="detail-lbl">Expiry Date</div><div class="detail-val">{{ \Carbon\Carbon::parse($activePlan->end_date)->format('d M Y') }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico green"><i class="fas fa-circle-check"></i></div><div><div class="detail-lbl">Status</div><div class="detail-val">  {{ ucfirst($activePlan->status) }}</div></div></div>
+      <div class="detail-card"><div class="detail-ico purple"><i class="fas fa-crown"></i></div><div><div class="detail-lbl">Job Limit</div><div class="detail-val">{{ $activePlan->plan->job_limit }}</div></div></div>
     </div>
-  </div>
-
-  {{-- Detail mini cards --}}
-  <div class="detail-grid">
-    <div class="detail-card"><div class="detail-ico blue"><i class="fas fa-tag"></i></div><div><div class="detail-lbl">Plan Name</div><div class="detail-val">30 Days Plan</div></div></div>
-    <div class="detail-card"><div class="detail-ico gray"><i class="fas fa-indian-rupee-sign"></i></div><div><div class="detail-lbl">Plan Price</div><div class="detail-val">₹1,000</div></div></div>
-    <div class="detail-card"><div class="detail-ico amber"><i class="fas fa-receipt"></i></div><div><div class="detail-lbl">GST (18%)</div><div class="detail-val">₹180</div></div></div>
-    <div class="detail-card"><div class="detail-ico green"><i class="fas fa-wallet"></i></div><div><div class="detail-lbl">Total Paid</div><div class="detail-val">₹1,180</div></div></div>
-    <div class="detail-card"><div class="detail-ico green"><i class="fas fa-calendar-check"></i></div><div><div class="detail-lbl">Start Date</div><div class="detail-val">11 Mar 2025</div></div></div>
-    <div class="detail-card"><div class="detail-ico red"><i class="fas fa-calendar-xmark"></i></div><div><div class="detail-lbl">Expiry Date</div><div class="detail-val">10 Apr 2025</div></div></div>
-    <div class="detail-card"><div class="detail-ico green"><i class="fas fa-circle-check"></i></div><div><div class="detail-lbl">Status</div><div class="detail-val">Active</div></div></div>
-    <div class="detail-card"><div class="detail-ico purple"><i class="fas fa-crown"></i></div><div><div class="detail-lbl">Plan Type</div><div class="detail-val">Premium</div></div></div>
-  </div>
-
+  @endif
   {{-- Purchase / Renew --}}
   <div class="emp-card">
     <div class="emp-card-head">
@@ -593,22 +595,159 @@ body { font-family:var(--body); color:var(--gray-700); }
      TAB 2 – RESUME DB
 ══════════════════════════════════════════════════════ --}}
 <div class="tab-panel" id="tab-resume">
+@if($activeResumePlan && $activeResumePlan->plan)
 
-  <div class="hero-banner green">
+<div class="hero-banner green">
+
     <div class="hero-body">
-      <div class="hero-pill"><i class="fas fa-database"></i> Resume Database</div>
-      <div class="hero-title">Download Resumes from Our Database</div>
-      <div class="hero-sub">Access Tamil Nadu's active job-seeker pool — 3 flexible plans</div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val">100–500</div><div class="hero-stat-lbl">Downloads / Plan</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">30–60</div><div class="hero-stat-lbl">Days Validity</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">3 Plans</div><div class="hero-stat-lbl">Available</div></div>
-      </div>
+
+        <div class="hero-pill">
+            <i class="fas fa-database"></i>
+            Resume Database Plan
+        </div>
+
+        <div class="hero-title">
+            {{ $activeResumePlan->plan->name }}
+        </div>
+
+        <div class="hero-sub">
+
+            Active Resume Access Plan
+
+            ·
+
+            {{ $activeResumePlan->plan->resume_limit }}
+            Resume Downloads
+
+        </div>
+
+        <div class="hero-stats">
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-val">
+                    {{ $activeResumePlan->remaining_downloads }}
+                </div>
+
+                <div class="hero-stat-lbl">
+                    Downloads Left
+                </div>
+
+            </div>
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-val">
+                    {{ \Carbon\Carbon::parse($activeResumePlan->start_date)->format('d M') }}
+                </div>
+
+                <div class="hero-stat-lbl">
+                    Start Date
+                </div>
+
+            </div>
+
+            <div class="hero-stat">
+
+                <div class="hero-stat-val">
+                    {{ \Carbon\Carbon::parse($activeResumePlan->end_date)->format('d M') }}
+                </div>
+
+                <div class="hero-stat-lbl">
+                    Expiry Date
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
     <div class="hero-actions">
-      <button class="btn-hero green" onclick="viewDownloads()"><i class="fas fa-download"></i> My Downloads</button>
+
+        <button class="btn-hero green"
+                onclick="viewDownloads()">
+
+            <i class="fas fa-download"></i>
+
+            My Downloads
+
+        </button>
+
     </div>
-  </div>
+
+</div>
+
+{{-- Detail Cards --}}
+<div class="detail-grid">
+
+    <div class="detail-card">
+
+        <div class="detail-ico green">
+            <i class="fas fa-crown"></i>
+        </div>
+
+        <div>
+            <div class="detail-lbl">Plan Name</div>
+            <div class="detail-val">
+                {{ $activeResumePlan->plan->name }}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-card">
+
+        <div class="detail-ico blue">
+            <i class="fas fa-indian-rupee-sign"></i>
+        </div>
+
+        <div>
+            <div class="detail-lbl">Price</div>
+            <div class="detail-val">
+                ₹{{ $activeResumePlan->plan->price }}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-card">
+
+        <div class="detail-ico amber">
+            <i class="fas fa-receipt"></i>
+        </div>
+
+        <div>
+            <div class="detail-lbl">GST</div>
+            <div class="detail-val">
+                ₹{{ $activeResumePlan->plan->gst_amount }}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-card">
+
+        <div class="detail-ico purple">
+            <i class="fas fa-wallet"></i>
+        </div>
+
+        <div>
+            <div class="detail-lbl">Total Amount</div>
+            <div class="detail-val">
+                ₹{{ $activeResumePlan->plan->total_price }}
+            </div>
+        </div>
+
+    </div>
+
+    
+
+    
+
+</div>
+
+@endif
 
   <div class="emp-card">
     <div class="emp-card-head">
@@ -770,7 +909,7 @@ body { font-family:var(--body); color:var(--gray-700); }
 ══════════════════════════════════════════════════════ --}}
   <div class="tab-panel" id="tab-banner">
 
-    <div class="hero-banner amber">
+    <!-- <div class="hero-banner amber">
       <div class="hero-body">
         <div class="hero-pill"><i class="fas fa-image"></i> Home Page Ad</div>
         <div class="hero-title">Advertise on the Home Page</div>
@@ -784,7 +923,7 @@ body { font-family:var(--body); color:var(--gray-700); }
       <div class="hero-actions">
         <button class="btn-hero amber" onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Slot</button>
       </div>
-    </div>
+    </div> -->
 
     <div class="emp-card">
       <div class="emp-card-head">
@@ -802,11 +941,11 @@ body { font-family:var(--body); color:var(--gray-700); }
             <div class="feat-tile-title">Image Banner</div>
             <div class="feat-tile-desc">Upload your ad as a high-quality PNG, JPG or WEBP image</div>
           </div>
-          <div class="feat-tile">
+          <!-- <div class="feat-tile">
             <div class="feat-tile-ico blue"><i class="fas fa-list-check"></i></div>
             <div class="feat-tile-title">Multi-Position</div>
             <div class="feat-tile-desc">Mention multiple job positions within a single banner image</div>
-          </div>
+          </div> -->
           <div class="feat-tile">
             <div class="feat-tile-ico green"><i class="fas fa-calendar-days"></i></div>
             <div class="feat-tile-title">10-Day Exposure</div>
@@ -885,7 +1024,7 @@ body { font-family:var(--body); color:var(--gray-700); }
 
         <div class="divider-actions">
           <button class="btn-primary amber" onclick="buyBannerPlan()"><i class="fas fa-image"></i> Purchase Banner Ad</button>
-          <button class="btn-outline amber"  onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Placement</button>
+          <!-- <button class="btn-outline amber"  onclick="previewBanner()"><i class="fas fa-eye"></i> Preview Placement</button> -->
         </div>
 
       </div>
