@@ -1110,7 +1110,7 @@ resources/views/frontend/auth/employer-login.blade.php
             <label class="fcheck blue" id="checkLabel">
               <input type="checkbox" name="remember"> Remember me
             </label>
-            <a href="/forgot-password" class="fforgot blue" id="forgotLink">
+            <a href="{{route('forgot.password')}}" class="fforgot blue" id="forgotLink">
               <i class="fa-solid fa-key" style="font-size:.65rem;"></i> Forgot Password?
             </a>
           </div>

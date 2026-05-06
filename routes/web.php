@@ -174,8 +174,8 @@ Route::controller(AuthController::class)->group(callback: function () {
     Route::post('/forgot-password', 'forgotPasswordSubmit')->name('forgot.password.submit');
 
     // Reset Password
-    Route::get('/reset-password/{token}', 'resetPassword')->name('reset.password');
-    Route::post('/reset-password', 'resetPasswordSubmit')->name('reset.password.submit');
+    Route::get('/reset-password/{token}', 'resetPassword')->name('password.reset');
+    Route::post('/reset-password', 'resetPasswordSubmit')->name('password.update');
 
     Route::get('/jobs-preview/{id}', [AuthController::class, 'preview'])
         ->name('jobs.preview');
