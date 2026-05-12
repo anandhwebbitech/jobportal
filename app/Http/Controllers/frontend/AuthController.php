@@ -301,17 +301,17 @@ class AuthController extends Controller
                 'c_ownername' => 'required',
                 'c_mobile' => 'required|digits:10',
 
-                'c_hr_name' => 'required',
-                'c_hr_mobile' => 'required|digits:10',
+                // 'c_hr_name' => 'required',
+                // 'c_hr_mobile' => 'required|digits:10',
 
                 'c_email' => 'required|email|unique:users,email',
                 'c_password' => 'required|min:8|same:c_confirm_password',
 
                 'c_gst' => 'required|size:15',
-                'c_pan' => 'required|size:10',
+                // 'c_pan' => 'required|size:10',
 
                 'gst_certificate' => 'required|mimes:pdf,jpg,jpeg,png|max:5120',
-                'pan_document' => 'required|mimes:pdf,jpg,jpeg,png|max:5120',
+                // 'pan_document' => 'required|mimes:pdf,jpg,jpeg,png|max:5120',
                 'msme_certificate' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             ]);
 

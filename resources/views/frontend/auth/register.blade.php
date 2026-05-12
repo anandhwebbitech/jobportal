@@ -1954,6 +1954,18 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .ferr-msg{
+            display:none;
+        }
+
+        .ferr-msg.show{
+            display:flex;
+        }
+
+        .err{
+            border-color:red !important;
+        }
     </style>
 @endpush
 
@@ -2679,7 +2691,7 @@
                                             <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
                                                     type="text" id="c_gst" name="c_gst" class="finput fc-g"
                                                     placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
-                                                    oninput="this.value=this.value.toUpperCase()" /></div>
+                                                    oninput="validateGST(this)" /></div>
                                             <div class="ferr-msg" id="e-e_gst"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
                                                     15-character
@@ -2810,6 +2822,43 @@
         const skillsData = @json($skills ?? []);
     </script>
     <script>
+        function validateGST(input) {
+
+    // UPPERCASE
+    input.value = input.value.toUpperCase();
+
+    let gst = input.value.trim();
+
+    let err = document.getElementById('e-e_gst');
+
+    // GST REGEX
+    let gstRegex =
+        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+    // EMPTY
+    if (gst.length === 0) {
+
+        err.classList.remove('show');
+
+        input.classList.remove('err');
+
+        return;
+    }
+
+    // INVALID
+    if (!gstRegex.test(gst)) {
+
+        err.classList.add('show');
+
+        input.classList.add('err');
+
+    } else {
+
+        err.classList.remove('show');
+
+        input.classList.remove('err');
+    }
+}
         /* ── ANNOUNCE ── */
         function closeAnnounce() {
             const b = document.getElementById('announceBar');
@@ -3100,8 +3149,8 @@
             if (step === 2) {
                 check('c_ownername', 'Owner name is required');
                 check('c_mobile', 'Owner mobile is required');
-                check('c_hr_name', 'HR name is required');
-                check('c_hr_mobile', 'HR mobile is required');
+                // check('c_hr_name', 'HR name is required');
+                // check('c_hr_mobile', 'HR mobile is required');
             }
 
             if (step === 3) {
@@ -3112,12 +3161,12 @@
 
             if (step === 4) {
                 check('c_gst', 'GST number is required');
-                check('c_pan', 'PAN number is required');
+                // check('c_pan', 'PAN number is required');
             }
 
             if (step === 5) {
                 check('gst_certificate', 'GST certificate is required');
-                check('pan_document', 'PAN document is required');
+                // check('pan_document', 'PAN document is required');
             }
 
             // ❗ Show toaster
@@ -3169,7 +3218,7 @@
             document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g(
                 'c_hr_mobile') : '');
             document.getElementById('es-em').textContent = g('c_email') || '—';
-            document.getElementById('es-gs').textContent = g('c_gst') || '—';
+            // document.getElementById('es-gs').textContent = g('c_gst') || '—';
             document.getElementById('es-pn').textContent = g('c_pan') || '—';
             document.getElementById('es-ms').textContent = g('c_msme') || 'Not provided';
         }
