@@ -263,7 +263,7 @@ class DashboardController extends Controller
             /* ===============================
             VALIDATION
             =============================== */
-
+            
             $request->validate([
                 'job_title'           => 'required|string|min:3|max:150',
                 'job_category'        => 'required|string|max:100',
@@ -279,12 +279,13 @@ class DashboardController extends Controller
                 'education'           => 'required|string|max:50',
                 'job_type'            => 'required|in:Full Time,Part Time,Contract',
                 'status'              => 'required|in:active,inactive',
-                'skills'              => 'required|string',
+                'skills' => 'required|array|min:1',
+                'skills.*' => 'string|max:100',
                 'terms'               => 'accepted',
             ]);
-
             // skills decode
-            $skills = json_decode($request->skills, true);
+            // $skills = json_decode($request->skills, true);
+            $skills = $request->skills;
             if (json_last_error() !== JSON_ERROR_NONE || empty($skills)) {
                 return back()->withInput()->withErrors([
                     'skills' => 'Invalid skills format'

@@ -5,7 +5,7 @@
 @extends('frontend.employer.layouts.app')
 @section('title', 'Post a New Job')
 @section('page-title', 'Post New Job')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @push('styles')
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap');
@@ -1987,8 +1987,8 @@
                     <div class="pj-footer">
                         <div class="pj-footer-info">Step <strong>1</strong> of 5 &mdash; Basic Details</div>
                         <div class="pj-footer-right">
-                            <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
-                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+                            {{-- <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
+                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button> --}}
                             <button type="button" class="btn-next" onclick="nextStep(1)">Location &nbsp;<i
                                     class="fa-solid fa-arrow-right"></i></button>
                         </div>
@@ -2106,8 +2106,8 @@
                     <div class="pj-footer">
                         <div class="pj-footer-info">Step <strong>2</strong> of 5 &mdash; Location</div>
                         <div class="pj-footer-right">
-                            <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
-                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+                            {{-- <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
+                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button> --}}
                             <button type="button" class="btn-back" onclick="prevStep(2)"><i
                                     class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(2)">Job Info &amp; Skills &nbsp;<i
@@ -2303,7 +2303,7 @@
                                 <hr>
                             </div>
 
-                            <div class="pj-fg">
+                            {{-- <div class="pj-fg">
                                 <label class="pj-lbl">
                                     <span class="pj-lbl-ico"><i class="fa-solid fa-screwdriver-wrench"></i></span>
                                     Skills <span class="pj-req">*</span>
@@ -2327,9 +2327,33 @@
                                         skill.</span></div>
                                 <div class="pj-hint" style="margin-top:8px;"><i class="fa-solid fa-circle-info"></i> Add
                                     up to 10 skills. Press Enter or comma to add a custom skill.</div>
+                            </div> --}}
+                            <div class="pj-fg">
+                                <label class="pj-lbl">
+                                    <span class="pj-lbl-ico">
+                                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                                    </span>
+                                    Skills <span class="pj-req">*</span>
+                                </label>
+
+                                <select name="skills[]" class="pj-inp select2-skills" multiple>
+
+                                    @foreach ($skills as $skill)
+
+                                        <option value="{{ $skill->skill_name }}">
+                                            {{ $skill->skill_name }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+                                <div class="pj-ferr" id="err-skills">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Please select at least one skill.</span>
+                                </div>
                             </div>
 
-                            <div style="margin-top:18px;">
+                            {{-- <div style="margin-top:18px;">
                                 <div class="pj-sug-label"><i class="fa-solid fa-fire" style="color:var(--amber);"></i>
                                     Popular Suggestions</div>
                                 <div class="pj-sug-grid">
@@ -2339,7 +2363,7 @@
                                         </button>
                                     @endforeach
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>{{-- /card-body --}}
                     </div>{{-- /card --}}
@@ -2347,8 +2371,8 @@
                     <div class="pj-footer">
                         <div class="pj-footer-info">Step <strong>3</strong> of 5 &mdash; Job Info &amp; Skills</div>
                         <div class="pj-footer-right">
-                            <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
-                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+                            {{-- <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
+                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button> --}}
                             <button type="button" class="btn-back" onclick="prevStep(3)"><i
                                     class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(3)">Screening &nbsp;<i
@@ -2450,8 +2474,8 @@
                     <div class="pj-footer">
                         <div class="pj-footer-info">Step <strong>4</strong> of 5 &mdash; Screening Questions</div>
                         <div class="pj-footer-right">
-                            <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
-                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+                            {{-- <button type="button" class="btn-draft" onclick="saveDraft(this)"><i
+                                    class="fa-regular fa-floppy-disk"></i> Save Draft</button> --}}
                             <button type="button" class="btn-back" onclick="prevStep(4)"><i
                                     class="fa-solid fa-arrow-left"></i> Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(4)">Review &amp; Publish &nbsp;<i
@@ -2528,6 +2552,22 @@
 @endsection
 
 @push('scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.select2-skills').select2({
+            placeholder: "Select required skills",
+            allowClear: true,
+            width: '100%',
+            tags: true,
+            tokenSeparators: [',']
+        });
+
+    });
+</script>
     <script>
       @if(session('success'))
         toastr.success("{{ session('success') }}");
@@ -2674,10 +2714,17 @@
                         showFE('education', 'Please select education requirement.');
                         ok = false;
                     }
-                    document.getElementById('skillsHidden').value = JSON.stringify(selectedSkills);
-                    if (selectedSkills.length === 0) {
+                    var skills = $('.select2-skills').val();
+
+                    if (!skills || skills.length === 0) {
+
                         document.getElementById('err-skills').classList.add('show');
+
                         ok = false;
+
+                    } else {
+
+                        document.getElementById('err-skills').classList.remove('show');
                     }
                 }
                 if (n === 4) {

@@ -1328,46 +1328,7 @@
         </div> --}}
 
         {{-- Trending tags --}}
-        <div class="lj-anim lj-anim-d3">
-            <div class="lj-trend-row">
-                <span class="lj-trend-label">
-                    <i class="fa-solid fa-fire-flame-curved" style="color:#f97316; margin-right:4px;"></i>Trending:
-                </span>
-                @foreach($trendingJobs as $job)
-
-                    @php
-                        $icon = 'fa-briefcase';
-
-                        if(str_contains(strtolower($job->title), 'software'))
-                            $icon = 'fa-laptop-code';
-
-                        elseif(str_contains(strtolower($job->title), 'machine'))
-                            $icon = 'fa-gears';
-
-                        elseif(str_contains(strtolower($job->title), 'sales'))
-                            $icon = 'fa-handshake';
-
-                        elseif(str_contains(strtolower($job->title), 'data'))
-                            $icon = 'fa-keyboard';
-
-                        elseif(str_contains(strtolower($job->title), 'electric'))
-                            $icon = 'fa-bolt';
-                    @endphp
-
-                    <a href="{{ route('jobs.index', ['title' => $job->title]) }}"
-                    class="lj-trend-tag">
-
-                        <i class="fa-solid {{ $icon }}"
-                        style="margin-right:5px; font-size:.7rem;"></i>
-
-                        {{ $job->title }}
-
-                    </a>
-
-                @endforeach
-
-            </div>
-        </div>
+        
 
     </section>
 
