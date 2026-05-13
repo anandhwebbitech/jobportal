@@ -1213,23 +1213,61 @@
                                             <div class="fiw"><i class="fa-solid fa-map fiw-l"></i>
                                                 <select id="c_state" name="c_state" class="finput fc-g">
                                                     <option value="" disabled selected>Select State</option>
+                                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                    <option value="Assam">Assam</option>
+                                                    <option value="Bihar">Bihar</option>
+                                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                                    <option value="Goa">Goa</option>
+                                                    <option value="Gujarat">Gujarat</option>
+                                                    <option value="Haryana">Haryana</option>
+                                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                    <option value="Jharkhand">Jharkhand</option>
+                                                    <option value="Karnataka">Karnataka</option>
+                                                    <option value="Kerala">Kerala</option>
+                                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                    <option value="Maharashtra">Maharashtra</option>
+                                                    <option value="Manipur">Manipur</option>
+                                                    <option value="Meghalaya">Meghalaya</option>
+                                                    <option value="Mizoram">Mizoram</option>
+                                                    <option value="Nagaland">Nagaland</option>
+                                                    <option value="Odisha">Odisha</option>
+                                                    <option value="Punjab">Punjab</option>
+                                                    <option value="Rajasthan">Rajasthan</option>
+                                                    <option value="Sikkim">Sikkim</option>
                                                     <option value="Tamil Nadu">Tamil Nadu</option>
-                                                    <option value="Other">Other</option>
+                                                    <option value="Telangana">Telangana</option>
+                                                    <option value="Tripura">Tripura</option>
+                                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                    <option value="Uttarakhand">Uttarakhand</option>
+                                                    <option value="West Bengal">West Bengal</option>
+
+                                                    <!-- Union Territories -->
+                                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                    <option value="Chandigarh">Chandigarh</option>
+                                                    <option value="Dadra and Nagar Haveli and Daman and Diu">
+                                                        Dadra and Nagar Haveli and Daman and Diu
+                                                    </option>
+                                                    <option value="Delhi">Delhi</option>
+                                                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                                    <option value="Ladakh">Ladakh</option>
+                                                    <option value="Lakshadweep">Lakshadweep</option>
+                                                    <option value="Puducherry">Puducherry</option>
                                                 </select>
                                             </div>
-                                            <div class="ferr-msg" id="e-c_state"><i
+                                            <div class="ferr-msg" id="e-ec_state"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Please select a
                                                     state.</span></div>
                                         </div>
                                         <div class="fgrp">
-                                            <label class="flbl" for="c_district">District <span
+                                            <label class="flbl" for="ec_dist">District <span
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-location-dot fiw-l"></i>
                                                 <select id="c_district" name="c_district" class="finput fc-g">
-                                                    <option value="" disabled selected>Select District</option>
+                                                    
                                                 </select>
                                             </div>
-                                            <div class="ferr-msg" id="e-c_district"><i
+                                            <div class="ferr-msg" id="e-ec_dist"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Please select a
                                                     district.</span></div>
                                         </div>
@@ -1301,8 +1339,7 @@
                                             have a dedicated HR, enter the owner's details again below.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
-                                            <label class="flbl" for="c_hr_name">HR Name <span
-                                                    class="req">*</span></label>
+                                            <label class="flbl" for="c_hr_name">HR Name </label>
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i>
                                                 <input type="text" id="c_hr_name" name="c_hr_name"
                                                     class="finput fc-g" placeholder="Full name" />
@@ -1393,16 +1430,16 @@
                                             employers can post jobs.</span></div>
                                     <div class="frow">
                                         <div class="fgrp">
-                                            <label class="flbl" for="c_gst">GST Number <span
+                                            <label class="flbl" for="e_gst">GST Number <span
                                                     class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i>
-                                                <input type="text" id="c_gst" name="c_gst" class="finput fc-g"
+                                            <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
+                                                    type="text" id="c_gst" name="c_gst" class="finput fc-g"
                                                     placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
-                                                    oninput="this.value=this.value.toUpperCase()" />
-                                            </div>
-                                            <div class="ferr-msg" id="e-c_gst"><i
+                                                    oninput="validateGST(this)" /></div>
+                                            <div class="ferr-msg" id="e-e_gst"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
-                                                    15-character GST number.</span></div>
+                                                    15-character
+                                                    GST number.</span></div>
                                             <div class="fhint"><i class="fa-solid fa-circle-info"></i> 15-character
                                                 alphanumeric GST number</div>
                                         </div>
@@ -1632,8 +1669,8 @@
                 if (step === 2) {
                     check('c_ownername', 'Owner name is required');
                     check('c_mobile', 'Owner mobile is required');
-                    check('c_hr_name', 'HR name is required');
-                    check('c_hr_mobile', 'HR mobile is required');
+                    // check('c_hr_name', 'HR name is required');
+                    // check('c_hr_mobile', 'HR mobile is required');
                 }
                 if (step === 3) {
                     check('c_email', 'Email is required');
@@ -1653,11 +1690,11 @@
                 }
                 if (step === 4) {
                     check('c_gst', 'GST number is required');
-                    check('c_pan', 'PAN number is required');
+                    // check('c_pan', 'PAN number is required');
                 }
                 if (step === 5) {
                     check('gst_certificate', 'GST certificate is required');
-                    check('pan_document', 'PAN document is required');
+                    // check('pan_document', 'PAN document is required');
                 }
 
                 if (!valid && typeof toastr !== 'undefined') {
@@ -1807,36 +1844,119 @@
             });
 
             /* ── AJAX STATE / DISTRICT ── */
-            if (typeof $ !== 'undefined') {
-                $('#c_state').on('change', function() {
-                    let state = $(this).val();
-                    $('#c_district').html('<option value="">Loading...</option>');
+            // if (typeof $ !== 'undefined') {
+            //     $('#c_state').on('change', function() {
+            //         let state = $(this).val();
+            //         $('#c_district').html('<option value="">Loading...</option>');
 
-                    if (state) {
-                        let url = "{{ route('get.districts', ':state') }}";
-                        url = url.replace(':state', encodeURIComponent(state));
+            //         if (state) {
+            //             let url = "{{ route('get.districts', ':state') }}";
+            //             url = url.replace(':state', encodeURIComponent(state));
 
-                        $.ajax({
-                            url: url,
-                            type: 'GET',
-                            success: function(response) {
-                                let options = '<option value="" disabled selected>Select District</option>';
-                                response.forEach(function(district) {
-                                    options += `<option value="${district}">${district}</option>`;
-                                });
-                                $('#c_district').html(options);
-                            }
-                        });
-                    } else {
-                        $('#c_district').html('<option value="" disabled selected>Select District</option>');
-                    }
-                });
-            }
+            //             $.ajax({
+            //                 url: url,
+            //                 type: 'GET',
+            //                 success: function(response) {
+            //                     let options = '<option value="" disabled selected>Select District</option>';
+            //                     response.forEach(function(district) {
+            //                         options += `<option value="${district}">${district}</option>`;
+            //                     });
+            //                     $('#c_district').html(options);
+            //                 }
+            //             });
+            //         } else {
+            //             $('#c_district').html('<option value="" disabled selected>Select District</option>');
+            //         }
+            //     });
+            // }
 
             /* ── INIT ── */
             document.addEventListener('DOMContentLoaded', () => {
                 empShowStep(1);
             });
+            document.getElementById('c_state').addEventListener('change', async function () {
+
+            let state = this.value;
+            let districtSel = document.getElementById('c_district');
+
+            // reset
+            districtSel.innerHTML = '<option value  ="">Loading...</option>';
+
+            if (!state) {
+                districtSel.innerHTML = '<option value="">District</option>';
+                return;
+            }
+
+            try {
+                let response = await fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        country: "India",
+                        state: state
+                    })
+                });
+
+                let result = await response.json();
+
+                districtSel.innerHTML = '<option value="">District</option>';
+
+                if (result.data && result.data.length > 0) {
+                    result.data.forEach(function (district) {
+                        let opt = document.createElement('option');
+                        opt.value = district;
+                        opt.textContent = district;
+                        districtSel.appendChild(opt);
+                    });
+                } else {
+                    districtSel.innerHTML = '<option value="">No District Found</option>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                districtSel.innerHTML = '<option value="">Error loading districts</option>';
+            }
+        });
+
+         function validateGST(input) {
+
+            // UPPERCASE
+            input.value = input.value.toUpperCase();
+
+            let gst = input.value.trim();
+
+            let err = document.getElementById('e-e_gst');
+
+            // GST REGEX
+            let gstRegex =
+                /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+            // EMPTY
+            if (gst.length === 0) {
+
+                err.classList.remove('show');
+
+                input.classList.remove('err');
+
+                return;
+            }
+
+            // INVALID
+            if (!gstRegex.test(gst)) {
+
+                err.classList.add('show');
+
+                input.classList.add('err');
+
+            } else {
+
+                err.classList.remove('show');
+
+                input.classList.remove('err');
+            }
+        }
         </script>
     @endpush
 

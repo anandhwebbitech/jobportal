@@ -2866,41 +2866,41 @@
     <script>
         function validateGST(input) {
 
-    // UPPERCASE
-    input.value = input.value.toUpperCase();
+            // UPPERCASE
+            input.value = input.value.toUpperCase();
 
-    let gst = input.value.trim();
+            let gst = input.value.trim();
 
-    let err = document.getElementById('e-e_gst');
+            let err = document.getElementById('e-e_gst');
 
-    // GST REGEX
-    let gstRegex =
-        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+            // GST REGEX
+            let gstRegex =
+                /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
-    // EMPTY
-    if (gst.length === 0) {
+            // EMPTY
+            if (gst.length === 0) {
 
-        err.classList.remove('show');
+                err.classList.remove('show');
 
-        input.classList.remove('err');
+                input.classList.remove('err');
 
-        return;
-    }
+                return;
+            }
 
-    // INVALID
-    if (!gstRegex.test(gst)) {
+            // INVALID
+            if (!gstRegex.test(gst)) {
 
-        err.classList.add('show');
+                err.classList.add('show');
 
-        input.classList.add('err');
+                input.classList.add('err');
 
-    } else {
+            } else {
 
-        err.classList.remove('show');
+                err.classList.remove('show');
 
-        input.classList.remove('err');
-    }
-}
+                input.classList.remove('err');
+            }
+        }
         /* ── ANNOUNCE ── */
         function closeAnnounce() {
             const b = document.getElementById('announceBar');
