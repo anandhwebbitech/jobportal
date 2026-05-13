@@ -952,7 +952,7 @@
                     <input type="text" name="title" placeholder="Job title, skill or keyword"
                         value="{{ request('title') }}" />
                 </div>
-                <div class="lj-sb-field" style="max-width:220px;">
+                {{-- <div class="lj-sb-field" style="max-width:220px;">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                     <select name="skill" class="lj-sb-field-sel">
                         <option value="">All Skills</option>
@@ -961,7 +961,7 @@
                             <option value="{{ $s }}" {{ request('skill') == $s ? 'selected' : '' }}>{{ $s }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="lj-sb-field" style="max-width:220px;">
                     <i class="fa-solid fa-location-dot"></i>
                     <select name="location" class="lj-sb-field-sel">
@@ -1020,7 +1020,7 @@
                 <div class="lj-filter-group">
                     <label class="lj-filter-label">Job Type</label>
                     <div class="lj-filter-chips">
-                        @foreach (['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'] as $type)
+                        @foreach (['Full Time', 'Part Time', 'Contract', 'Internship', 'Remote'] as $type)
                             <div class="lj-filter-chip {{ request('job_type') == $type ? 'active' : '' }}"
                                 onclick="setFilter('job_type','{{ $type }}',this)">{{ $type }}</div>
                         @endforeach
@@ -1091,7 +1091,7 @@
                                     <span class="lj-job-badge urgent">Urgently Hiring</span>
                                 @elseif($job->created_at->diffInDays() <= 1)
                                     <span class="lj-job-badge new">New</span>
-                                @elseif(($job->openings ?? 0) > 1)
+                                @elseif(($job->num_vacancies ?? 0) > 2)
                                     <span class="lj-job-badge hiring">Multiple Openings</span>
                                 @endif
                                 <div class="lj-job-card-title">{{ $job->title }}</div>
@@ -1126,7 +1126,7 @@
                             @if ($job->experience)
                                 <span class="lj-job-tag"><i class="fa-solid fa-briefcase"></i> {{ $job->experience }}</span>
                             @endif
-                            <span class="lj-job-tag openings"><i class="fa-solid fa-users"></i> {{ $job->openings ?? 5 }} Openings</span>
+                            <span class="lj-job-tag openings"><i class="fa-solid fa-users"></i> {{ $job->num_vacancies ?? 5 }} Openings</span>
                         </div>
                         <div class="lj-job-card-footer">
                             <span class="lj-job-date">{{ $job->created_at->diffForHumans() }}</span>

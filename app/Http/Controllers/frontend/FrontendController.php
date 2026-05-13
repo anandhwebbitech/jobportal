@@ -40,7 +40,8 @@ class FrontendController extends Controller
             ->latest()
             ->take(2)
             ->get();
-
+            
+        
         return view('frontend.home', compact('latestJobs','locations','trendingJobs','banners'));
     }
 

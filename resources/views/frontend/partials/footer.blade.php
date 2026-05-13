@@ -111,6 +111,13 @@ window.Echo.channel('user-' + userId)
     .listen('.UserNotification', (e) => {
         toastr.success(e.notification.message);
     });
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    newestOnTop: true,
+    positionClass: "toast-top-center",
+    timeOut: "3000"
+};
 </script>
 @endif
 </footer>

@@ -71,15 +71,24 @@ class JobController extends Controller
                     break;
             }
         }
-
         if ($request->sort == 'salary_high') {
-            $query->orderBy('salary_max', 'desc');
+
+            $query->orderByRaw('COALESCE(salary_max, salary_min) DESC');
+
         } elseif ($request->sort == 'salary_low') {
-            $query->orderBy('salary_min', 'asc');
+
+            $query->orderByRaw('COALESCE(salary_min, salary_max) ASC');
+
+        } elseif ($request->sort == 'relevant') {
+
+            // relevance logic later add pannalam
+            $query->latest();
+
         } else {
+
+            // recent
             $query->latest();
         }
-
         $jobs = $query->paginate(10);
 
         // 🔥 IMPORTANT: AJAX request na partial view return

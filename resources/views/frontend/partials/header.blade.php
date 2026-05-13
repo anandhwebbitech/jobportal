@@ -1,7 +1,26 @@
 {{-- ═══════════════════════════════════════════════════
      resources/views/frontend/partials/header.blade.php
 ═══════════════════════════════════════════════════ --}}
+<style>
+/* Top Center Toast */
+#toast-container.toast-top-right,
+#toast-container.toast-top-left,
+#toast-container.toast-bottom-right,
+#toast-container.toast-bottom-left,
+#toast-container.toast-top-center {
+    top: 20px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+}
 
+/* Toast Design */
+#toast-container > .toast {
+    width: 350px;
+    opacity: 1 !important;
+    border-radius: 10px;
+}
+</style>
 <header class="lj-nav" id="ljNav">
     <div class="lj-wrap lj-nav-inner">
 

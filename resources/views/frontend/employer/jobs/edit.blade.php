@@ -1523,11 +1523,67 @@
                                     </label>
                                     <div class="pj-iw">
                                         <div class="pj-iw-prefix"><i class="fa-solid fa-map"></i></div>
-                                        <select id="state" name="state"
-                                            class="pj-input @error('state') err @enderror">
-                                            <option value="" disabled selected>Select State</option>
-                                                    <option>Tamil Nadu</option>
-                                                    <option>Other</option>
+                                            @php
+                                                $states = [
+                                                    'Andhra Pradesh',
+                                                    'Arunachal Pradesh',
+                                                    'Assam',
+                                                    'Bihar',
+                                                    'Chhattisgarh',
+                                                    'Goa',
+                                                    'Gujarat',
+                                                    'Haryana',
+                                                    'Himachal Pradesh',
+                                                    'Jharkhand',
+                                                    'Karnataka',
+                                                    'Kerala',
+                                                    'Madhya Pradesh',
+                                                    'Maharashtra',
+                                                    'Manipur',
+                                                    'Meghalaya',
+                                                    'Mizoram',
+                                                    'Nagaland',
+                                                    'Odisha',
+                                                    'Punjab',
+                                                    'Rajasthan',
+                                                    'Sikkim',
+                                                    'Tamil Nadu',
+                                                    'Telangana',
+                                                    'Tripura',
+                                                    'Uttar Pradesh',
+                                                    'Uttarakhand',
+                                                    'West Bengal',
+                                                    'Andaman and Nicobar Islands',
+                                                    'Chandigarh',
+                                                    'Dadra and Nagar Haveli and Daman and Diu',
+                                                    'Delhi',
+                                                    'Jammu and Kashmir',
+                                                    'Ladakh',
+                                                    'Lakshadweep',
+                                                    'Puducherry',
+                                                    
+                                                ];
+                                            @endphp
+                                        <select id="state" name="state" class="pj-input">
+
+                                            <option value="" disabled
+                                                {{ old('state', $job->state ?? '') == '' ? 'selected' : '' }}>
+
+                                                Select State
+
+                                            </option>
+
+                                            @foreach($states as $state)
+
+                                                <option value="{{ $state }}"
+                                                    {{ old('state', $job->state ?? '') == $state ? 'selected' : '' }}>
+
+                                                    {{ $state }}
+
+                                                </option>
+
+                                            @endforeach
+
                                         </select>
                                     </div>
                                     <div class="pj-ferr @error('state') show @enderror" id="err-state">
@@ -1543,7 +1599,9 @@
                                         <div class="pj-iw-prefix"><i class="fa-solid fa-location-dot"></i></div>
                                         <select id="district" name="district"
                                             class="pj-input @error('district') err @enderror">
-                                            
+                                                <option value="" disabled selected>
+                                                    Select District
+                                                </option>
                                         </select>
                                     </div>
                                     <div class="pj-ferr @error('district') show @enderror" id="err-district">
@@ -1785,40 +1843,94 @@
                             </div>
 
                             <div class="pj-fg">
+
                                 <label class="pj-lbl">
-                                    <span class="pj-lbl-ico"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                                    <span class="pj-lbl-ico">
+                                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                                    </span>
                                     Skills <span class="pj-req">*</span>
                                 </label>
+
                                 <div class="pj-skills-wrap">
-                                    <div class="pj-skills-field" id="skillsField"
+
+                                    <div class="pj-skills-field"
+                                        id="skillsField"
                                         onclick="document.getElementById('skillInput').focus()">
+
                                         <div class="pj-chips-row" id="skillChips"></div>
-                                        <input type="text" id="skillInput" class="pj-skills-input"
-                                            placeholder="Type a skill and press Enter, or pick from suggestions..."
-                                            autocomplete="off" oninput="filterSkills(this.value)"
-                                            onkeydown="handleSkillKey(event)" onfocus="openSkillsDD()"
+
+                                        <input type="text"
+                                            id="skillInput"
+                                            class="pj-skills-input"
+                                            placeholder="Type a skill and press Enter..."
+                                            autocomplete="off"
+                                            oninput="filterSkills(this.value)"
+                                            onkeydown="handleSkillKey(event)"
+                                            onfocus="openSkillsDD()"
                                             onblur="setTimeout(closeSkillsDD,200)" />
+
                                     </div>
+
                                     <div class="pj-skills-dd" id="skillsDD"></div>
+
                                 </div>
+
                                 @php
+
                                     $skillsOld = old(
                                         'skills',
                                         is_string($job->skills)
                                             ? json_decode($job->skills, true)
                                             : ($job->skills ?? [])
                                     );
+
                                 @endphp
 
-                                <input type="hidden" name="skills" id="skillsHidden" value='@json(old("skills", is_string($job->skills) ? json_decode($job->skills, true) : $job->skills ?? []))' />
-                                <div class="pj-ferr" id="err-skills"><i
-                                        class="fa-solid fa-circle-exclamation"></i><span>Please add at least one required
-                                        skill.</span></div>
-                                <div class="pj-hint" style="margin-top:8px;"><i class="fa-solid fa-circle-info"></i> Add
-                                    up to 10 skills. Press Enter or comma to add a custom skill.</div>
+                                <input type="hidden"
+                                    name="skills"
+                                    id="skillsHidden"
+                                    value='@json($skillsOld)' />
+
+                                <div class="pj-ferr" id="err-skills">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Please add at least one required skill.</span>
+                                </div>
+
+                                <div class="pj-hint" style="margin-top:8px;">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    Add up to 10 skills. Press Enter or comma to add.
+                                </div>
+
                             </div>
 
-                            <div style="margin-top:18px;">
+                            {{-- POPULAR SKILLS --}}
+                            {{-- <div style="margin-top:18px;">
+
+                                <div class="pj-sug-label">
+                                    <i class="fa-solid fa-fire" style="color:var(--amber);"></i>
+                                    Popular Suggestions
+                                </div>
+
+                                <div class="pj-sug-grid">
+
+                                    @foreach ($skills as $skill)
+
+                                        <button type="button"
+                                            class="pj-sug"
+                                            onclick="addSkill(@json($skill->skill_name))">
+
+                                            <i class="fa-solid fa-plus"></i>
+                                            {{ $skill->skill_name }}
+
+                                        </button>
+
+                                    @endforeach
+
+                                </div>
+
+                            </div> --}}
+
+                            {{-- <div style="margin-top:18px;">
                                 <div class="pj-sug-label"><i class="fa-solid fa-fire" style="color:var(--amber);"></i>
                                     Popular Suggestions</div>
                                 <div class="pj-sug-grid">
@@ -1828,7 +1940,7 @@
                                         </button>
                                     @endforeach
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="pj-footer">
@@ -1906,6 +2018,205 @@
 @endsection
 
 @push('scripts')
+<script>
+
+let ALL_SKILLS = [
+
+    @foreach($skills as $skill)
+
+        @json($skill->skill_name),
+
+    @endforeach
+
+];
+
+let selectedSkills = [];
+
+// LOAD EXISTING SKILLS
+try {
+
+    selectedSkills = JSON.parse(
+        document.getElementById('skillsHidden').value || '[]'
+    );
+
+} catch (e) {
+
+    selectedSkills = [];
+}
+
+// INITIAL RENDER
+document.addEventListener('DOMContentLoaded', function () {
+
+    updateSkillsUI();
+});
+
+// ESCAPE HTML
+function escHtml(text) {
+
+    return text.replace(/[&<>"']/g, function(m) {
+
+        return ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        })[m];
+
+    });
+}
+
+// RENDER CHIP
+function renderChip(skill) {
+
+    const chip = document.createElement('div');
+
+    chip.className = 'pj-chip';
+
+    chip.innerHTML = `
+        <span>${escHtml(skill)}</span>
+
+        <button type="button"
+            onclick="removeSkill(${JSON.stringify(skill)})">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+    `;
+
+    document.getElementById('skillChips')
+        .appendChild(chip);
+}
+
+// UPDATE UI
+function updateSkillsUI() {
+
+    let wrap = document.getElementById('skillChips');
+
+    wrap.innerHTML = '';
+
+    selectedSkills.forEach(function(skill) {
+
+        renderChip(skill);
+
+    });
+
+    document.getElementById('skillsHidden').value =
+        JSON.stringify(selectedSkills);
+}
+
+// ADD SKILL
+window.addSkill = function(skill) {
+
+    skill = skill.trim();
+
+    if (
+        !skill ||
+        selectedSkills.includes(skill) ||
+        selectedSkills.length >= 10
+    ) {
+        return;
+    }
+
+    selectedSkills.push(skill);
+
+    updateSkillsUI();
+
+    document.getElementById('skillInput').value = '';
+
+    filterSkills('');
+}
+
+// REMOVE SKILL
+window.removeSkill = function(skill) {
+
+    selectedSkills = selectedSkills.filter(s => s !== skill);
+
+    updateSkillsUI();
+}
+
+// FILTER DROPDOWN
+window.filterSkills = function(q) {
+
+    let dd = document.getElementById('skillsDD');
+
+    let flt = ALL_SKILLS.filter(s =>
+
+        s.toLowerCase().includes((q || '').toLowerCase()) &&
+        !selectedSkills.includes(s)
+
+    );
+
+    if (flt.length === 0) {
+
+        dd.innerHTML = q
+
+            ? `
+                <div class="pj-dd-empty">
+                    Press Enter to add
+                    "<strong>${escHtml(q)}</strong>"
+                </div>
+            `
+
+            : `
+                <div class="pj-dd-empty">
+                    Type to search skills
+                </div>
+            `;
+
+    } else {
+
+        dd.innerHTML = flt.slice(0, 10).map(s => {
+
+            return `
+                <div class="pj-dd-item"
+                    onmousedown="event.preventDefault();
+                    addSkill(${JSON.stringify(s)})">
+
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    ${escHtml(s)}
+
+                </div>
+            `;
+
+        }).join('');
+    }
+
+    dd.classList.add('open');
+}
+
+// ENTER / COMMA
+window.handleSkillKey = function(e) {
+
+    if (e.key === 'Enter' || e.key === ',') {
+
+        e.preventDefault();
+
+        let val = e.target.value.trim();
+
+        if (val) {
+
+            addSkill(val);
+        }
+    }
+}
+
+// OPEN
+window.openSkillsDD = function() {
+
+    filterSkills(
+        document.getElementById('skillInput').value
+    );
+}
+
+// CLOSE
+window.closeSkillsDD = function() {
+
+    document.getElementById('skillsDD')
+        .classList.remove('open');
+}
+
+</script>
     <script>
         (function() {
             'use strict';
@@ -2206,35 +2517,78 @@
             }
 
         })();
-         $('#state').on('change', function () {
+        $(document).ready(function () {
 
-            let state = $(this).val();
+    // LOAD DISTRICTS FUNCTION
+    function loadDistricts(state, selectedDistrict = '') {
 
-            $('#district').html('<option value="">Loading...</option>');
+        $('#district').html('<option value="">Loading...</option>');
 
-            if (state) {
+        if (state) {
 
-                let url = "{{ route('get.districts', ':state') }}";
-                url = url.replace(':state', encodeURIComponent(state));
+            let url = "{{ route('get.districts', ':state') }}";
+            url = url.replace(':state', encodeURIComponent(state));
 
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function (response) {
+            $.ajax({
 
-                        let options = '<option value="" disabled selected>Select District</option>';
+                url: url,
+                type: 'GET',
 
-                        response.forEach(function (district) {
-                            options += `<option value="${district}">${district}</option>`;
-                        });
+                success: function (response) {
 
-                        $('#district').html(options);
-                    }
-                });
+                    let options = `
+                        <option value="" disabled>
+                            Select District
+                        </option>
+                    `;
 
-            } else {
-                $('#district').html('<option value="" disabled selected>Select District</option>');
-            }
-        });
+                    response.forEach(function (district) {
+
+                        let selected = district === selectedDistrict
+                            ? 'selected'
+                            : '';
+
+                        options += `
+                            <option value="${district}" ${selected}>
+                                ${district}
+                            </option>
+                        `;
+                    });
+
+                    $('#district').html(options);
+                }
+            });
+
+        } else {
+
+            $('#district').html(`
+                <option value="" disabled selected>
+                    Select District
+                </option>
+            `);
+        }
+    }
+
+    // STATE CHANGE EVENT
+    $('#state').on('change', function () {
+
+        let state = $(this).val();
+
+        loadDistricts(state);
+    });
+
+    // EDIT FORM AUTO LOAD
+    let selectedState = @json(old('state', $job->state ?? ''));
+
+    let selectedDistrict = @json(old('district', $job->district ?? ''));
+
+    if (selectedState) {
+
+        loadDistricts(selectedState, selectedDistrict);
+    }
+
+});
+
+      
     </script>
 @endpush

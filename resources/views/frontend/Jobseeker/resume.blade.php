@@ -156,8 +156,8 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="text-align:center;background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:9px;padding:16px;">
             @if($resume)
-            <a href="{{ asset('public/uploads/' . $resume->file_path) }}" target="_blank" class="btn btn-primary">
-              <div style="font-family:var(--f-display);font-size:1.6rem;font-weight:800;color:var(--blue);">{{ $resume->file_name ?? '—' }}</div>
+            <a href="{{ asset('public/' . $resume->file_path) }}" target="_blank" class="btn btn-primary">
+              <div style="font-family:var(--f-display);font-size:1.6rem;font-weight:800;color:var(--blue);">{{ $resume->title ?? '$resume->file_name' }}</div>
               <div style="font-size:.74rem;color:var(--n600);margin-top:3px;">Resume Views</div>
             </a>
             @else

@@ -3,7 +3,9 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+        {{-- crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <style>
         /* ══════════════════════════════════════════════════════
            ROOT
@@ -11,12 +13,46 @@
         .error {
             border: 1px solid red !important;
         }
-        #skillsBox {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+        /* input text black */
+.select2-search__field{
+    color:#111 !important;
+    font-size:15px !important;
+}
 
+/* selected tag text black */
+.select2-container--default 
+.select2-selection--multiple 
+.select2-selection__choice{
+    background:#eef2ff !important;
+    color:#111 !important;
+    border:1px solid #c7d2fe !important;
+    font-weight:500;
+}
+
+/* remove icon */
+.select2-container--default 
+.select2-selection--multiple 
+.select2-selection__choice__remove{
+    color:#111 !important;
+    margin-right:6px;
+}
+
+/* dropdown option text */
+.select2-results__option{
+    color:#111 !important;
+    font-weight:500;
+}
+
+/* highlighted option */
+.select2-results__option--highlighted{
+    background:#2563eb !important;
+    color:#fff !important;
+}
+
+/* placeholder */
+.select2-selection__placeholder{
+    color:#666 !important;
+}
         /* Container */
         .skill-chip {
             position: relative;
@@ -1954,6 +1990,18 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .ferr-msg{
+            display:none;
+        }
+
+        .ferr-msg.show{
+            display:flex;
+        }
+
+        .err{
+            border-color:red !important;
+        }
     </style>
 @endpush
 
@@ -2343,7 +2391,8 @@
                                     <div class="step-alert" id="js-al4"><i
                                             class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one
                                             skill.</span></div>
-                                    <div id="skillsBox" name="skillsBox"></div>
+                                    <select id="skillsBox" name="skills[]" class="finput" multiple>
+                                    </select>
                                 </div>
 
                                 <!-- Panel 5 -->
@@ -2679,7 +2728,7 @@
                                             <div class="fiw"><i class="fa-solid fa-receipt fiw-l"></i><input
                                                     type="text" id="c_gst" name="c_gst" class="finput fc-g"
                                                     placeholder="e.g. 33AABCU9603R1ZX" maxlength="15"
-                                                    oninput="this.value=this.value.toUpperCase()" /></div>
+                                                    oninput="validateGST(this)" /></div>
                                             <div class="ferr-msg" id="e-e_gst"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
                                                     15-character
@@ -2806,10 +2855,52 @@
 
 <!-- ════════ JAVASCRIPT ════════ -->
 @push('scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        $('#skillsBox').select2({
+            placeholder: "Select Skills"
+        });
         const skillsData = @json($skills ?? []);
     </script>
     <script>
+        function validateGST(input) {
+
+            // UPPERCASE
+            input.value = input.value.toUpperCase();
+
+            let gst = input.value.trim();
+
+            let err = document.getElementById('e-e_gst');
+
+            // GST REGEX
+            let gstRegex =
+                /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+            // EMPTY
+            if (gst.length === 0) {
+
+                err.classList.remove('show');
+
+                input.classList.remove('err');
+
+                return;
+            }
+
+            // INVALID
+            if (!gstRegex.test(gst)) {
+
+                err.classList.add('show');
+
+                input.classList.add('err');
+
+            } else {
+
+                err.classList.remove('show');
+
+                input.classList.remove('err');
+            }
+        }
         /* ── ANNOUNCE ── */
         function closeAnnounce() {
             const b = document.getElementById('announceBar');
@@ -3060,10 +3151,10 @@
                 }
             }
             if (s === 4) {
-                if (!document.querySelectorAll('.skill-chip input:checked').length) {
-                    if (al) al.classList.add('show');
-                    return false;
-                }
+                // if (!document.querySelectorAll('.skill-chip input:checked').length) {
+                //     if (al) al.classList.add('show');
+                //     return false;
+                // }
             }
             if (!ok && al) al.classList.add('show');
             return ok;
@@ -3100,8 +3191,8 @@
             if (step === 2) {
                 check('c_ownername', 'Owner name is required');
                 check('c_mobile', 'Owner mobile is required');
-                check('c_hr_name', 'HR name is required');
-                check('c_hr_mobile', 'HR mobile is required');
+                // check('c_hr_name', 'HR name is required');
+                // check('c_hr_mobile', 'HR mobile is required');
             }
 
             if (step === 3) {
@@ -3112,12 +3203,12 @@
 
             if (step === 4) {
                 check('c_gst', 'GST number is required');
-                check('c_pan', 'PAN number is required');
+                // check('c_pan', 'PAN number is required');
             }
 
             if (step === 5) {
                 check('gst_certificate', 'GST certificate is required');
-                check('pan_document', 'PAN document is required');
+                // check('pan_document', 'PAN document is required');
             }
 
             // ❗ Show toaster
@@ -3169,7 +3260,7 @@
             document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g(
                 'c_hr_mobile') : '');
             document.getElementById('es-em').textContent = g('c_email') || '—';
-            document.getElementById('es-gs').textContent = g('c_gst') || '—';
+            // document.getElementById('es-gs').textContent = g('c_gst') || '—';
             document.getElementById('es-pn').textContent = g('c_pan') || '—';
             document.getElementById('es-ms').textContent = g('c_msme') || 'Not provided';
         }
@@ -3393,22 +3484,49 @@
         })();
 
         /* ── BUILD SKILLS ── */
-        (function() {
-            const c = document.getElementById('skillsBox');
-            if(!c || !skillsData) return;
+        // (function() {
+        //     const c = document.getElementById('skillsBox');
+        //     if(!c || !skillsData) return;
+        //     skillsData.forEach(skill => {
+        //         const id = 'sk_' + skill.id;
+
+        //         const ch = document.createElement('div');
+        //         ch.className = 'skill-chip';
+
+        //         ch.innerHTML = `
+        //         <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
+        //         <label for="${id}">${skill.skill_name}</label>
+        //     `;
+
+        //         c.appendChild(ch);
+        //     });
+        // })();
+        
+        (function () {
+
+            const select = document.getElementById('skillsBox');
+
+            if (!select || !skillsData) return;
+
             skillsData.forEach(skill => {
-                const id = 'sk_' + skill.id;
 
-                const ch = document.createElement('div');
-                ch.className = 'skill-chip';
+                const option = document.createElement('option');
 
-                ch.innerHTML = `
-                <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
-                <label for="${id}">${skill.skill_name}</label>
-            `;
+                option.value = skill.id;
+                option.textContent = skill.skill_name;
 
-                c.appendChild(ch);
+                select.appendChild(option);
+
             });
+
+            $('#skillsBox').select2({
+                placeholder: "Search and select skills",
+                tags: true, // enter press panna new skill add aagum
+                tokenSeparators: [','],
+                width: '100%',
+                allowClear: true
+            });
+
         })();
 
         /* ── LIVE CLEAR ERRORS ── */

@@ -1124,7 +1124,7 @@ textarea.lj-input { resize: vertical; min-height: 96px; padding-top: 10px; }
     toastr.options = {
         closeButton: true,
         progressBar: true,
-        positionClass: "toast-top-right",
+        positionClass: "toast-top-center",
         timeOut: 4000
     };
 

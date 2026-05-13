@@ -4,6 +4,9 @@
 ══════════════════════════════════════════════════════════ --}}
 
 @php
+    use App\Models\UserPlanSubscription;
+    $employerId = auth()->id();
+
   $unread =  3;
 
   $empName  = auth()->check() ? auth()->user()->name : 'Karthik Selvan';
@@ -13,8 +16,14 @@
                 ->map(fn($w)=>strtoupper($w[0] ?? ''))
                 ->take(2)
                 ->implode('');
+     // Active Plan
+    $plan = UserPlanSubscription::with('plan')
+        ->where('user_id', $employerId)
+        ->where('status', 1)
+        ->latest()
+        ->first();
 
-  $planName ='30 Day Plan';
+    $planName   = $plan->plan->name ?? '30 Day Plan';
 
   $planExpiry ='10 Apr 2025';
 
@@ -106,7 +115,7 @@
       <div class="sb-plan-bar" style="margin-top:10px;">
           <div style="display:flex;align-items:center;gap:6px;">
               <div class="sb-plan-dot"></div>
-              <strong>{{ $planName }}</strong>
+              <strong>{{ $planName}}</strong>
           </div>
 
           <span style="font-size:.65rem;opacity:.7;">

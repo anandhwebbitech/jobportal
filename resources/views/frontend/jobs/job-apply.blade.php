@@ -598,7 +598,7 @@ value="{{ old('current_location') }}"                      required />
 toastr.options = {
     "closeButton": true,
     "progressBar": true,
-    "positionClass": "toast-top-right",
+    "positionClass": "toast-top-center",
     "timeOut": "3000"
 };
 </script>

@@ -447,10 +447,10 @@ $offered = $candidates->where('status','Offered')->count();
       <i class="fas fa-circle-xmark"></i> Rejected
       <span class="cd-tab-count">{{ $rejected }}</span>
     </button>
-    <button class="cd-tab-btn of" onclick="cdTab('Offered',this)">
+    <!-- <button class="cd-tab-btn of" onclick="cdTab('Offered',this)">
       <i class="fas fa-handshake"></i> Offered
       <span class="cd-tab-count">{{ $offered }}</span>
-    </button>
+    </button> -->
   </div>
 
   {{-- ══ RESULTS BAR ══ --}}
@@ -776,6 +776,42 @@ function updateStatus(status){
         6: "Marked for interview",
         4: "Candidate rejected"
     };
+    if (status == 6) {
+
+        Swal.fire({
+            title: 'Schedule Interview',
+            html: `
+                <input type="date" id="interview_date" class="swal2-input">
+
+                <select id="interview_mode" class="swal2-input">
+                    <option value="">Select Mode</option>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
+                </select>
+            `,
+            confirmButtonText: 'Schedule',
+            showCancelButton: true,
+            confirmButtonColor: '#2563eb',
+            preConfirm: () => {
+                let date = document.getElementById('interview_date').value;
+                let mode = document.getElementById('interview_mode').value;
+
+                if (!date || !mode) {
+                    Swal.showValidationMessage('Please select date and mode');
+                    return false;
+                }
+
+                return { date, mode };
+            }
+        }).then((result) => {
+
+            if (!result.isConfirmed) return;
+
+            sendStatusUpdate(status, result.value.date, result.value.mode, successMsg[status]);
+        });
+
+        return;
+    }
 
     Swal.fire({
         title: confirmMsg[status],
@@ -840,7 +876,61 @@ function updateStatus(status){
 
     });
 }
+function sendStatusUpdate(status, date = null, mode = null, successText = '') {
 
+    Swal.fire({
+        title: 'Processing...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch("{{ route('employer.candidate.update.status') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            id: currentCandidateId,
+            status: status,
+            interview_date: date,
+            interview_mode: mode
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        Swal.close();
+
+        if (!data.success) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Update failed'
+            });
+            return;
+        }
+
+        Toast.fire({
+            icon: 'success',
+            title: successText || 'Updated successfully'
+        });
+
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+
+    })
+    .catch((err) => {
+        Swal.close();
+
+        console.error(err);
+
+        Toast.fire({
+            icon: 'error',
+            title: 'Something went wrong'
+        });
+    });
+}
 /* ===============================
    FILTER / SEARCH / SORT
 ================================ */
