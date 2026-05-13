@@ -3,7 +3,9 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+        {{-- crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <style>
         /* ══════════════════════════════════════════════════════
            ROOT
@@ -11,12 +13,46 @@
         .error {
             border: 1px solid red !important;
         }
-        #skillsBox {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+        /* input text black */
+.select2-search__field{
+    color:#111 !important;
+    font-size:15px !important;
+}
 
+/* selected tag text black */
+.select2-container--default 
+.select2-selection--multiple 
+.select2-selection__choice{
+    background:#eef2ff !important;
+    color:#111 !important;
+    border:1px solid #c7d2fe !important;
+    font-weight:500;
+}
+
+/* remove icon */
+.select2-container--default 
+.select2-selection--multiple 
+.select2-selection__choice__remove{
+    color:#111 !important;
+    margin-right:6px;
+}
+
+/* dropdown option text */
+.select2-results__option{
+    color:#111 !important;
+    font-weight:500;
+}
+
+/* highlighted option */
+.select2-results__option--highlighted{
+    background:#2563eb !important;
+    color:#fff !important;
+}
+
+/* placeholder */
+.select2-selection__placeholder{
+    color:#666 !important;
+}
         /* Container */
         .skill-chip {
             position: relative;
@@ -2355,7 +2391,8 @@
                                     <div class="step-alert" id="js-al4"><i
                                             class="fa-solid fa-triangle-exclamation"></i><span>Please select at least one
                                             skill.</span></div>
-                                    <div id="skillsBox" name="skillsBox"></div>
+                                    <select id="skillsBox" name="skills[]" class="finput" multiple>
+                                    </select>
                                 </div>
 
                                 <!-- Panel 5 -->
@@ -2818,7 +2855,12 @@
 
 <!-- ════════ JAVASCRIPT ════════ -->
 @push('scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        $('#skillsBox').select2({
+            placeholder: "Select Skills"
+        });
         const skillsData = @json($skills ?? []);
     </script>
     <script>
@@ -3109,10 +3151,10 @@
                 }
             }
             if (s === 4) {
-                if (!document.querySelectorAll('.skill-chip input:checked').length) {
-                    if (al) al.classList.add('show');
-                    return false;
-                }
+                // if (!document.querySelectorAll('.skill-chip input:checked').length) {
+                //     if (al) al.classList.add('show');
+                //     return false;
+                // }
             }
             if (!ok && al) al.classList.add('show');
             return ok;
@@ -3442,22 +3484,49 @@
         })();
 
         /* ── BUILD SKILLS ── */
-        (function() {
-            const c = document.getElementById('skillsBox');
-            if(!c || !skillsData) return;
+        // (function() {
+        //     const c = document.getElementById('skillsBox');
+        //     if(!c || !skillsData) return;
+        //     skillsData.forEach(skill => {
+        //         const id = 'sk_' + skill.id;
+
+        //         const ch = document.createElement('div');
+        //         ch.className = 'skill-chip';
+
+        //         ch.innerHTML = `
+        //         <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
+        //         <label for="${id}">${skill.skill_name}</label>
+        //     `;
+
+        //         c.appendChild(ch);
+        //     });
+        // })();
+        
+        (function () {
+
+            const select = document.getElementById('skillsBox');
+
+            if (!select || !skillsData) return;
+
             skillsData.forEach(skill => {
-                const id = 'sk_' + skill.id;
 
-                const ch = document.createElement('div');
-                ch.className = 'skill-chip';
+                const option = document.createElement('option');
 
-                ch.innerHTML = `
-                <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
-                <label for="${id}">${skill.skill_name}</label>
-            `;
+                option.value = skill.id;
+                option.textContent = skill.skill_name;
 
-                c.appendChild(ch);
+                select.appendChild(option);
+
             });
+
+            $('#skillsBox').select2({
+                placeholder: "Search and select skills",
+                tags: true, // enter press panna new skill add aagum
+                tokenSeparators: [','],
+                width: '100%',
+                allowClear: true
+            });
+
         })();
 
         /* ── LIVE CLEAR ERRORS ── */

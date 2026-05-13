@@ -565,7 +565,9 @@ body { font-family:var(--body); color:var(--gray-700); }
               <span style="opacity:.65;font-weight:500;">
                 (incl. 18% GST)
               </span>
+              <button class="btn-primary blue ml-3"  onclick="buyJobPlan()"><i class="fas fa-bolt"></i> Buy Plan</button>
             </div>
+
 
           </div>
 
@@ -573,12 +575,12 @@ body { font-family:var(--body); color:var(--gray-700); }
 
       </div>
 
-      <div class="gst-row">
+      {{-- <div class="gst-row">
         <i class="fas fa-circle-info" style="color:#92400e;"></i>
         Prices are exclusive of 18% GST.&nbsp;
         <strong>15 Days: ₹600 + ₹108 GST = ₹708</strong>&nbsp;|&nbsp;
         <strong>30 Days: ₹1,000 + ₹180 GST = ₹1,180</strong>
-      </div>
+      </div> --}}
 
       <div class="divider-actions">
         <button class="btn-primary blue"  onclick="buyJobPlan()"><i class="fas fa-bolt"></i> Buy Plan</button>

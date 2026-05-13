@@ -25,6 +25,7 @@
     @stack('styles')
 </head>
 
+
 <body>
 
 <div class="emp-layout">
@@ -113,7 +114,7 @@
     toastr.options = {
         closeButton: true,
         progressBar: true,
-        positionClass: "toast-top-right",
+        positionClass: "toast-top-center",
         timeOut: 4000
     };
 

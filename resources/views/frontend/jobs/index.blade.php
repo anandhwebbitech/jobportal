@@ -952,7 +952,7 @@
                     <input type="text" name="title" placeholder="Job title, skill or keyword"
                         value="{{ request('title') }}" />
                 </div>
-                <div class="lj-sb-field" style="max-width:220px;">
+                {{-- <div class="lj-sb-field" style="max-width:220px;">
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                     <select name="skill" class="lj-sb-field-sel">
                         <option value="">All Skills</option>
@@ -961,7 +961,7 @@
                             <option value="{{ $s }}" {{ request('skill') == $s ? 'selected' : '' }}>{{ $s }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="lj-sb-field" style="max-width:220px;">
                     <i class="fa-solid fa-location-dot"></i>
                     <select name="location" class="lj-sb-field-sel">
