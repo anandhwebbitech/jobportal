@@ -18,7 +18,7 @@
         /* ── HERO ──────────────────────────────────────────────────── */
         .lj-hero {
             background: #fff;
-            padding: 20px 20px 25px;
+            padding: 20px 20px 15px 20px;
             text-align: center;
             border-bottom: var(--border);
         }
@@ -47,9 +47,9 @@
         }
 
         /* ===============================
-                SEARCH BAR - MODERN UI
-               (Updated: Individual Field Highlight)
-            ================================ */
+                    SEARCH BAR - MODERN UI
+                   (Updated: Individual Field Highlight)
+                ================================ */
 
         /* MAIN WRAPPER BOX */
         .lj-search-box {
@@ -78,7 +78,7 @@
             gap: 4px;
         }
 
-        /* INDIVIDUAL FIELD WRAPPER (This is what highlights now) */
+        /* INDIVIDUAL FIELD WRAPPER */
         .lj-field-wrap {
             display: flex;
             align-items: center;
@@ -265,7 +265,6 @@
 
             .lj-search-sep {
                 display: none;
-                /* Hide separators on mobile */
             }
 
             .lj-search-ico {
@@ -795,66 +794,47 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-               ── SPONSORED / IMAGE ADS SECTION ─────────────────────
-            ═══════════════════════════════════════════════════════ */
+                    ── SPONSORED / IMAGE ADS SECTION ─────────────────────
+                ═══════════════════════════════════════════════════════ */
 
         .lj-ads {
-            background: #f1f4f9;
-            padding: 24px 0 24px;
+            background: #ffffff;
+            /* Strict white background */
+            padding: 26px 20px;
             position: relative;
             overflow: hidden;
-        }
-
-        .lj-ads::before {
-            content: '';
-            position: absolute;
-            top: -80px;
-            left: -80px;
-            width: 340px;
-            height: 340px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(26, 86, 219, 0.06) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .lj-ads::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            right: -60px;
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
-            pointer-events: none;
+            border-top: 1px solid var(--n200);
+            border-bottom: 1px solid var(--n200);
         }
 
         .lj-ads-lbl {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .lj-ads-lbl-inner {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            background: #fff;
-            border: 1.5px solid #e0e5ef;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(26, 86, 219, 0.2);
             border-radius: 100px;
-            padding: 5px 16px 5px 10px;
-            font-size: .68rem;
-            font-weight: 700;
-            letter-spacing: .1em;
+            padding: 6px 20px 6px 14px;
+            font-size: .75rem;
+            font-weight: 800;
+            letter-spacing: .12em;
             text-transform: uppercase;
-            color: #7c8499;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+            color: var(--blue);
+            box-shadow: 0 4px 15px rgba(26, 86, 219, 0.08);
         }
 
         .lj-ads-lbl-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #f59e0b;
             box-shadow: 0 0 0 3px rgba(245, 158, 11, .2);
@@ -874,36 +854,44 @@
             }
         }
 
+        /* Large, prominent grid for a "little big show" */
         .lj-ad-img-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 28px;
+            max-width: 1200px;
+            margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
-        @media (max-width: 660px) {
+        @media (max-width: 768px) {
             .lj-ad-img-grid {
                 grid-template-columns: 1fr;
             }
         }
 
+        /* Glassmorphism & Neon Glow on Hover */
         .lj-ad-img-wrap {
             position: relative;
-            border-radius: 16px;
+            border-radius: 24px;
             overflow: hidden;
             display: block;
             text-decoration: none;
-            aspect-ratio: 2.4 / 1;
-            background: #e2e8f2;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, .08);
-            transition: transform .22s ease, box-shadow .22s ease;
+            aspect-ratio: 18 / 9;
+            /* Wider, cinematic aspect ratio */
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 2px solid rgba(26, 86, 219, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
         }
 
         .lj-ad-img-wrap:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, .14);
+            transform: translateY(-8px) scale(1.02);
+            /* Soft Neon gradient mix (Blue & Green) */
+            box-shadow: 0 24px 48px rgba(26, 86, 219, 0.18), 0 0 30px rgba(16, 185, 129, 0.1);
+            border-color: rgba(26, 86, 219, 0.3);
         }
 
         .lj-ad-img-wrap img {
@@ -912,49 +900,53 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            transition: transform .4s ease;
+            transition: transform .6s ease;
         }
 
         .lj-ad-img-wrap:hover img {
-            transform: scale(1.025);
+            transform: scale(1.04);
         }
 
+        /* Glassmorphic Pill */
         .lj-ad-img-pill {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 14px;
+            left: 14px;
             z-index: 4;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            background: rgba(0, 0, 0, 0.42);
-            border: 1px solid rgba(255, 255, 255, .22);
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 100px;
-            padding: 3px 10px;
-            font-size: .6rem;
-            font-weight: 700;
+            padding: 4px 12px;
+            font-size: .65rem;
+            font-weight: 800;
             letter-spacing: .08em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, .92);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             pointer-events: none;
         }
 
         .lj-ad-img-pill i {
-            font-size: .55rem;
+            font-size: .6rem;
         }
 
+        /* Refined Overlay */
         .lj-ad-img-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, .52) 0%, rgba(0, 0, 0, .0) 55%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
             display: flex;
             align-items: flex-end;
             justify-content: flex-end;
-            padding: 14px 16px;
+            padding: 24px;
             opacity: 0;
-            transition: opacity .22s ease;
+            transition: opacity .4s ease;
             pointer-events: none;
         }
 
@@ -965,19 +957,23 @@
         .lj-ad-img-overlay-cta {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: #fff;
-            color: #1a56db;
-            font-size: .75rem;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: .85rem;
             font-weight: 800;
-            border-radius: 8px;
-            padding: 6px 14px;
-            letter-spacing: .01em;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+            border-radius: 12px;
+            padding: 10px 20px;
+            letter-spacing: .02em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
         .lj-ad-img-overlay-cta i {
-            font-size: .65rem;
+            font-size: .75rem;
         }
 
         .lj-ad-img-placeholder {
@@ -1018,7 +1014,7 @@
 
         @media (max-width: 400px) {
             .lj-ad-img-wrap {
-                aspect-ratio: 2.4 / 1;
+                aspect-ratio: 16 / 9;
             }
         }
 
@@ -1268,7 +1264,7 @@
         </div> --}}
 
         {{-- Trending tags --}}
-        
+
 
     </section>
 
@@ -1280,7 +1276,7 @@
                 <div class="lj-ads-lbl">
                     <div class="lj-ads-lbl-inner">
                         <span class="lj-ads-lbl-dot"></span>
-                        <i class="fa-solid fa-rectangle-ad"></i>&nbsp;Sponsored
+                        <i class="fa-solid fa-rectangle-ad"></i>&nbsp;Premium Partners
                     </div>
                 </div>
 
@@ -1288,10 +1284,10 @@
                     @foreach ($banners as $banner)
                         <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
                             <span class="lj-ad-img-pill">
-                                <i class="fa-solid fa-circle-info"></i> Ad
+                                <i class="fa-solid fa-star"></i> Featured
                             </span>
-                            <img src="{{ asset('public/storage/banners/' . $banner->banner_image) }}"
-                                alt="Sponsored Banner" loading="lazy" />
+                            <img src="{{ asset('public/storage/banners/' . $banner->banner_image) }}" alt="Sponsored Banner"
+                                loading="lazy" />
                             <div class="lj-ad-img-overlay">
                                 <span class="lj-ad-img-overlay-cta">
                                     Visit Website
