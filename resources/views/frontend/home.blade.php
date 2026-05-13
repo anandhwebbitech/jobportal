@@ -46,175 +46,172 @@
             line-height: 1.6;
         }
 
-        /* Search bar */
         /* ===============================
-           SEARCH BAR - MODERN UI
-        ================================ */
+                SEARCH BAR - MODERN UI
+               (Updated: Individual Field Highlight)
+            ================================ */
 
-        /* BOX */
+        /* MAIN WRAPPER BOX */
         .lj-search-box {
-            max-width: 800px;
+            max-width: 840px;
             margin: 0 auto 14px;
             background: #fff;
-            border: 1.5px solid var(--n200);
-            border-radius: var(--r);
-            box-shadow: var(--sh-md);
-            display: flex;
-            align-items: stretch;
+            border: 1.5px solid var(--n200, #e5e7eb);
+            border-radius: calc(var(--r, 8px) + 4px);
+            box-shadow: var(--sh-md, 0 4px 12px rgba(0, 0, 0, 0.05));
             overflow: hidden;
             transition: all 0.25s ease;
         }
 
-        /* 🔥 FOCUS EFFECT (MAIN MAGIC) */
-        .lj-search-box:focus-within {
-            border-color: var(--blue);
-
-            box-shadow:
-                0 0 0 3px rgba(26, 86, 219, 0.15),
-                0 10px 30px rgba(26, 86, 219, 0.15);
-
-            transform: translateY(-2px);
+        /* Elevate slightly on hover */
+        .lj-search-box:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
         }
 
+        /* FORM CONTAINER */
+        .lj-search-form {
+            width: 100%;
+            display: flex;
+            align-items: stretch;
+            padding: 6px;
+            /* Inner padding so focused fields have room to glow */
+            gap: 4px;
+        }
 
-        /* ICON */
-        .lj-search-ico {
+        /* INDIVIDUAL FIELD WRAPPER (This is what highlights now) */
+        .lj-field-wrap {
             display: flex;
             align-items: center;
-            padding: 0 14px 0 16px;
-            color: var(--n400);
-            font-size: .9rem;
-            flex-shrink: 0;
-            transition: color 0.25s ease;
-        }
-
-        /* Icon reacts on focus */
-        .lj-search-box:focus-within .lj-search-ico {
-            color: var(--blue);
-        }
-
-
-        /* INPUT */
-        .lj-search-input {
-            flex: 1.5;
-            min-width: 0;
-            border: none;
-            outline: none;
-            font-family: var(--f);
-            font-size: .9375rem;
-            color: var(--n900);
-            padding: 14px 10px 14px 0;
+            position: relative;
             background: transparent;
+            border: 1.5px solid transparent;
+            border-radius: var(--r, 8px);
             transition: all 0.25s ease;
         }
 
-        /* INPUT FOCUS */
-        .lj-search-input:focus {
+        /* 🔥 FOCUS EFFECT: ONLY HIGHLIGHTS THE CLICKED FIELD */
+        .lj-field-wrap:focus-within {
             background: #f9fbff;
+            border-color: var(--blue, #1a56db);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
         }
 
-        /* Placeholder */
+        /* Flex sizes for different fields */
+        .lj-field-keyword {
+            flex: 1.5;
+        }
+
+        .lj-field-state {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        .lj-field-district {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        /* ICON */
+        .lj-search-ico {
+            padding: 0 0 0 14px;
+            color: var(--n400, #9ca3af);
+            font-size: .9rem;
+            transition: color 0.25s ease;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        /* Icon turns blue only when its specific wrapper is focused */
+        .lj-field-wrap:focus-within .lj-search-ico {
+            color: var(--blue, #1a56db);
+        }
+
+        /* INPUTS & SELECTS */
+        .lj-search-input,
+        .lj-search-sel {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: var(--f, inherit);
+            font-size: .9375rem;
+            color: var(--n900, #111827);
+            padding: 14px 12px;
+            transition: all 0.25s ease;
+        }
+
         .lj-search-input::placeholder {
-            color: var(--n400);
+            color: var(--n400, #9ca3af);
             transition: all 0.25s ease;
         }
 
         .lj-search-input:focus::placeholder {
-            color: var(--blue);
+            color: var(--blue, #1a56db);
             transform: translateX(4px);
         }
 
+        .lj-search-sel {
+            font-size: .875rem;
+            color: var(--n700, #374151);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        /* Text turns blue on select focus */
+        .lj-field-wrap:focus-within .lj-search-sel {
+            color: var(--blue, #1a56db);
+        }
+
+        .lj-search-sel option {
+            color: var(--n900, #111827);
+            background: #fff;
+        }
 
         /* SEPARATOR */
         .lj-search-sep {
             width: 1px;
-            background: var(--n200);
+            background: var(--n200, #e5e7eb);
+            margin: 8px 2px;
             flex-shrink: 0;
-            align-self: stretch;
-            margin: 9px 0;
-            transition: background 0.25s ease;
+            transition: opacity 0.25s ease;
         }
 
-        /* Separator highlight on focus */
-        .lj-search-box:focus-within .lj-search-sep {
-            background: var(--blue);
-        }
-
-
-        /* SELECT DROPDOWN */
-        .lj-search-sel {
-            flex: 1;
-            min-width: 0;
-            border: none;
-            outline: none;
-            font-family: var(--f);
-            font-size: .875rem;
-            color: var(--n700);
-            padding: 14px 32px 14px 14px;
-            background: transparent;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23a09e9b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            transition: all 0.25s ease;
-        }
-
-        /* Dropdown focus */
-        .lj-search-sel:focus {
-            color: var(--blue);
-        }
-
-        /* Options */
-        .lj-search-sel option {
-            background: #fff;
-            color: var(--n900);
-        }
-
-
-        /* CTA WRAPPER */
+        /* CTA AREA */
         .lj-search-cta {
-            flex-shrink: 0;
-            padding: 6px;
             display: flex;
             align-items: stretch;
+            padding-left: 2px;
+            flex-shrink: 0;
         }
-
 
         /* BUTTON */
         .lj-search-btn {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--blue);
+            background: var(--blue, #1a56db);
             color: #fff;
             border: none;
-            border-radius: calc(var(--r) - 2px);
-            font-family: var(--f);
+            border-radius: var(--r, 8px);
+            font-family: var(--f, inherit);
             font-size: .9375rem;
             font-weight: 600;
-            padding: 0 22px;
+            padding: 0 24px;
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.25s ease;
         }
 
-        /* Hover */
         .lj-search-btn:hover {
-            background: var(--blue-h);
-        }
-
-        /* 🔥 Button reacts when input is focused */
-        .lj-search-box:focus-within .lj-search-btn {
-            background: linear-gradient(135deg, var(--blue), #3b82f6);
+            background: var(--blue-h, #1e40af);
             box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
+            transform: translateY(-1px);
         }
 
         /* Trending tags */
@@ -255,45 +252,35 @@
             border-color: var(--blue);
         }
 
-        /* Mobile search */
+        /* Mobile search overrides */
         @media (max-width: 600px) {
             .lj-hero {
                 padding: 40px 16px 36px;
             }
 
-            .lj-search-box {
+            .lj-search-form {
                 flex-direction: column;
-            }
-
-            .lj-search-ico {
-                padding: 14px 14px 0;
-                justify-content: flex-start;
-            }
-
-            .lj-search-input {
-                padding: 10px 14px;
+                gap: 8px;
             }
 
             .lj-search-sep {
-                width: calc(100% - 28px);
-                height: 1px;
-                margin: 0 14px;
-                align-self: auto;
+                display: none;
+                /* Hide separators on mobile */
             }
 
-            .lj-search-sel {
-                padding: 11px 32px 11px 14px;
+            .lj-search-ico {
+                padding-left: 16px;
             }
 
             .lj-search-cta {
-                padding: 6px 8px 8px;
+                padding-left: 0;
+                margin-top: 4px;
             }
 
             .lj-search-btn {
                 width: 100%;
                 justify-content: center;
-                padding: 12px;
-                border-radius: var(--r-sm);
+                padding: 14px;
             }
         }
 
@@ -808,9 +795,8 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-                                                                               ── SPONSORED / IMAGE ADS SECTION ─────────────────────
-                                                                               Pure image banner ads — no text cards
-                                                                            ═══════════════════════════════════════════════════════ */
+               ── SPONSORED / IMAGE ADS SECTION ─────────────────────
+            ═══════════════════════════════════════════════════════ */
 
         .lj-ads {
             background: #f1f4f9;
@@ -819,7 +805,6 @@
             overflow: hidden;
         }
 
-        /* Soft ambient blobs */
         .lj-ads::before {
             content: '';
             position: absolute;
@@ -844,7 +829,6 @@
             pointer-events: none;
         }
 
-        /* ── Sponsored label pill ── */
         .lj-ads-lbl {
             display: flex;
             align-items: center;
@@ -890,7 +874,6 @@
             }
         }
 
-        /* ── Image ad grid: 2 columns ── */
         .lj-ad-img-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -905,19 +888,14 @@
             }
         }
 
-        /* ── Single image ad wrapper ── */
         .lj-ad-img-wrap {
             position: relative;
             border-radius: 16px;
             overflow: hidden;
             display: block;
-            /* make it a link */
             text-decoration: none;
-            /* fixed aspect ratio so all banners are uniform */
             aspect-ratio: 2.4 / 1;
-            /* 1200×400 banner ratio */
             background: #e2e8f2;
-            /* placeholder bg while image loads */
             box-shadow: 0 2px 12px rgba(0, 0, 0, .08);
             transition: transform .22s ease, box-shadow .22s ease;
             cursor: pointer;
@@ -928,7 +906,6 @@
             box-shadow: 0 12px 36px rgba(0, 0, 0, .14);
         }
 
-        /* The actual banner image fills the whole card */
         .lj-ad-img-wrap img {
             display: block;
             width: 100%;
@@ -942,7 +919,6 @@
             transform: scale(1.025);
         }
 
-        /* ── "Ad" pill — pinned top-left ── */
         .lj-ad-img-pill {
             position: absolute;
             top: 10px;
@@ -963,20 +939,16 @@
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             pointer-events: none;
-            /* don't intercept clicks */
         }
 
         .lj-ad-img-pill i {
             font-size: .55rem;
         }
 
-        /* ── Hover overlay: subtle dark scrim + "Visit" CTA ── */
         .lj-ad-img-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top,
-                    rgba(0, 0, 0, .52) 0%,
-                    rgba(0, 0, 0, .0) 55%);
+            background: linear-gradient(to top, rgba(0, 0, 0, .52) 0%, rgba(0, 0, 0, .0) 55%);
             display: flex;
             align-items: flex-end;
             justify-content: flex-end;
@@ -1008,14 +980,10 @@
             font-size: .65rem;
         }
 
-        /* ── Placeholder shimmer (shown when no real image) ── */
         .lj-ad-img-placeholder {
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg,
-                    #e8ecf2 25%,
-                    #f2f4f8 50%,
-                    #e8ecf2 75%);
+            background: linear-gradient(90deg, #e8ecf2 25%, #f2f4f8 50%, #e8ecf2 75%);
             background-size: 200% 100%;
             animation: lj-shimmer 1.6s infinite linear;
             display: flex;
@@ -1048,20 +1016,19 @@
             letter-spacing: .04em;
         }
 
-        /* Responsive: on very small screens tighten aspect ratio a bit */
         @media (max-width: 400px) {
             .lj-ad-img-wrap {
                 aspect-ratio: 2.4 / 1;
             }
         }
 
+        /* ── RESULT GRID / JOBS LIST ───────────────────────────────── */
         #jobResults {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 18px;
         }
 
-        /* CARD */
         .job-card {
             background: #fff;
             border-radius: 16px;
@@ -1077,7 +1044,6 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
 
-        /* HEADER */
         .job-header {
             display: flex;
             justify-content: space-between;
@@ -1098,7 +1064,6 @@
             align-items: center;
         }
 
-        /* NEW BADGE (improve isNew output) */
         .badge-new {
             background: #10b981;
             color: #fff;
@@ -1107,7 +1072,6 @@
             border-radius: 20px;
         }
 
-        /* COMPANY + LOCATION */
         .job-company,
         .job-location {
             font-size: 13px;
@@ -1120,7 +1084,6 @@
             margin-right: 5px;
         }
 
-        /* LOGO */
         .job-logo {
             width: 42px;
             height: 42px;
@@ -1132,12 +1095,10 @@
             color: #6b7280;
         }
 
-        /* BODY */
         .job-body {
             margin-top: 10px;
         }
 
-        /* BADGES */
         .badge {
             display: inline-block;
             padding: 5px 10px;
@@ -1163,7 +1124,6 @@
             color: #92400e;
         }
 
-        /* DESCRIPTION */
         .job-desc {
             font-size: 13px;
             color: #6b7280;
@@ -1171,7 +1131,6 @@
             line-height: 1.4;
         }
 
-        /* FOOTER */
         .job-footer {
             display: flex;
             justify-content: space-between;
@@ -1186,7 +1145,6 @@
             color: #9ca3af;
         }
 
-        /* SAVE BUTTON */
         .save-btn {
             background: transparent;
             border: none;
@@ -1200,21 +1158,9 @@
             color: #111827;
         }
 
-        /* EMPTY */
         .no-jobs {
             padding: 20px;
             color: #6b7280;
-        }
-
-        .lj-search-form{
-            width: 100%;
-            display: flex;
-            align-items: stretch;
-        }
-        @media (max-width: 600px) {
-            .lj-search-form{
-                flex-direction: column;
-            }
         }
     </style>
 @endpush
@@ -1237,91 +1183,85 @@
 
         {{-- Search Bar --}}
         <div class="lj-anim lj-anim-d2">
-    <div class="lj-search-box">
+            <div class="lj-search-box">
+                <form method="GET" action="{{ route('jobs.index') }}" class="lj-search-form">
 
-        <form method="GET"
-              action="{{ route('jobs.index') }}"
-              class="lj-search-form">
+                    <!-- Field 1: Keyword/Title -->
+                    <div class="lj-field-wrap lj-field-keyword">
+                        <div class="lj-search-ico">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <input class="lj-search-input" id="ljSearchInput" name="title" type="text"
+                            placeholder="Job title, keywords, or company">
+                    </div>
 
-            <div class="lj-search-ico">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                    <div class="lj-search-sep"></div>
+
+                    <!-- Field 2: State -->
+                    <div class="lj-field-wrap lj-field-state">
+                        <select class="lj-search-sel" id="ljStateSel" name="state">
+                            <option value="">State</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <!-- Union Territories -->
+                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and
+                                Diu</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                            <option value="Ladakh">Ladakh</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                        </select>
+                    </div>
+
+                    <div class="lj-search-sep"></div>
+
+                    <!-- Field 3: District -->
+                    <div class="lj-field-wrap lj-field-district">
+                        <select class="lj-search-sel" id="ljLocationSel" name="location">
+                            <option value="">District</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit CTA -->
+                    <div class="lj-search-cta">
+                        <button type="submit" class="lj-search-btn" id="ljSearchBtn">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Find Jobs</span>
+                        </button>
+                    </div>
+
+                </form>
             </div>
-
-            <input class="lj-search-input"
-                   id="ljSearchInput"
-                   name="title"
-                   type="text"
-                   placeholder="Job title, keywords, or company">
-
-            <div class="lj-search-sep"></div>
-
-            <select class="lj-search-sel"
-                    id="ljStateSel"
-                    name="state">
-                <option value="">State</option>
-                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                <option value="Assam">Assam</option>
-                <option value="Bihar">Bihar</option>
-                <option value="Chhattisgarh">Chhattisgarh</option>
-                <option value="Goa">Goa</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Haryana">Haryana</option>
-                <option value="Himachal Pradesh">Himachal Pradesh</option>
-                <option value="Jharkhand">Jharkhand</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Kerala">Kerala</option>
-                <option value="Madhya Pradesh">Madhya Pradesh</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Manipur">Manipur</option>
-                <option value="Meghalaya">Meghalaya</option>
-                <option value="Mizoram">Mizoram</option>
-                <option value="Nagaland">Nagaland</option>
-                <option value="Odisha">Odisha</option>
-                <option value="Punjab">Punjab</option>
-                <option value="Rajasthan">Rajasthan</option>
-                <option value="Sikkim">Sikkim</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Telangana">Telangana</option>
-                <option value="Tripura">Tripura</option>
-                <option value="Uttar Pradesh">Uttar Pradesh</option>
-                <option value="Uttarakhand">Uttarakhand</option>
-                <option value="West Bengal">West Bengal</option>
-
-                <!-- Union Territories -->
-                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                <option value="Chandigarh">Chandigarh</option>
-                <option value="Dadra and Nagar Haveli and Daman and Diu">
-                    Dadra and Nagar Haveli and Daman and Diu
-                </option>
-                <option value="Delhi">Delhi</option>
-                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                <option value="Ladakh">Ladakh</option>
-                <option value="Lakshadweep">Lakshadweep</option>
-                <option value="Puducherry">Puducherry</option>
-            </select>
-
-            <div class="lj-search-sep"></div>
-
-            <select class="lj-search-sel"
-                    id="ljLocationSel"
-                    name="location">
-                <option value="">District</option>
-            </select>
-
-            <div class="lj-search-cta">
-                <button type="submit"
-                        class="lj-search-btn"
-                        id="ljSearchBtn">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Find Jobs</span>
-                </button>
-            </div>
-
-        </form>
-
-    </div>
-</div>
+        </div>
 
         {{-- <div id="jobResults">
             @include('frontend.jobs.job-list')
@@ -1333,91 +1273,65 @@
                 <span class="lj-trend-label">
                     <i class="fa-solid fa-fire-flame-curved" style="color:#f97316; margin-right:4px;"></i>Trending:
                 </span>
-                @foreach($trendingJobs as $job)
-
+                @foreach ($trendingJobs as $job)
                     @php
                         $icon = 'fa-briefcase';
-
-                        if(str_contains(strtolower($job->title), 'software'))
+                        if (str_contains(strtolower($job->title), 'software')) {
                             $icon = 'fa-laptop-code';
-
-                        elseif(str_contains(strtolower($job->title), 'machine'))
+                        } elseif (str_contains(strtolower($job->title), 'machine')) {
                             $icon = 'fa-gears';
-
-                        elseif(str_contains(strtolower($job->title), 'sales'))
+                        } elseif (str_contains(strtolower($job->title), 'sales')) {
                             $icon = 'fa-handshake';
-
-                        elseif(str_contains(strtolower($job->title), 'data'))
+                        } elseif (str_contains(strtolower($job->title), 'data')) {
                             $icon = 'fa-keyboard';
-
-                        elseif(str_contains(strtolower($job->title), 'electric'))
+                        } elseif (str_contains(strtolower($job->title), 'electric')) {
                             $icon = 'fa-bolt';
+                        }
                     @endphp
 
-                    <a href="{{ route('jobs.index', ['title' => $job->title]) }}"
-                    class="lj-trend-tag">
-
-                        <i class="fa-solid {{ $icon }}"
-                        style="margin-right:5px; font-size:.7rem;"></i>
-
+                    <a href="{{ route('jobs.index', ['title' => $job->title]) }}" class="lj-trend-tag">
+                        <i class="fa-solid {{ $icon }}" style="margin-right:5px; font-size:.7rem;"></i>
                         {{ $job->title }}
-
                     </a>
-
                 @endforeach
-
             </div>
         </div>
 
     </section>
 
 
-   <section class="lj-ads">
-    <div class="lj-wrap">
+    <section class="lj-ads">
+        <div class="lj-wrap">
 
-        @if($banners->count())
-
-            <div class="lj-ads-lbl">
-                <div class="lj-ads-lbl-inner">
-                    <span class="lj-ads-lbl-dot"></span>
-                    <i class="fa-solid fa-rectangle-ad"></i>&nbsp;Sponsored
+            @if ($banners->count())
+                <div class="lj-ads-lbl">
+                    <div class="lj-ads-lbl-inner">
+                        <span class="lj-ads-lbl-dot"></span>
+                        <i class="fa-solid fa-rectangle-ad"></i>&nbsp;Sponsored
+                    </div>
                 </div>
-            </div>
 
-            <div class="lj-ad-img-grid">
-
-                @foreach($banners as $banner)
-
-                    <a href="#"
-                       class="lj-ad-img-wrap"
-                       target="_blank"
-                       rel="noopener">
-
-                        <span class="lj-ad-img-pill">
-                            <i class="fa-solid fa-circle-info"></i> Ad
-                        </span>
-
-                        <img src="{{ asset('public/storage/banners/' . $banner->banner_image) }}"
-                             alt="Sponsored Banner"
-                             loading="lazy" />
-
-                        <div class="lj-ad-img-overlay">
-                            <span class="lj-ad-img-overlay-cta">
-                                Visit Website
-                                <i class="fa-solid fa-arrow-right"></i>
+                <div class="lj-ad-img-grid">
+                    @foreach ($banners as $banner)
+                        <a href="#" class="lj-ad-img-wrap" target="_blank" rel="noopener">
+                            <span class="lj-ad-img-pill">
+                                <i class="fa-solid fa-circle-info"></i> Ad
                             </span>
-                        </div>
+                            <img src="{{ asset('public/storage/banners/' . $banner->banner_image) }}"
+                                alt="Sponsored Banner" loading="lazy" />
+                            <div class="lj-ad-img-overlay">
+                                <span class="lj-ad-img-overlay-cta">
+                                    Visit Website
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
 
-                    </a>
-
-                @endforeach
-
-            </div>
-
-        @endif
-
-    </div>
-</section>
+        </div>
+    </section>
 
     <hr class="lj-rule" />
 
@@ -1471,54 +1385,6 @@
         </div>
     </section>
 
-    {{-- ── AUDIENCE SPLIT ──────────────────────────────── --}}
-    {{-- <section class="lj-section">
-        <div class="lj-wrap">
-            <div class="lj-aud-grid">
-
-                <div class="lj-aud-card" data-reveal>
-                    <div class="lj-aud-ico lj-aud-ico-blue">
-                        <i class="fa-solid fa-user-tie"></i>
-                    </div>
-                    <div class="lj-aud-title">Looking for a Job?</div>
-                    <div class="lj-aud-desc">
-                        Find thousands of opportunities from trusted employers across India.
-                        Create your profile and get matched with the right role based on your skills.
-                    </div>
-                    <div class="lj-aud-btns">
-                        <a href="{{ route('jobseeker.login') }}" class="lj-btn lj-btn-blue">
-                            <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Login as Job Seeker
-                        </a>
-                        <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-ghost">
-                            <i class="fa-solid fa-user-plus" style="margin-right:6px;"></i>Register as Job Seeker
-                        </a>
-                    </div>
-                </div>
-
-                <div class="lj-aud-card" data-reveal>
-                    <div class="lj-aud-ico lj-aud-ico-green">
-                        <i class="fa-solid fa-building"></i>
-                    </div>
-                    <div class="lj-aud-title">Looking to Hire Talent?</div>
-                    <div class="lj-aud-desc">
-                        Post job openings and connect with skilled professionals quickly.
-                        Affordable plans built for India MSMEs — starting at just ₹600.
-                    </div>
-                    <div class="lj-aud-btns">
-                        <a href="{{ route('employer.login') }}" class="lj-btn lj-btn-green">
-                            <i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i>Employer Login
-                        </a>
-                        <a href="{{ route('employer.register') }}" class="lj-btn lj-btn-ghost-green">
-                            <i class="fa-solid fa-building-circle-check" style="margin-right:6px;"></i>Register Company
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section> --}}
-
-
     <hr class="lj-rule" />
 
 
@@ -1530,22 +1396,14 @@
             </div>
             <div class="lj-loy-title">100% Loyalty to Job Seekers</div>
             <div class="lj-loy-text">
-                We provide 100% loyalty to job seekers and connect them only with verified and trusted employers.
-                No fake listings. No spam. Just real opportunities from real companies across every district in India.
+                We provide 100% loyalty to job seekers and connect them only with verified and trusted employers. No fake
+                listings. No spam. Just real opportunities from real companies across every district in India.
             </div>
             <div class="lj-loy-tags">
-                <span class="lj-loy-tag">
-                    <i class="fa-solid fa-circle-check"></i> Zero Fake Listings
-                </span>
-                <span class="lj-loy-tag">
-                    <i class="fa-solid fa-user-shield"></i> Verified Employers Only
-                </span>
-                <span class="lj-loy-tag">
-                    <i class="fa-solid fa-hand-holding-heart"></i> Free to Apply
-                </span>
-                <span class="lj-loy-tag">
-                    <i class="fa-solid fa-lock"></i> Safe &amp; Private
-                </span>
+                <span class="lj-loy-tag"><i class="fa-solid fa-circle-check"></i> Zero Fake Listings</span>
+                <span class="lj-loy-tag"><i class="fa-solid fa-user-shield"></i> Verified Employers Only</span>
+                <span class="lj-loy-tag"><i class="fa-solid fa-hand-holding-heart"></i> Free to Apply</span>
+                <span class="lj-loy-tag"><i class="fa-solid fa-lock"></i> Safe &amp; Private</span>
             </div>
             <a href="{{ route('jobseeker.register') }}" class="lj-btn lj-btn-white lj-btn-lg">
                 Create Free Account <i class="fa-solid fa-arrow-right" style="font-size:.78rem; margin-left:4px;"></i>
@@ -1554,150 +1412,12 @@
     </section>
 
     <script>
-        // const searchUrl = "{{ route('jobs.index') }}";
-
-        // const keywordInput = document.getElementById('ljSearchInput');
-        // const stateSelect = document.getElementById('ljStateSel');
-        // const locationSelect = document.getElementById('ljLocationSel');
-        // const searchBtn = document.getElementById('ljSearchBtn');
-
-        // searchBtn.addEventListener('click', searchJobs);
-
-        // function searchJobs() {
-
-        //     let keyword = keywordInput.value || '';
-        //     let state = stateSelect.value || '';
-        //     let location = locationSelect.value || '';
-
-        //     let url = `${searchUrl}?title=${encodeURIComponent(keyword)}&state=${encodeURIComponent(state)}&location=${encodeURIComponent(location)}`;
-
-        //     let container = document.getElementById('jobResults');
-        //     container.innerHTML = `<p>Loading jobs...</p>`;
-
-        //     fetch(url, {
-        //         headers: {
-        //             'X-Requested-With': 'XMLHttpRequest'
-        //         }
-        //     })
-        //     .then(res => res.text())
-        //     .then(html => {
-        //         container.innerHTML = html;
-        //     })
-        //     .catch(err => {
-        //         console.error(err);
-        //         container.innerHTML = `<p>Something went wrong</p>`;
-        //     });
-        // }
-
-        /* =========================
-           RENDER JOBS
-        ========================= */
-        // function renderJobs(jobs) {
-
-        //     let container = document.getElementById('jobResults');
-
-        //     if (!jobs || jobs.length === 0) {
-        //         container.innerHTML = `<p class="no-jobs">No jobs found</p>`;
-        //         return;
-        //     }
-
-        //     let html = '';
-
-        //     jobs.forEach(job => {
-        //         html += `
-        // <div class="job-card" onclick="loadPreview(${job.id}, this)" id="job-${job.id}">
-
-        //     <div class="job-header">
-        //         <div class="job-info">
-
-        //             <div class="job-title-row">
-        //                 <h3 class="job-title">${job.title ?? ''}</h3>
-        //                 ${isNew(job.created_at)}
-        //             </div>
-
-        //             <div class="job-company">
-        //                 <i class="fa-solid fa-building"></i>
-        //                 ${job.company_name ?? ''}
-        //             </div>
-
-        //             <div class="job-location">
-        //                 <i class="fa-solid fa-location-dot"></i>
-        //                 ${job.location ?? ''}
-        //             </div>
-
-        //         </div>
-
-        //         <div class="job-logo">
-        //             <i class="fa-solid fa-briefcase"></i>
-        //         </div>
-        //     </div>
-
-        //     <div class="job-body">
-
-        //         ${job.salary_min ? `
-        //                                                                                 <span class="badge salary">
-        //                                                                                     ₹${job.salary_min} - ₹${job.salary_max}/mo
-        //                                                                                 </span>` : ''}
-
-        //         ${job.job_type ? `<span class="badge type">${job.job_type}</span>` : ''}
-
-        //         ${job.experience ? `<span class="badge exp">${job.experience}</span>` : ''}
-
-        //         ${job.description ? `
-        //                                                                                 <p class="job-desc">${truncate(job.description, 90)}</p>
-        //                                                                             ` : ''}
-
-        //     </div>
-
-        //     <div class="job-footer">
-        //         <span class="time">${timeAgo(job.created_at)}</span>
-
-        //         <button class="save-btn" onclick="event.stopPropagation();toggleSave(this)">
-        //             <i class="fa-regular fa-bookmark"></i>
-        //         </button>
-        //     </div>
-
-        // </div>`;
-        //     });
-
-        //     container.innerHTML = html;
-        // }
-
-        /* =========================
-           EVENTS (IMPORTANT FIXED)
-        ========================= */
-
-    //     /* 1. Button click */
-    //     searchBtn.addEventListener('click', searchJobs);
-
-    //     /* 2. Enter key */
-    //    keywordInput.addEventListener('keypress', function(e) {
-    //         if (e.key === 'Enter') {
-    //             searchJobs();
-    //         }
-    //     });
-
-        // /* 3. Typing (debounced) */
-        // keywordInput.addEventListener('input', function() {
-        //     clearTimeout(delay);
-        //     delay = setTimeout(searchJobs, 500);
-        // });
-
-        // /* 4. Location change */
-        // locationSelect.addEventListener('change', searchJobs);
-
-        /* =========================
-           HELPERS
-        ========================= */
-
         function isNew(date) {
             let created = new Date(date);
             let now = new Date();
             let diff = (now - created) / (1000 * 60 * 60 * 24);
 
-            return diff <= 2 ?
-                `<span class="lj-job-badge new">New</span>` :
-                '';
+            return diff <= 2 ? `<span class="lj-job-badge new">New</span>` : '';
         }
 
         function timeAgo(date) {
@@ -1726,13 +1446,13 @@
             return text.length > length ? text.substring(0, length) + '...' : text;
         }
 
-        document.getElementById('ljStateSel').addEventListener('change', async function () {
+        document.getElementById('ljStateSel').addEventListener('change', async function() {
 
             let state = this.value;
             let districtSel = document.getElementById('ljLocationSel');
 
             // reset
-            districtSel.innerHTML = '<option value  ="">Loading...</option>';
+            districtSel.innerHTML = '<option value="">Loading...</option>';
 
             if (!state) {
                 districtSel.innerHTML = '<option value="">District</option>';
@@ -1756,7 +1476,7 @@
                 districtSel.innerHTML = '<option value="">District</option>';
 
                 if (result.data && result.data.length > 0) {
-                    result.data.forEach(function (district) {
+                    result.data.forEach(function(district) {
                         let opt = document.createElement('option');
                         opt.value = district;
                         opt.textContent = district;
