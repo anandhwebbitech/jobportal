@@ -2,7 +2,7 @@
 @section('title', 'Register Your Company – LinearJobs')
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
         {{-- crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
@@ -178,13 +178,6 @@
             left: -140px;
             background: radial-gradient(circle, rgba(5, 150, 105, .05) 0%, transparent 70%);
         }
-
-        /* .bg-grid {
-            position: absolute;
-            inset: 0;
-            background-image: linear-gradient(rgba(180, 185, 210, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(180, 185, 210, .08) 1px, transparent 1px);
-            background-size: 44px 44px;
-        } */
 
         /* ══════════════════════════════════════════════════════
            ANNOUNCE BAR
@@ -2603,7 +2596,7 @@
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
                                                     type="text" id="c_ownername" name="c_ownername" class="finput fc-g"
-                                                    placeholder="Full name" /></div>
+                                                    placeholder="Full name" oninput="if(document.getElementById('sameAsOwner').checked) document.getElementById('c_hr_name').value = this.value;" /></div>
                                             <div class="ferr-msg" id="e-eo_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Owner name is
                                                     required.</span></div>
@@ -2613,7 +2606,7 @@
                                                     class="req">*</span></label>
                                             <div class="fiw"><i class="fa-solid fa-mobile-screen fiw-l"></i><input
                                                     type="tel" id="c_mobile" name="c_mobile" class="finput fc-g"
-                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" /></div>
+                                                    placeholder="+91 XXXXX XXXXX" maxlength="15" oninput="if(document.getElementById('sameAsOwner').checked) document.getElementById('c_hr_mobile').value = this.value;" /></div>
                                             <div class="ferr-msg" id="e-eo_mob"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
                                                     mobile number.</span></div>
@@ -2624,9 +2617,12 @@
                                         </div>
                                         <div class="fsec-line"></div>
                                     </div>
-                                    <div class="info-box green"><i class="fa-solid fa-circle-info"></i><span>If you don't
-                                            have
-                                            a dedicated HR, enter the owner's details again below.</span></div>
+                                    <div class="fgrp" style="margin-bottom: 20px;">
+                                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.82rem; font-weight: 600; color: var(--n700);">
+                                            <input type="checkbox" id="sameAsOwner" onchange="copyOwnerToHR()" style="width:16px; height:16px; cursor:pointer;">
+                                            HR / Recruiter is same as Owner
+                                        </label>
+                                    </div>
                                     <div class="frow">
                                         <div class="fgrp">
                                             <label class="flbl" for="eh_name">HR Name <span
@@ -2634,7 +2630,7 @@
                                             <div class="fiw"><i class="fa-solid fa-user fiw-l"></i><input
                                                     type="text" id="c_hr_name" name="c_hr_name" class="finput fc-g"
                                                     placeholder="Full name" /></div>
-                                            <div class="ferr-msg" id="e-eh_name"><i
+                                            <div class="ferr-msg" id="e-c_hr_name"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>HR name is
                                                     required.</span></div>
                                         </div>
@@ -2645,7 +2641,7 @@
                                                     type="tel" id="c_hr_mobile" name="c_hr_mobile"
                                                     class="finput fc-g" placeholder="+91 XXXXX XXXXX" maxlength="15" />
                                             </div>
-                                            <div class="ferr-msg" id="e-eh_mob"><i
+                                            <div class="ferr-msg" id="e-c_hr_mobile"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Enter a valid 10-digit
                                                     mobile number.</span></div>
                                         </div>
@@ -2663,7 +2659,7 @@
                                         <div class="fiw"><i class="fa-solid fa-envelope fiw-l"></i><input
                                                 type="email" id="c_email" name="c_email" class="finput fc-g"
                                                 placeholder="company@example.com" /></div>
-                                        <div class="ferr-msg" id="e-e_email"><i
+                                        <div class="ferr-msg" id="e-c_email"><i
                                                 class="fa-solid fa-circle-exclamation"></i><span>Enter a valid email
                                                 address.</span></div>
                                         <div class="fhint"><i class="fa-solid fa-circle-info"></i> This will be your
@@ -2683,13 +2679,13 @@
                                                 <input type="password" id="c_password" name="c_password"
                                                     class="finput pr fc-g" placeholder="Min. 8 characters"
                                                     oninput="pwdStr(this.value,'e-pb')" />
-                                                <button type="button" class="fiw-r" onclick="togPwd('e_pwd',this)"
+                                                <button type="button" class="fiw-r" onclick="togPwd('c_password',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                             </div>
                                             <div class="pwd-wrap">
                                                 <div class="pwd-bar" id="e-pb"></div>
                                             </div>
-                                            <div class="ferr-msg" id="e-e_pwd"><i
+                                            <div class="ferr-msg" id="e-c_password"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Password must be at
                                                     least
                                                     8 characters.</span></div>
@@ -2700,10 +2696,10 @@
                                             <div class="fiw"><i class="fa-solid fa-lock fiw-l"></i>
                                                 <input type="password" id="c_confirm_password" name="c_confirm_password"
                                                     class="finput pr fc-g" placeholder="Re-enter password" />
-                                                <button type="button" class="fiw-r" onclick="togPwd('e_cpwd',this)"
+                                                <button type="button" class="fiw-r" onclick="togPwd('c_confirm_password',this)"
                                                     tabindex="-1"><i class="fa-solid fa-eye"></i></button>
                                             </div>
-                                            <div class="ferr-msg" id="e-e_cpwd"><i
+                                            <div class="ferr-msg" id="e-c_confirm_password"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>Passwords do not
                                                     match.</span></div>
                                         </div>
@@ -2713,9 +2709,7 @@
                                 <!-- Emp Panel 4 -->
                                 <div class="panel" id="emp-p4">
                                     <div class="step-alert" id="emp-al4"><i
-                                            class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid GST and
-                                            PAN
-                                            numbers.</span></div>
+                                            class="fa-solid fa-triangle-exclamation"></i><span>Please provide valid document numbers.</span></div>
                                     <div class="info-box green"><i class="fa-solid fa-shield-check"></i><span>Your
                                             business
                                             details are encrypted and used only for verification. Only verified employers
@@ -2737,30 +2731,23 @@
                                                 alphanumeric GST number</div>
                                         </div>
                                         <div class="fgrp">
-                                            <label class="flbl" for="e_pan">PAN Number <span
-                                                    class="req">*</span></label>
-                                            <div class="fiw"><i class="fa-solid fa-id-card fiw-l"></i><input
-                                                    type="text" id="c_pan" name="c_pan" class="finput fc-g"
-                                                    placeholder="e.g. AABCU9603R" maxlength="10"
-                                                    oninput="this.value=this.value.toUpperCase()" /></div>
-                                            <div class="ferr-msg" id="e-e_pan"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>Enter a valid
-                                                    10-character
-                                                    PAN number.</span></div>
-                                            <div class="fhint"><i class="fa-solid fa-circle-info"></i> Company /
-                                                Individual
-                                                PAN number</div>
+                                            <label class="flbl" for="add_doc_type">Additional Document <span class="opt">Optional</span></label>
+                                            <div class="fiw"><i class="fa-solid fa-file-lines fiw-l"></i>
+                                                <select id="add_doc_type" name="add_doc_type" class="finput fc-g" onchange="toggleDocFields()">
+                                                    <option value="">None</option>
+                                                    <option value="PAN">PAN Document</option>
+                                                    <option value="MSME">MSME / Udyam</option>
+                                                    <option value="CIN">CIN / Incorporation</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="fgrp">
-                                        <label class="flbl" for="e_msme">MSME Number <span
-                                                class="opt">Optional</span></label>
-                                        <div class="fiw"><i class="fa-solid fa-industry fiw-l"></i><input
-                                                type="text" id="c_msme" name="c_msme" class="finput fc-g"
-                                                placeholder="UDYAM-TN-01-0000000" /></div>
-                                        <div class="fhint"><i class="fa-solid fa-circle-info"></i> Udyam registration
-                                            number
-                                            — recommended for MSMEs</div>
+                                    <div class="fgrp" id="dynamic_doc_num_wrap" style="display: none;">
+                                        <label class="flbl" id="dynamic_doc_num_label" for="add_doc_number">Document Number <span class="req">*</span></label>
+                                        <div class="fiw"><i class="fa-solid fa-hashtag fiw-l"></i>
+                                            <input type="text" id="add_doc_number" name="add_doc_number" class="finput fc-g" placeholder="Enter number" oninput="this.value=this.value.toUpperCase()" />
+                                        </div>
+                                        <div class="ferr-msg" id="e-add_doc_number"><i class="fa-solid fa-circle-exclamation"></i><span>Please enter the document number.</span></div>
                                     </div>
                                 </div>
 
@@ -2777,37 +2764,23 @@
                                                 <div class="fz-title" id="eg-rl">Click to upload GST certificate</div>
                                                 <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
                                             </div>
-                                            <div class="ferr-msg" id="e-eg_gstf"><i
+                                            <div class="ferr-msg" id="e-gst_certificate"><i
                                                     class="fa-solid fa-circle-exclamation"></i><span>GST certificate is
                                                     required.</span></div>
                                         </div>
-                                        <div class="fgrp">
-                                            <label class="flbl">PAN Document <span class="req">*</span></label>
-                                            <div class="file-zone"><input type="file" id="pan_document"
-                                                    name="pan_document" accept=".pdf,.jpg,.jpeg,.png"
-                                                    onchange="setFileLabel(this,'ep-rl')">
-                                                <div class="fz-ico"><i class="fa-solid fa-id-card"
-                                                        style="color:var(--green);"></i></div>
-                                                <div class="fz-title" id="ep-rl">Click to upload PAN document</div>
+                                        
+                                        <div class="fgrp" id="dynamic_doc_file_wrap" style="display: none;">
+                                            <label class="flbl" id="dynamic_doc_file_label">Additional Document <span class="req">*</span></label>
+                                            <div class="file-zone">
+                                                <input type="file" id="add_doc_file" name="add_doc_file" accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'add_doc_file_label_text')">
+                                                <div class="fz-ico"><i class="fa-solid fa-file-shield" style="color:var(--green);"></i></div>
+                                                <div class="fz-title" id="add_doc_file_label_text">Click to upload document</div>
                                                 <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
                                             </div>
-                                            <div class="ferr-msg" id="e-eg_panf"><i
-                                                    class="fa-solid fa-circle-exclamation"></i><span>PAN document is
-                                                    required.</span></div>
+                                            <div class="ferr-msg" id="e-add_doc_file"><i class="fa-solid fa-circle-exclamation"></i><span>Document file is required.</span></div>
                                         </div>
                                     </div>
-                                    <div class="fgrp">
-                                        <label class="flbl">MSME Certificate <span
-                                                class="opt">Optional</span></label>
-                                        <div class="file-zone"><input type="file"
-                                                id="msme_certificate" name="msme_certificate"
-                                                accept=".pdf,.jpg,.jpeg,.png" onchange="setFileLabel(this,'em-rl')">
-                                            <div class="fz-ico"><i class="fa-solid fa-industry"
-                                                    style="color:var(--green);"></i></div>
-                                            <div class="fz-title" id="em-rl">Click to upload MSME certificate</div>
-                                            <div class="fz-sub">PDF, JPG, PNG — Max 5 MB</div>
-                                        </div>
-                                    </div>
+                                    
                                     <div class="summary-box">
                                         <div class="summary-title"><i class="fa-solid fa-list-check"
                                                 style="color:var(--green);"></i> Registration Summary</div>
@@ -2818,8 +2791,7 @@
                                             <div><span>HR: </span><strong id="es-hr">—</strong></div>
                                             <div><span>Email: </span><strong id="es-em">—</strong></div>
                                             <div><span>GST: </span><strong id="es-gs">—</strong></div>
-                                            <div><span>PAN: </span><strong id="es-pn">—</strong></div>
-                                            <div><span>MSME: </span><strong id="es-ms">Not provided</strong></div>
+                                            <div><span id="es-pn">Addl Doc: <strong>None</strong></span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -2830,7 +2802,7 @@
                                         here</a>
                                 </div>
                                 <div class="foot-btns">
-                                    <button class="btn-prev" id="empBtnPrev" onclick="empNav(-1)"
+                                    <button type="button" class="btn-prev" id="empBtnPrev" onclick="empNav(-1)"
                                         style="display:none;"><i class="fa-solid fa-arrow-left"></i> Back</button>
                                     <button type="button" class="btn-next green-next" id="empBtnNext"
                                         onclick="empNav(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
@@ -2864,6 +2836,59 @@
         const skillsData = @json($skills ?? []);
     </script>
     <script>
+        // Owner to HR Copy logic
+        function copyOwnerToHR() {
+            const isChecked = document.getElementById('sameAsOwner').checked;
+            const hrName = document.getElementById('c_hr_name');
+            const hrMobile = document.getElementById('c_hr_mobile');
+            const ownerName = document.getElementById('c_ownername').value;
+            const ownerMobile = document.getElementById('c_mobile').value;
+
+            if (isChecked) {
+                hrName.value = ownerName;
+                hrMobile.value = ownerMobile;
+                hrName.readOnly = true;
+                hrMobile.readOnly = true;
+                hrName.style.opacity = '0.7';
+                hrMobile.style.opacity = '0.7';
+            } else {
+                hrName.value = '';
+                hrMobile.value = '';
+                hrName.readOnly = false;
+                hrMobile.readOnly = false;
+                hrName.style.opacity = '1';
+                hrMobile.style.opacity = '1';
+            }
+            
+            hrName.classList.remove('err');
+            hrMobile.classList.remove('err');
+        }
+
+        // Dynamic Document Fields
+        function toggleDocFields() {
+            const docType = document.getElementById('add_doc_type').value;
+            const docNumWrap = document.getElementById('dynamic_doc_num_wrap');
+            const docFileWrap = document.getElementById('dynamic_doc_file_wrap');
+            const docNumLabel = document.getElementById('dynamic_doc_num_label');
+            const docFileLabel = document.getElementById('dynamic_doc_file_label');
+            const docNumInput = document.getElementById('add_doc_number');
+            const docFileInput = document.getElementById('add_doc_file');
+
+            if (docType) {
+                docNumWrap.style.display = 'block';
+                docFileWrap.style.display = 'block';
+                docNumLabel.innerHTML = docType + ' Number <span class="req">*</span>';
+                docFileLabel.innerHTML = docType + ' Document <span class="req">*</span>';
+                docNumInput.placeholder = "Enter " + docType + " Number";
+            } else {
+                docNumWrap.style.display = 'none';
+                docFileWrap.style.display = 'none';
+                docNumInput.value = '';
+                docFileInput.value = '';
+                document.getElementById('add_doc_file_label_text').innerText = 'Click to upload document';
+            }
+        }
+
         function validateGST(input) {
 
             // UPPERCASE
@@ -2981,7 +3006,7 @@
             {
                 ico: 'fa-file-certificate',
                 title: 'Business Verification',
-                sub: 'Step 4 of 5 — GST & PAN details'
+                sub: 'Step 4 of 5 — GST & Docs'
             },
             {
                 ico: 'fa-file-arrow-up',
@@ -3151,10 +3176,7 @@
                 }
             }
             if (s === 4) {
-                // if (!document.querySelectorAll('.skill-chip input:checked').length) {
-                //     if (al) al.classList.add('show');
-                //     return false;
-                // }
+                
             }
             if (!ok && al) al.classList.add('show');
             return ok;
@@ -3191,8 +3213,8 @@
             if (step === 2) {
                 check('c_ownername', 'Owner name is required');
                 check('c_mobile', 'Owner mobile is required');
-                // check('c_hr_name', 'HR name is required');
-                // check('c_hr_mobile', 'HR mobile is required');
+                check('c_hr_name', 'HR name is required');
+                check('c_hr_mobile', 'HR mobile is required');
             }
 
             if (step === 3) {
@@ -3203,12 +3225,18 @@
 
             if (step === 4) {
                 check('c_gst', 'GST number is required');
-                // check('c_pan', 'PAN number is required');
+                let docType = document.getElementById('add_doc_type').value;
+                if(docType) {
+                    check('add_doc_number', docType + ' number is required');
+                }
             }
 
             if (step === 5) {
                 check('gst_certificate', 'GST certificate is required');
-                // check('pan_document', 'PAN document is required');
+                let docType = document.getElementById('add_doc_type').value;
+                if(docType) {
+                    check('add_doc_file', docType + ' document is required');
+                }
             }
 
             // ❗ Show toaster
@@ -3253,16 +3281,18 @@
         function empBuildSummary() {
             document.getElementById('es-co').textContent = g('company_name') || '—';
             document.getElementById('es-lc').textContent = [g('c_city'), g('c_district'), g('c_state')].filter(Boolean)
-                .join(
-                    ', ') || '—';
-            document.getElementById('es-ow').textContent = (g('c_ownername') || '—') + (g('c_mobile') ? ' · ' + g(
-                'c_mobile') : '');
-            document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g(
-                'c_hr_mobile') : '');
+                .join(', ') || '—';
+            document.getElementById('es-ow').textContent = (g('c_ownername') || '—') + (g('c_mobile') ? ' · ' + g('c_mobile') : '');
+            document.getElementById('es-hr').textContent = (g('c_hr_name') || '—') + (g('c_hr_mobile') ? ' · ' + g('c_hr_mobile') : '');
             document.getElementById('es-em').textContent = g('c_email') || '—';
-            // document.getElementById('es-gs').textContent = g('c_gst') || '—';
-            document.getElementById('es-pn').textContent = g('c_pan') || '—';
-            document.getElementById('es-ms').textContent = g('c_msme') || 'Not provided';
+            document.getElementById('es-gs').textContent = g('c_gst') || '—';
+            
+            let docType = g('add_doc_type');
+            if (docType) {
+                document.getElementById('es-pn').innerHTML = `${docType}: <strong style="color:var(--n700)">${g('add_doc_number') || '—'}</strong>`;
+            } else {
+                document.getElementById('es-pn').innerHTML = `Addl Doc: <strong>None</strong>`;
+            }
         }
 
         /* ── SUBMIT ── */
@@ -3377,6 +3407,9 @@
 
                     setTimeout(() => {
                         form.reset();
+                        document.getElementById('sameAsOwner').checked = false;
+                        copyOwnerToHR(); // Reset opacity and readonly
+                        toggleDocFields(); // hide extra fields
 
                         // reset summary
                         document.getElementById('es-co').innerText = '—';
@@ -3385,12 +3418,10 @@
                         document.getElementById('es-hr').innerText = '—';
                         document.getElementById('es-em').innerText = '—';
                         document.getElementById('es-gs').innerText = '—';
-                        document.getElementById('es-pn').innerText = '—';
-                        document.getElementById('es-ms').innerText = '—';
+                        document.getElementById('es-pn').innerHTML = 'Addl Doc: <strong>None</strong>';
 
                         document.getElementById('eg-rl').innerText = 'Click to upload GST certificate';
-                        document.getElementById('ep-rl').innerText = 'Click to upload PAN document';
-                        document.getElementById('em-rl').innerText = 'Click to upload MSME certificate';
+                        document.getElementById('add_doc_file_label_text').innerText = 'Click to upload document';
 
                         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
                         document.getElementById('emp-p1').classList.add('active');
@@ -3484,24 +3515,6 @@
         })();
 
         /* ── BUILD SKILLS ── */
-        // (function() {
-        //     const c = document.getElementById('skillsBox');
-        //     if(!c || !skillsData) return;
-        //     skillsData.forEach(skill => {
-        //         const id = 'sk_' + skill.id;
-
-        //         const ch = document.createElement('div');
-        //         ch.className = 'skill-chip';
-
-        //         ch.innerHTML = `
-        //         <input type="checkbox" name="skills[]" id="${id}" value="${skill.id}">
-        //         <label for="${id}">${skill.skill_name}</label>
-        //     `;
-
-        //         c.appendChild(ch);
-        //     });
-        // })();
-        
         (function () {
 
             const select = document.getElementById('skillsBox');
@@ -3543,55 +3556,6 @@
 
         // Note: Assuming jQuery is loaded in frontend.app
         if(typeof $ !== 'undefined') {
-            // $('#state').on('change', function () {
-            //     let state = $(this).val();
-            //     $('#district').html('<option value="">Loading...</option>');
-
-            //     if (state) {
-            //         let url = "{{ route('get.districts', ':state') }}";
-            //         url = url.replace(':state', state);
-
-            //         $.ajax({
-            //             url: url,
-            //             type: 'GET',
-            //             success: function (response) {
-            //                 let options = '<option value="" disabled selected>Select District</option>';
-            //                 response.forEach(function (district) {
-            //                     options += `<option value="${district}">${district}</option>`;
-            //                 });
-            //                 $('#district').html(options);
-            //             }
-            //         });
-
-            //     } else {
-            //         $('#district').html('<option value="" disabled selected>Select District</option>');
-            //     }
-            // });
-
-            // $('#c_state').on('change', function () {
-            //     let state = $(this).val();
-            //     $('#c_district').html('<option value="">Loading...</option>');
-
-            //     if (state) {
-            //         let url = "{{ route('get.districts', ':state') }}";
-            //         url = url.replace(':state', encodeURIComponent(state));
-
-            //         $.ajax({
-            //             url: url,
-            //             type: 'GET',
-            //             success: function (response) {
-            //                 let options = '<option value="" disabled selected>Select District</option>';
-            //                 response.forEach(function (district) {
-            //                     options += `<option value="${district}">${district}</option>`;
-            //                 });
-            //                 $('#c_district').html(options);
-            //             }
-            //         });
-
-            //     } else {
-            //         $('#c_district').html('<option value="" disabled selected>Select District</option>');
-            //     }
-            // });
         }
 
         document.getElementById('state').addEventListener('change', async function () {
