@@ -89,7 +89,7 @@ class JobController extends Controller
             // recent
             $query->latest();
         }
-        $jobs = $query->paginate(10);
+        $jobs = $query->where('admin_status',1)->paginate(10);
 
         // 🔥 IMPORTANT: AJAX request na partial view return
         if ($request->ajax()) {

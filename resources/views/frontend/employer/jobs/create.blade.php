@@ -1767,17 +1767,25 @@
                     Reach thousands of skilled professionals across Tamil Nadu. Complete the 5 steps below and publish your
                     listing in minutes.
                 </div>
-                @if (isset($activePlan))
+                @if($activePlan)
                     <div class="pj-plan-badge">
                         <i class="fa-solid fa-circle-check" style="color:#4ade80;"></i>
-                        Active Plan: <strong>{{ $activePlan->name }}</strong>
-                        &middot; Expires {{ \Carbon\Carbon::parse($activePlan->expires_at)->format('d M Y') }}
+
+                        Active Plan: 
+                        <strong>{{ $activePlan->plan->name ?? 'Plan' }}</strong>
+
+                        &middot; Expires 
+                        {{ \Carbon\Carbon::parse($activePlan->end_date)->format('d M Y') }}
                     </div>
                 @else
                     <div class="pj-plan-badge" style="background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.35);">
                         <i class="fa-solid fa-triangle-exclamation" style="color:#fca5a5;"></i>
-                        <span style="color:#fca5a5;">No active plan — <a href="{{ route('employer.billing') }}"
-                                style="color:#fde68a;font-weight:800;">Purchase a plan</a> to post jobs.</span>
+                        <span style="color:#fca5a5;">
+                            No active plan — 
+                            <a href="{{ route('employer.billing') }}" style="color:#fde68a;font-weight:800;">
+                                Purchase a plan
+                            </a>    
+                        </span>
                     </div>
                 @endif
             </div>

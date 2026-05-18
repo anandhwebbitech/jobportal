@@ -17,6 +17,7 @@ use App\Models\BannerPlan;
 use App\Models\JobPlan;
 use App\Models\Location;
 use App\Models\Qualification;
+use App\Models\Resume;
 use App\Models\ResumePlan;
 use App\Models\Skill;
 use App\Services\NotificationService;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\UserPlanSubscription;
 use App\Models\ResumeActivityLog;
 use App\Models\ResumePlanSubscription;
+use Illuminate\Support\Facades\Log;
+
 
 class DashboardController extends Controller
 {
@@ -131,11 +134,15 @@ class DashboardController extends Controller
 
     public function jobsCreate()
     {
+        $employerId = auth()->id();
         $skills = Skill::where('status', 1)->get();
         $qualifications = Qualification::where('status',1)->get();
+        $activePlan = UserPlanSubscription::where('user_id', $employerId)
+        ->where('status', 'active')
+        ->latest()
+        ->first();
 
-
-        return view('frontend.employer.jobs.create', compact('skills','qualifications'));
+        return view('frontend.employer.jobs.create', compact('skills','qualifications','activePlan'));
     }
 
 
@@ -794,9 +801,13 @@ class DashboardController extends Controller
         $employer_id = auth()->id();
 
         // ✅ Active Resume Plan
-        $resumePlan = ResumePlanSubscription::where('user_id', $employer_id)
-            ->where('status', 1)
-            ->whereDate('end_date', '>=', now())
+        // $resumePlan = ResumePlanSubscription::where('user_id', $employer_id)
+        //     ->where('status', 1)
+        //     ->whereDate('end_date', '>=', now())
+        //     ->latest()
+        //     ->first();
+        $resumePlan = Resume::where('is_default', 1)
+            ->where('is_active', 1) // optional
             ->latest()
             ->first();
 
