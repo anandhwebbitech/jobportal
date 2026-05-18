@@ -1402,11 +1402,11 @@
                 @endforeach
             </div>
 
-            <div class="gst-note">
+            {{-- <div class="gst-note">
                 <i class="fa-solid fa-circle-info"></i>
                 Prices exclude 18% GST. &nbsp;<strong>15 Days: ₹600 + ₹108 = ₹708</strong>&nbsp;|&nbsp;<strong>30 Days:
                     ₹1,000 + ₹180 = ₹1,180</strong>
-            </div>
+            </div> --}}
 
             {{-- Compare --}}
             <div class="cmp">
@@ -1636,13 +1636,13 @@
                 @endforeach
             </div>
 
-            <div class="gst-note">
+            {{-- <div class="gst-note">
                 <i class="fa-solid fa-circle-info"></i>
                 Prices exclude 18% GST.&nbsp;
                 <strong>Silver: ₹2,360</strong>&nbsp;|&nbsp;
                 <strong>Gold: ₹3,540</strong>&nbsp;|&nbsp;
                 <strong>Platinum: ₹5,900</strong>
-            </div>
+            </div> --}}
 
             <div class="cmp">
                 <div class="cmp-hdr">
@@ -1810,12 +1810,12 @@
 
                         </div>
 
-                        <div class="gst-note" style="background:var(--amber-lt);border-color:var(--amber-mid);margin-bottom:18px;">
+                        {{-- <div class="gst-note" style="background:var(--amber-lt);border-color:var(--amber-mid);margin-bottom:18px;">
                             <i class="fa-solid fa-circle-info"></i>
                             ₹{{ $plan->price }} + 18% GST (₹{{ $plan->gst_amount }}) =
                             <strong>₹{{ $plan->total_price }}</strong>.
                             Banner valid for {{ $plan->duration_days }} days.
-                        </div>
+                        </div> --}}
 
                         <div class="ba-ctas">
                             <a href="{{ route('employer.login') }}" class="pbtn sa">

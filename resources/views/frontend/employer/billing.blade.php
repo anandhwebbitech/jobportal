@@ -442,7 +442,7 @@ body { font-family:var(--body); color:var(--gray-700); }
       </div>
       <div class="hero-actions">
         <button class="btn-hero blue"><i class="fas fa-rotate-right"></i> Renew Plan</button>
-        <button class="btn-hero-ghost"><i class="fas fa-file-invoice"></i> Download Invoice</button>
+        {{-- <button class="btn-hero-ghost"><i class="fas fa-file-invoice"></i> Download Invoice</button> --}}
       </div>
     </div>
 
@@ -887,13 +887,13 @@ body { font-family:var(--body); color:var(--gray-700); }
 
       </div>
 
-      <div class="gst-row">
+      {{-- <div class="gst-row">
         <i class="fas fa-circle-info" style="color:#92400e;"></i>
         Prices exclude 18% GST.&nbsp;
         <strong>Silver: ₹2,000 + ₹360 = ₹2,360</strong>&nbsp;|&nbsp;
         <strong>Gold: ₹3,000 + ₹540 = ₹3,540</strong>&nbsp;|&nbsp;
         <strong>Platinum: ₹5,000 + ₹900 = ₹5,900</strong>
-      </div>
+      </div> --}}
 
       <div class="divider-actions">
         <button class="btn-primary green" onclick="buyResumePlan()"><i class="fas fa-database"></i> Purchase Resume Access</button>
@@ -1019,10 +1019,10 @@ body { font-family:var(--body); color:var(--gray-700); }
           </div>
         </div>
 
-        <div class="gst-row" style="background:#fff7ed;border-color:#fed7aa;">
+        {{-- <div class="gst-row" style="background:#fff7ed;border-color:#fed7aa;">
           <i class="fas fa-circle-info" style="color:#92400e;"></i>
           Banner: ₹2,000 + 18% GST (₹360) = <strong>₹2,360 total.</strong>&nbsp; Goes live within 24 hours of payment.
-        </div>
+        </div> --}}
 
         <div class="divider-actions">
           <button class="btn-primary amber" onclick="buyBannerPlan()"><i class="fas fa-image"></i> Purchase Banner Ad</button>
@@ -1119,70 +1119,70 @@ function selectPlan(prefix, id, selClass) {
   if (radio) radio.checked = true;
 }
 
-  function buyJobPlan() {
+//   function buyJobPlan() {
 
-      let selected = document.querySelector('input[name="job_plan"]:checked');
+//       let selected = document.querySelector('input[name="job_plan"]:checked');
 
-      let planId = selected.value;
-      let quantity = document.getElementById('qty_' + planId).value;
+//       let planId = selected.value;
+//       let quantity = document.getElementById('qty_' + planId).value;
 
-      fetch('{{ url("/create-order") }}', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({ plan_id: planId, quantity: quantity })
-      })
-      .then(res => res.json())
-      .then(data => {
+//       fetch('{{ url("/create-order") }}', {
+//           method: 'POST',
+//           headers: {
+//               'Content-Type': 'application/json',
+//               'X-CSRF-TOKEN': '{{ csrf_token() }}'
+//           },
+//           body: JSON.stringify({ plan_id: planId, quantity: quantity })
+//       })
+//       .then(res => res.json())
+//       .then(data => {
 
-          let options = {
-              "key": data.key,
-              "amount": data.amount,
-              "currency": "INR",
-              "name": "LinearJobs",
-              "description": "Plan Purchase",
-              "order_id": data.order_id,
+//           let options = {
+//               "key": data.key,
+//               "amount": data.amount,
+//               "currency": "INR",
+//               "name": "LinearJobs",
+//               "description": "Plan Purchase",
+//               "order_id": data.order_id,
 
-              "handler": function (response){
-                  verifyPayment(response, planId, quantity);
-              },
+//               "handler": function (response){
+//                   verifyPayment(response, planId, quantity);
+//               },
 
-              "theme": {
-                  "color": "#2563eb"
-              }
-          };
+//               "theme": {
+//                   "color": "#2563eb"
+//               }
+//           };
 
-          let rzp = new Razorpay(options);
-          rzp.open();
-      });
-  }
-function verifyPayment(response, planId, quantity) {
+//           let rzp = new Razorpay(options);
+//           rzp.open();
+//       });
+//   }
+// function verifyPayment(response, planId, quantity) {
 
-    fetch('{{ url("/verify-payment") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature,
-            plan_id: planId,
-            quantity: quantity
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-      Swal.fire({
-          title: "Success 🎉",
-          text: data.message, // 🔥 dynamic
-          icon: "success"
-      }).then(() => location.reload());
-    });
-}
+//     fetch('{{ url("/verify-payment") }}', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+//         },
+//         body: JSON.stringify({
+//             razorpay_payment_id: response.razorpay_payment_id,
+//             razorpay_order_id: response.razorpay_order_id,
+//             razorpay_signature: response.razorpay_signature,
+//             plan_id: planId,
+//             quantity: quantity
+//         })
+//     })
+//     .then(res => res.json())
+//     .then(data => {
+//       Swal.fire({
+//           title: "Success 🎉",
+//           text: data.message, // 🔥 dynamic
+//           icon: "success"
+//       }).then(() => location.reload());
+//     });
+// }
 function renewJobPlan() {
   if (confirm('Renew current 30 Days Plan for ₹1,180 (incl. GST)?')) {
     window.location.href = '{{ route("employer.billing.purchase") }}?plan=30_day&renew=1';

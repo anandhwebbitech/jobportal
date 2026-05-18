@@ -137,6 +137,7 @@ class JobPlanController extends Controller
     }
     public function verifyPayment(Request $request)
     {
+        // dd(7);
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
 
         try {
@@ -145,6 +146,7 @@ class JobPlanController extends Controller
                 'razorpay_payment_id' => $request->razorpay_payment_id,
                 'razorpay_signature' => $request->razorpay_signature
             ]);
+
         } catch (\Exception $e) {
                 dd($e->getMessage());
 
@@ -152,7 +154,6 @@ class JobPlanController extends Controller
 
         // ✅ get order
         $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
-
         // ✅ update order
         $order->update([
             'payment_id' => $request->razorpay_payment_id,
