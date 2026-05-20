@@ -71,7 +71,7 @@ class AdminController extends Controller
        
         $months = ['Jan','Feb','Mar','Apr','May','Jun'];
         $monthlySales = [1000,2000,3000,2500,4000,5000];
-
+        
         $totalemployee = User::where('is_active',1)->where('role','employer')->get();
         $totaljobseeker = User::where('is_active',1)->where('role','user')->get();
         $livejobs = Job::where('admin_status',1)->get();

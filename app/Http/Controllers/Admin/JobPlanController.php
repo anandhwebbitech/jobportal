@@ -19,7 +19,7 @@ use Razorpay\Api\Api;
 use App\Models\Invoice;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Log;
 
 class JobPlanController extends Controller
 {
@@ -135,73 +135,168 @@ class JobPlanController extends Controller
             'message' => 'Plan updated successfully!'
         ]);
     }
+    // public function verifyPayment(Request $request)
+    // {
+    //     $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+    //     try {
+    //         $api->utility->verifyPaymentSignature([
+    //             'razorpay_order_id' => $request->razorpay_order_id,
+    //             'razorpay_payment_id' => $request->razorpay_payment_id,
+    //             'razorpay_signature' => $request->razorpay_signature
+    //         ]);
+    //     } catch (\Exception $e) {
+    //             dd($e->getMessage());
+
+    //     }
+
+    //     // ✅ get order
+    //     $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
+
+    //     // ✅ update order
+    //     $order->update([
+    //         'payment_id' => $request->razorpay_payment_id,
+    //         'status' => 'paid'
+    //     ]);
+
+    //     // 🔥 get message from activatePlan
+    //     $message = $this->activatePlan(
+    //         $order->user_id,
+    //         $request->plan_id,
+    //         $request->quantity,
+    //         $request->razorpay_payment_id
+    //     );
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => $message // 👈 dynamic message
+    //     ]);
+    // }
     public function verifyPayment(Request $request)
     {
-        // dd(7);
-        $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
-
         try {
+
+            // 🔥 Log incoming request (VERY IMPORTANT for LIVE debugging)
+            Log::info('RAZORPAY VERIFY REQUEST:', $request->all());
+
+            // ✅ Validate request
+            $request->validate([
+                'razorpay_order_id'   => 'required',
+                'razorpay_payment_id' => 'required',
+                'razorpay_signature'  => 'required',
+            ]);
+
+            // 🔥 Init Razorpay API
+            $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
+
+            // ✅ Verify signature
             $api->utility->verifyPaymentSignature([
-                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_order_id'   => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature' => $request->razorpay_signature
+                'razorpay_signature'  => $request->razorpay_signature,
+            ]);
+
+            // ✅ Get order safely (NO firstOrFail)
+            $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->first();
+
+            if (!$order) {
+                Log::error('ORDER NOT FOUND: '.$request->razorpay_order_id);
+
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Order not found'
+                ], 404);
+            }
+
+            // ✅ Prevent double payment update
+            if ($order->status == 'paid') {
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Already Paid'
+                ]);
+            }
+
+            // ✅ Update order
+            $order->update([
+                'payment_id' => $request->razorpay_payment_id,
+                'status'     => 'paid'
+            ]);
+
+            // 🔥 SAFE plan values (ONLY FROM DB)
+            $planId = $order->plan_id;
+            $qty    = $order->quantity ?? 1;
+
+            // ✅ Activate plan
+            $message = $this->activatePlan(
+                $order->user_id,
+                $planId,
+                $qty,
+                $request->razorpay_payment_id
+            );
+
+            return response()->json([
+                'status'  => true,
+                'message' => $message
             ]);
 
         } catch (\Exception $e) {
-                dd($e->getMessage());
 
+            // 🔥 Full error logging (LIVE DEBUG)
+            Log::error('RAZORPAY VERIFY ERROR: '.$e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Payment verification failed',
+                'error'   => $e->getMessage()
+            ], 500);
         }
-
-        // ✅ get order
-        $order = Order::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
-        // ✅ update order
-        $order->update([
-            'payment_id' => $request->razorpay_payment_id,
-            'status' => 'paid'
-        ]);
-
-        // 🔥 get message from activatePlan
-        $message = $this->activatePlan(
-            $order->user_id,
-            $request->plan_id,
-            $request->quantity,
-            $request->razorpay_payment_id
-        );
-
-        return response()->json([
-            'status' => true,
-            'message' => $message // 👈 dynamic message
-        ]);
     }
     public function activatePlan($userId, $planId, $qty, $paymentId)
     {
         $plan = JobPlan::findOrFail($planId);
         $user = User::findOrFail($userId);
-        // 🔍 check existing active plan
+
+        // 🔍 existing active plan
         $existing = UserPlanSubscription::where('user_id', $userId)
             ->where('status', 'active')
             ->first();
-        $isExtended = false; // 👈 flag
-        if ($existing && $existing->end_date > now()) {
 
-            // 👉 extend from current plan end
-            $startDate = $existing->end_date;
+        $isExtended = false;
 
-            // 👉 deactivate old
+        // =============================
+        // START DATE SAFE HANDLING
+        // =============================
+        if ($existing && Carbon::parse($existing->end_date)->isFuture()) {
+
+            $startDate = Carbon::parse($existing->end_date);
+
+            // expire old plan
             $existing->update(['status' => 'expired']);
 
-            $isExtended = true; // ⚠️ mark
+            $isExtended = true;
+
         } else {
-            $startDate = now(); 
+            $startDate = Carbon::now();
         }
 
-        // 💡 calculation
-        $totalJobLimit = $plan->job_post_limit * $qty;
+        // =============================
+        // SAFE INTEGER CONVERSION (IMPORTANT FIX)
+        // =============================
+        $durationDays = (int) $plan->duration_days;
 
-        $endDate = Carbon::parse($startDate)
-            ->addDays($plan->duration_days);
+        // =============================
+        // END DATE CALCULATION
+        // =============================
+        $endDate = (clone $startDate)->addDays($durationDays);
 
-        // 💾 SAVE
+        // =============================
+        // JOB LIMIT
+        // =============================
+        $totalJobLimit = ((int) $plan->job_post_limit) * (int) $qty;
+
+        // =============================
+        // CREATE SUBSCRIPTION
+        // =============================
         UserPlanSubscription::create([
             'user_id'        => $userId,
             'job_plan_id'    => $plan->id,
@@ -212,12 +307,15 @@ class JobPlanController extends Controller
             'payment_id'     => $paymentId,
             'payment_status' => 'paid',
             'status'         => 'active',
-            'quantity'       => $qty 
+            'quantity'       => (int) $qty,
         ]);
-         // ✅ Invoice
+
+        // =============================
+        // INVOICE CALCULATION
+        // =============================
         $invoiceNo = 'INV-' . strtoupper(Str::random(8));
-        $amount = ($plan->price ?? 0) * $qty;
-        $baseAmount = ($plan->price ?? 0) * $qty;
+
+        $baseAmount = ((float) $plan->price) * (int) $qty;
         $gstAmount  = $baseAmount * 0.18;
         $totalAmount = $baseAmount + $gstAmount;
 
@@ -225,9 +323,7 @@ class JobPlanController extends Controller
             'invoice_no'     => $invoiceNo,
             'user_id'        => $user->id,
             'plan_id'        => $plan->id,
-
-            // 🔥 IMPORTANT FIELDS
-            'plan_type'      => 'job', // 👈 use keyword
+            'plan_type'      => 'job',
             'plan_name'      => $plan->name,
 
             'amount'         => $baseAmount,
@@ -238,30 +334,33 @@ class JobPlanController extends Controller
             'payment_status' => 'paid',
             'payment_method' => 'razorpay',
 
-            'paid_at'        => now(),
+            'paid_at'        => Carbon::now(),
         ]);
 
-        // ✅ Mail
+        // =============================
+        // EMAIL (SAFE)
+        // =============================
         try {
             Mail::send('emails.invoice_mail', [
                 'user' => $user,
                 'plan' => $plan,
                 'invoice' => $invoice,
-                'qty' => $qty ,
+                'qty' => $qty,
                 'plan_type' => 'Job Posting'
             ], function ($message) use ($user, $invoice) {
-                $message->to("anandhwebbitech@gmail.com") // ✅ dynamic email
+                $message->to($user->email) 
                     ->subject('Invoice #' . $invoice->invoice_no);
             });
 
         } catch (\Exception $e) {
-            dd('Mail Error: ' . $e->getMessage());
+            \Log::error('MAIL ERROR: '.$e->getMessage());
         }
 
-
-        // 🔥 return message
+        // =============================
+        // RETURN MESSAGE
+        // =============================
         if ($isExtended) {
-            return "You already have an active plan. New plan will start after current plan expiry.";
+            return "You already have an active plan. New plan starts after expiry.";
         }
 
         return "Plan activated successfully";

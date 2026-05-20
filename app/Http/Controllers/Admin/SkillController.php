@@ -8,7 +8,8 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Middleware\Skip;
 use Illuminate\Support\Facades\Validator;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SkillImport;
 class SkillController extends Controller
 {
     //
@@ -138,5 +139,18 @@ class SkillController extends Controller
                 'status'  => true,
                 'message' => 'Skill deleted successfully.'
             ]);
+    }
+    public function bulkUpload(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new SkillImport, $request->file('excel_file'));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Skills imported successfully'
+        ]);
     }
 }

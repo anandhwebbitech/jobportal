@@ -10,12 +10,14 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
 use App\Events\UserNotification;
+use Illuminate\Support\Facades\Log;
+
 
 class JobController extends Controller
 {
 
     // JOB LIST PAGE
-    public function index(Request $request)
+   public function index(Request $request)
     {
         $query = Job::query();
 
@@ -112,7 +114,7 @@ class JobController extends Controller
 
         $jobs = $jobs->latest()->get();
 
-        // 👇 return ONLY partial HTML
+        // ðŸ‘‡ return ONLY partial HTML
         return view('frontend.jobs.job-list', compact('jobs'));
     }
 
@@ -183,19 +185,19 @@ class JobController extends Controller
 
         try {
 
-            // ✅ Upload Resume
+            // âœ… Upload Resume
             $resumePath = null;
             if ($request->hasFile('resume')) {
                 $resumePath = $request->file('resume')->store('resumes', 'public');
             }
 
-            // ✅ Upload Photo
+            // âœ… Upload Photo
             $photoPath = null;
             if ($request->hasFile('profile_photo')) {
                 $photoPath = $request->file('profile_photo')->store('photos', 'public');
             }
            
-            // ✅ Save to DB
+            // âœ… Save to DB
             JobApplication::create([
                 'job_id'                => $id,
                 'user_id'               => Auth::id(),

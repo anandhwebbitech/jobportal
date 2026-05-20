@@ -421,7 +421,6 @@ class AuthController extends Controller
         }
     }
 
-
     /* =================================
        FORGOT PASSWORD
     ================================= */
@@ -431,21 +430,6 @@ class AuthController extends Controller
         return view('frontend.auth.forgot-password');
     }
 
-    // public function forgotPasswordSubmit(Request $request)
-    // {
-
-    //     $request->validate([
-    //         'email' => 'required|email|exists:users,email'
-    //     ]);
-
-    //     $status = Password::sendResetLink(
-    //         $request->only('email')
-    //     );
-
-    //     return $status === Password::RESET_LINK_SENT
-    //             ? back()->with('success', __($status))
-    //             : back()->with('error', __($status));
-    // }
     public function forgotPasswordSubmit(Request $request)
     {
         $request->validate([

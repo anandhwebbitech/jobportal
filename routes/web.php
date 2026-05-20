@@ -99,6 +99,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('jobseekers/{id}/approve', [JobSeekerController::class, 'Approve'])->name('jobseekers.approve');
     Route::get('/notification', [AdminController::class, 'AdminNotification'])->name('adminnotification');
     Route::get('admin/notifications-data', [AdminController::class, 'AdminNotificationData'])->name('notifications.data');
+    Route::post('/skills/bulk-upload', [SkillController::class, 'bulkUpload'])
+    ->name('skills.bulkUpload');
 });
 
 
